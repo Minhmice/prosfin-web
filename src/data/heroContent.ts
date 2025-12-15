@@ -32,14 +32,14 @@ export const heroContent: HeroContent = {
   subheadline:
     "ProsFIN đồng hành chủ doanh nghiệp SME, startup và hộ kinh doanh trong việc hiểu đúng lãi – lỗ, kiểm soát dòng tiền và giảm rủi ro thuế. Từ dữ liệu kế toán rời rạc, chúng tôi giúp bạn có bức tranh tài chính rõ ràng, dễ hiểu và có thể hành động ngay, theo phương pháp bài bản của các firm Big4.",
   primaryCta: {
-    label: "Đặt lịch tư vấn",
+    label: "Đặt lịch khám sức khỏe tài chính miễn phí",
     href: "#lead-form",
   },
   secondaryCta: {
-    label: "Xem dịch vụ",
+    label: "Xem các dịch vụ ProsFIN",
     href: "#services",
   },
-  note: "Buổi tư vấn đầu tiên 30 phút, miễn phí đánh giá sơ bộ.",
+  note: "Buổi tư vấn đầu tiên 30 phút, miễn phí. ProsFIN sẽ giúp bạn hiểu rõ tình hình tài chính hiện tại và đưa ra gợi ý cụ thể.",
   stats: [
     {
       label: "DN đã đồng hành",

@@ -71,7 +71,8 @@ export function ProsfinProcessCardWrapper({
   return (
     <Card
       className={cn(
-        "flex h-full flex-col transition-shadow hover:shadow-md",
+        "flex h-full flex-col transition-all duration-200 ease-out",
+        "hover:-translate-y-1 hover:shadow-lg hover:border-primary/50",
         variantClasses[variant],
         className
       )}

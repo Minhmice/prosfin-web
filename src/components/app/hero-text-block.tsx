@@ -36,10 +36,14 @@ export function HeroTextBlock({
 
   const handleSecondaryCta = () => {
     if (content.secondaryCta.href.startsWith("#")) {
+      // Anchor link - scroll to section
       const element = document.querySelector(content.secondaryCta.href);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
       }
+    } else if (content.secondaryCta.href.startsWith("/")) {
+      // Page link - navigate to page
+      window.location.href = content.secondaryCta.href;
     }
   };
 

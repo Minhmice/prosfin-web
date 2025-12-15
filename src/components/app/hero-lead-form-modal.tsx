@@ -20,20 +20,34 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ProsfinButton } from "@/components/shared/prosfin-button";
+import { ProsfinPrimaryButton } from "@/components/shared/button/prosfin-primary-button";
+import { ProsfinGhostButton } from "@/components/shared/button/prosfin-ghost-button";
+import { useProsfinToast } from "@/components/shared/toast/prosfin-toast-provider";
+import { formContent } from "@/data/form-content";
 
 /**
  * Lead Form Schema
  */
 const leadFormSchema = z.object({
-  fullName: z.string().min(2, "Vui lòng nhập họ tên (tối thiểu 2 ký tự)"),
-  email: z.string().email("Email không hợp lệ"),
+  fullName: z
+    .string()
+    .min(2, formContent.leadForm.fields.fullName.errorMessages.minLength || "Họ tên cần ít nhất 2 ký tự"),
+  email: z
+    .string()
+    .min(1, formContent.leadForm.fields.email.errorMessages.required || "Vui lòng nhập email")
+    .email(formContent.leadForm.fields.email.errorMessages.invalid || "Email không đúng định dạng"),
   phone: z
     .string()
-    .min(10, "Số điện thoại phải có ít nhất 10 số")
-    .regex(/^[0-9+\-\s()]+$/, "Số điện thoại không hợp lệ"),
+    .min(10, formContent.leadForm.fields.phone.errorMessages.minLength || "Số điện thoại cần ít nhất 10 số")
+    .regex(
+      /^[0-9+\-\s()]+$/,
+      formContent.leadForm.fields.phone.errorMessages.pattern || "Số điện thoại không hợp lệ"
+    ),
   companyName: z.string().optional(),
-  concern: z.string().min(1, "Vui lòng chọn mối quan tâm của bạn"),
+  concern: z.string().min(
+    1,
+    formContent.leadForm.fields.concern.errorMessages.required || "Vui lòng chọn vấn đề bạn quan tâm"
+  ),
 });
 
 type LeadFormValues = z.infer<typeof leadFormSchema>;
@@ -60,6 +74,9 @@ export function HeroLeadFormModal({
   open,
   onOpenChange,
 }: HeroLeadFormModalProps) {
+  const toast = useProsfinToast();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     defaultValues: {
@@ -71,21 +88,39 @@ export function HeroLeadFormModal({
     },
   });
 
-  const onSubmit = (data: LeadFormValues) => {
-    // TODO: Connect to API endpoint /api/leads or Supabase
-    console.log("Lead form submitted:", data);
-    alert("Thông tin đã được ghi nhận (demo). Chúng tôi sẽ liên hệ với bạn sớm nhất!");
-    form.reset();
-    onOpenChange(false);
+  const onSubmit = async (data: LeadFormValues) => {
+    setIsSubmitting(true);
+    try {
+      // TODO: Connect to API endpoint /api/leads or Supabase
+      console.log("Lead form submitted:", data);
+      
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      toast.toast({
+        description: formContent.leadForm.successMessage,
+        variant: "success",
+      });
+      
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      toast.toast({
+        description: formContent.leadForm.errorMessage,
+        variant: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Đặt lịch tư vấn miễn phí</DialogTitle>
+          <DialogTitle>{formContent.leadForm.title}</DialogTitle>
           <DialogDescription>
-            Điền thông tin để chúng tôi có thể liên hệ và tư vấn cho bạn.
+            {formContent.leadForm.description}
           </DialogDescription>
         </DialogHeader>
 
@@ -96,10 +131,20 @@ export function HeroLeadFormModal({
               name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Họ tên *</FormLabel>
+                  <FormLabel>
+                    {formContent.leadForm.fields.fullName.label} *
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Nguyễn Văn A" {...field} />
+                    <Input
+                      placeholder={formContent.leadForm.fields.fullName.placeholder}
+                      {...field}
+                    />
                   </FormControl>
+                  {formContent.leadForm.fields.fullName.helperText && (
+                    <p className="text-xs text-muted-foreground">
+                      {formContent.leadForm.fields.fullName.helperText}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -110,14 +155,21 @@ export function HeroLeadFormModal({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email *</FormLabel>
+                  <FormLabel>
+                    {formContent.leadForm.fields.email.label} *
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="email@example.com"
+                      placeholder={formContent.leadForm.fields.email.placeholder}
                       {...field}
                     />
                   </FormControl>
+                  {formContent.leadForm.fields.email.helperText && (
+                    <p className="text-xs text-muted-foreground">
+                      {formContent.leadForm.fields.email.helperText}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -128,10 +180,20 @@ export function HeroLeadFormModal({
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Số điện thoại *</FormLabel>
+                  <FormLabel>
+                    {formContent.leadForm.fields.phone.label} *
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="0901234567" {...field} />
+                    <Input
+                      placeholder={formContent.leadForm.fields.phone.placeholder}
+                      {...field}
+                    />
                   </FormControl>
+                  {formContent.leadForm.fields.phone.helperText && (
+                    <p className="text-xs text-muted-foreground">
+                      {formContent.leadForm.fields.phone.helperText}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -142,10 +204,22 @@ export function HeroLeadFormModal({
               name="companyName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tên doanh nghiệp</FormLabel>
+                  <FormLabel>
+                    {formContent.leadForm.fields.companyName.label}
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Công ty ABC" {...field} />
+                    <Input
+                      placeholder={
+                        formContent.leadForm.fields.companyName.placeholder
+                      }
+                      {...field}
+                    />
                   </FormControl>
+                  {formContent.leadForm.fields.companyName.helperText && (
+                    <p className="text-xs text-muted-foreground">
+                      {formContent.leadForm.fields.companyName.helperText}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -156,13 +230,17 @@ export function HeroLeadFormModal({
               name="concern"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bạn đang lo nhất điều gì? *</FormLabel>
+                  <FormLabel>
+                    {formContent.leadForm.fields.concern.label} *
+                  </FormLabel>
                   <FormControl>
                     <select
                       {...field}
                       className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
                     >
-                      <option value="">-- Chọn --</option>
+                      <option value="">
+                        {formContent.leadForm.fields.concern.placeholder}
+                      </option>
                       {CONCERN_OPTIONS.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -170,26 +248,32 @@ export function HeroLeadFormModal({
                       ))}
                     </select>
                   </FormControl>
+                  {formContent.leadForm.fields.concern.helperText && (
+                    <p className="text-xs text-muted-foreground">
+                      {formContent.leadForm.fields.concern.helperText}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
             />
 
             <div className="flex gap-3 pt-2">
-              <ProsfinButton
+              <ProsfinPrimaryButton
                 type="submit"
-                brandVariant="primary"
                 className="flex-1"
+                loading={isSubmitting}
+                disabled={isSubmitting}
               >
-                Gửi thông tin
-              </ProsfinButton>
-              <ProsfinButton
+                {formContent.leadForm.submitButton}
+              </ProsfinPrimaryButton>
+              <ProsfinGhostButton
                 type="button"
-                brandVariant="outline"
                 onClick={() => onOpenChange(false)}
+                disabled={isSubmitting}
               >
-                Hủy
-              </ProsfinButton>
+                {formContent.leadForm.cancelButton}
+              </ProsfinGhostButton>
             </div>
           </form>
         </Form>

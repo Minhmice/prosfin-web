@@ -1,6 +1,9 @@
+"use client";
+
 import * as React from "react";
 import { processSectionContent } from "@/data/process-content";
 import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
+import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
 import { ProcessHeader } from "./process-header";
 import { ProcessStepsGrid } from "./process-steps-grid";
 
@@ -28,18 +31,22 @@ export function ProcessSection({ onCtaClick }: ProcessSectionProps) {
     >
       <div className="flex flex-col gap-12">
         {/* Header */}
-        <ProcessHeader
-          eyebrow={processSectionContent.eyebrow}
-          title={processSectionContent.title}
-          subtitle={processSectionContent.subtitle}
-          align="center"
-        />
+        <RevealOnScroll direction="up" delay={0}>
+          <ProcessHeader
+            eyebrow={processSectionContent.eyebrow}
+            title={processSectionContent.title}
+            subtitle={processSectionContent.subtitle}
+            align="center"
+          />
+        </RevealOnScroll>
 
         {/* Steps Grid */}
-        <ProcessStepsGrid
-          steps={processSectionContent.steps}
-          layout="horizontal"
-        />
+        <RevealOnScroll direction="up" delay={200}>
+          <ProcessStepsGrid
+            steps={processSectionContent.steps}
+            layout="horizontal"
+          />
+        </RevealOnScroll>
       </div>
     </ProsfinSectionWrapper>
   );

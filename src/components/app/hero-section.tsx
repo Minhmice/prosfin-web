@@ -5,6 +5,7 @@ import { PageContainer } from "@/components/shared/page-container";
 import { HeroTextBlock } from "./hero-text-block";
 import { HeroVisual } from "./hero-visual";
 import { HeroLeadFormModal } from "./hero-lead-form-modal";
+import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
 import { heroContent } from "@/data/heroContent";
 import { cn } from "@/lib/utils";
 
@@ -38,17 +39,17 @@ export function HeroSection({ className }: HeroSectionProps) {
         <PageContainer>
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 lg:items-center">
             {/* Cột trái - Text Block */}
-            <div className="order-1 lg:order-1">
+            <RevealOnScroll direction="right" delay={0} className="order-1 lg:order-1">
               <HeroTextBlock
                 content={heroContent}
                 onPrimaryCtaClick={handlePrimaryCtaClick}
               />
-            </div>
+            </RevealOnScroll>
 
             {/* Cột phải - Visual */}
-            <div className="order-2 lg:order-2">
+            <RevealOnScroll direction="left" delay={100} className="order-2 lg:order-2">
               <HeroVisual content={heroContent} />
-            </div>
+            </RevealOnScroll>
           </div>
         </PageContainer>
       </section>
