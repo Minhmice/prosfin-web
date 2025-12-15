@@ -1,0 +1,118 @@
+import * as React from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+
+export interface ProsfinServiceCardWrapperProps {
+  /**
+   * Card title (service name)
+   */
+  title: string;
+  /**
+   * Card description
+   */
+  description?: string;
+  /**
+   * List of benefits (bullet points)
+   */
+  benefits?: string[];
+  /**
+   * Optional icon (ReactNode)
+   */
+  icon?: React.ReactNode;
+  /**
+   * Optional ideal client description
+   */
+  idealClient?: string;
+  /**
+   * CTA button content (ReactNode)
+   */
+  cta?: React.ReactNode;
+  /**
+   * Additional className
+   */
+  className?: string;
+  /**
+   * Card variant
+   * @default "default"
+   */
+  variant?: "default" | "bordered" | "elevated";
+}
+
+/**
+ * ProsfinServiceCardWrapper - Wrapper component cho Service Cards
+ * 
+ * Wrap shadcn Card với style thống nhất cho mọi "ServiceCard".
+ * Có chỗ cho title, description, benefits list, và CTA button.
+ * 
+ * Wrapper component không chỉnh sửa shadcn components trực tiếp.
+ */
+export function ProsfinServiceCardWrapper({
+  title,
+  description,
+  benefits,
+  icon,
+  idealClient,
+  cta,
+  className,
+  variant = "default",
+}: ProsfinServiceCardWrapperProps) {
+  const variantClasses = {
+    default: "border-border shadow-sm",
+    bordered: "border-2 border-border shadow-none",
+    elevated: "border-border shadow-md",
+  };
+
+  return (
+    <Card
+      className={cn(
+        "flex h-full flex-col transition-all hover:shadow-md hover:scale-[1.02]",
+        variantClasses[variant],
+        className
+      )}
+    >
+      <CardHeader>
+        {icon && <div className="mb-3">{icon}</div>}
+        <CardTitle className="text-xl leading-tight">{title}</CardTitle>
+        {description && (
+          <CardDescription className="mt-2 text-base leading-relaxed">
+            {description}
+          </CardDescription>
+        )}
+      </CardHeader>
+      <CardContent className="flex flex-1 flex-col gap-4">
+        {/* Benefits List */}
+        {benefits && benefits.length > 0 && (
+          <ul className="flex flex-col gap-2">
+            {benefits.map((benefit, index) => (
+              <li key={index} className="flex items-start gap-2">
+                <span className="mt-1.5 text-primary">•</span>
+                <span className="text-sm leading-relaxed text-muted-foreground">
+                  {benefit}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Ideal Client */}
+        {idealClient && (
+          <div className="mt-auto rounded-md bg-muted/50 p-3 text-xs text-muted-foreground">
+            <span className="font-medium">Phù hợp: </span>
+            {idealClient}
+          </div>
+        )}
+      </CardContent>
+
+      {/* CTA Footer */}
+      {cta && <CardFooter className="pt-4">{cta}</CardFooter>}
+    </Card>
+  );
+}
+
