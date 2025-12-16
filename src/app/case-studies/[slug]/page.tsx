@@ -4,8 +4,7 @@ import * as React from "react";
 import { use } from "react";
 import { notFound } from "next/navigation";
 import { caseStudyDetailMap } from "@/data/case-detail";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
-import { ProsfinPrimaryButton } from "@/components/shared/button/prosfin-primary-button";
+import { H1, H2, ProsfinSectionWrapper, ProsfinPrimaryButton, Text } from "@/components/shared";
 import { CaseStudyScrollStory } from "@/components/shared/animation/case-study-scroll-story";
 import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
 
@@ -53,9 +52,7 @@ export default function CaseStudyDetailPage({
               </span>
             ))}
           </div>
-          <h1 className="mb-4 text-3xl font-bold sm:text-4xl lg:text-5xl">
-            {hero.title}
-          </h1>
+          <H1 className="mb-4">{hero.title}</H1>
         </div>
       </ProsfinSectionWrapper>
 
@@ -73,10 +70,10 @@ export default function CaseStudyDetailPage({
               Thời gian: <span className="font-medium">{context.duration}</span>
             </span>
           </div>
-          <h2 className="mb-4 text-2xl font-bold sm:text-3xl">Bối cảnh</h2>
-          <p className="leading-relaxed text-muted-foreground">
+          <H2 className="mb-4">Bối cảnh</H2>
+          <Text as="p" variant="lead" className="text-muted-foreground">
             {context.background}
-          </p>
+          </Text>
         </div>
       </ProsfinSectionWrapper>
 
@@ -94,7 +91,9 @@ export default function CaseStudyDetailPage({
                       <span className="mt-0.5 text-destructive" aria-hidden="true">
                         •
                       </span>
-                      <span className="leading-relaxed">{challenge}</span>
+                      <Text as="span" variant="body">
+                        {challenge}
+                      </Text>
                     </li>
                   ))}
                 </ul>
@@ -117,11 +116,13 @@ export default function CaseStudyDetailPage({
                         >
                           {idx + 1}
                         </span>
-                        <h3 className="text-xl font-semibold">{step.title}</h3>
+                        <Text as="p" variant="large">
+                          {step.title}
+                        </Text>
                       </div>
-                      <p className="leading-relaxed text-muted-foreground">
+                      <Text as="p" variant="lead" className="text-muted-foreground">
                         {step.description}
-                      </p>
+                      </Text>
                     </div>
                   ))}
                 </div>
@@ -137,7 +138,9 @@ export default function CaseStudyDetailPage({
                       <span className="mt-0.5 text-primary" aria-hidden="true">
                         ✓
                       </span>
-                      <span className="leading-relaxed">{result}</span>
+                      <Text as="span" variant="body">
+                        {result}
+                      </Text>
                     </li>
                   ))}
                 </ul>
@@ -152,7 +155,9 @@ export default function CaseStudyDetailPage({
         <ProsfinSectionWrapper>
           <div className="max-w-3xl">
             <div className="rounded-lg border-l-4 border-primary bg-muted/50 p-6">
-              <p className="text-lg italic leading-relaxed">"{quote}"</p>
+              <Text as="p" variant="large" className="italic leading-relaxed">
+                "{quote}"
+              </Text>
             </div>
           </div>
         </ProsfinSectionWrapper>
@@ -161,16 +166,16 @@ export default function CaseStudyDetailPage({
       {/* Learnings */}
       <ProsfinSectionWrapper background="muted">
         <div className="max-w-3xl">
-          <h2 className="mb-4 text-2xl font-bold sm:text-3xl">
-            Learnings & khuyến nghị
-          </h2>
+          <H2 className="mb-4">Learnings & khuyến nghị</H2>
           <ul className="space-y-3">
             {learnings.map((learning, idx) => (
               <li key={idx} className="flex items-start gap-3">
                 <span className="mt-0.5 text-primary" aria-hidden="true">
                   •
                 </span>
-                <span className="leading-relaxed">{learning}</span>
+                <Text as="span" variant="body">
+                  {learning}
+                </Text>
               </li>
             ))}
           </ul>
@@ -180,9 +185,7 @@ export default function CaseStudyDetailPage({
       {/* CTA */}
       <ProsfinSectionWrapper>
         <div className="text-center">
-          <h2 className="mb-4 text-2xl font-bold sm:text-3xl">
-            Doanh nghiệp bạn đang ở hoàn cảnh tương tự?
-          </h2>
+          <H2 className="mb-4">Doanh nghiệp bạn đang ở hoàn cảnh tương tự?</H2>
           <ProsfinPrimaryButton href="/contact" size="lg">
             Trao đổi với ProsFIN
           </ProsfinPrimaryButton>

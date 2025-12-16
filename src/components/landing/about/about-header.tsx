@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ProsfinSectionHeading } from "@/components/shared/section/prosfin-section-heading";
+import { ProsfinSectionHeading } from "@/components/shared";
 import { cn } from "@/lib/utils";
 
 export interface AboutHeaderProps {
@@ -46,9 +46,9 @@ export function AboutHeader({
       {introParagraph && (
         <p
           className={cn(
-            "text-lg leading-relaxed text-muted-foreground",
-            align === "center" && "mx-auto max-w-3xl text-center",
-            align === "left" && "max-w-2xl"
+            "text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg",
+            align === "center" && "mx-auto max-w-md md:max-w-3xl text-center",
+            align === "left" && "max-w-md md:max-w-2xl"
           )}
         >
           {introParagraph}

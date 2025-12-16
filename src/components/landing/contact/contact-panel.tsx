@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ProsfinContactCardWrapper } from "@/components/shared/card/prosfin-contact-card-wrapper";
+import { ProsfinContactCardWrapper } from "@/components/shared";
 import { ContactForm } from "./contact-form";
 import { ContactInfoBlock } from "./contact-info-block";
 import { ContactInfo } from "@/data/contact-content";

@@ -1,5 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export interface SiteLogoProps {
@@ -31,8 +32,15 @@ export function SiteLogo({ variant = "default", className }: SiteLogoProps) {
         className
       )}
     >
-      <span className="text-primary">Pros</span>
-      <span>FIN</span>
+      <Image
+        src="/brand/logo_rectangle.svg"
+        alt="ProsFIN"
+        width={140}
+        height={28}
+        priority={variant === "default"}
+        className="h-full"
+      />
+      <span className="sr-only">ProsFIN</span>
     </Link>
   );
 }

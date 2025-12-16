@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ProsfinPrimaryButton } from "@/components/shared/button/prosfin-primary-button";
-import { ProsfinContainer } from "@/components/layout/prosfin-container";
+import { H1, H2, ProsfinPrimaryButton, Text } from "@/components/shared";
+import { ProsfinContainer } from "@/components/layout/container";
 
 /**
  * NotFound - 404 page component
@@ -12,15 +12,11 @@ export default function NotFound() {
     <div className="flex min-h-screen items-center justify-center">
       <ProsfinContainer>
         <div className="flex flex-col items-center justify-center gap-6 text-center">
-          <h1 className="text-4xl font-bold text-foreground sm:text-5xl">
-            404
-          </h1>
-          <h2 className="text-2xl font-semibold text-foreground">
-            Trang bạn tìm không tồn tại
-          </h2>
-          <p className="max-w-md text-muted-foreground">
+          <H1>404</H1>
+          <H2>Trang bạn tìm không tồn tại</H2>
+          <Text as="p" variant="lead" className="max-w-md">
             Có thể link đã sai hoặc nội dung đã được cập nhật.
-          </p>
+          </Text>
           <ProsfinPrimaryButton href="/">
             Quay về trang chủ
           </ProsfinPrimaryButton>

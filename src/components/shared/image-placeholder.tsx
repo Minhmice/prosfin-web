@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { Text } from "@/components/shared";
 
 export interface ImagePlaceholderProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -96,13 +97,19 @@ export function ImagePlaceholder({
       {...props}
     >
       {icon && (
-        <span className="mb-2 text-2xl sm:text-3xl" role="img" aria-hidden="true">
+        <Text
+          as="span"
+          variant="icon"
+          className="mb-2"
+          role="img"
+          aria-hidden="true"
+        >
           {icon}
-        </span>
+        </Text>
       )}
-      <span className="text-center text-xs font-medium sm:text-sm">
+      <Text as="span" variant="caption" className="text-center font-medium">
         {label}
-      </span>
+      </Text>
     </div>
   );
 }

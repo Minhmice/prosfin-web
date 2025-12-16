@@ -1,9 +1,13 @@
 import { servicesPageContent } from "@/data/services-page";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
-import { ProsfinSectionHeading } from "@/components/shared/section/prosfin-section-heading";
-import { ProsfinPrimaryButton } from "@/components/shared/button/prosfin-primary-button";
-import { ProsfinSecondaryButton } from "@/components/shared/button/prosfin-secondary-button";
-import { ProsfinServiceCardWrapper } from "@/components/shared/card/prosfin-service-card-wrapper";
+import {
+  H2,
+  ProsfinSectionWrapper,
+  ProsfinSectionHeading,
+  ProsfinPrimaryButton,
+  ProsfinSecondaryButton,
+  ProsfinServiceCardWrapper,
+  Text,
+} from "@/components/shared";
 import Link from "next/link";
 
 /**
@@ -39,8 +43,8 @@ export default function ServicesPage() {
       {/* Service Packages Grid */}
       <ProsfinSectionWrapper>
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">Các gói dịch vụ</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <H2 className="mb-8">Các gói dịch vụ</H2>
+          <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
             {packages.map((pkg) => (
               <ProsfinServiceCardWrapper
                 key={pkg.id}
@@ -65,19 +69,19 @@ export default function ServicesPage() {
       {/* Value Props */}
       <ProsfinSectionWrapper background="muted">
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">
-            ProsFIN làm việc khác biệt như thế nào?
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <H2 className="mb-8">ProsFIN làm việc khác biệt như thế nào?</H2>
+          <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-4">
             {valueProps.map((prop) => (
               <div
                 key={prop.id}
-                className="rounded-lg border bg-card p-6 shadow-sm"
+                className="rounded-lg border bg-card p-4 shadow-sm md:p-6"
               >
-                <h3 className="mb-2 text-lg font-semibold">{prop.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <Text as="p" variant="large" className="mb-2">
+                  {prop.title}
+                </Text>
+                <Text as="p" variant="muted" className="leading-relaxed">
                   {prop.description}
-                </p>
+                </Text>
               </div>
             ))}
           </div>
@@ -87,23 +91,25 @@ export default function ServicesPage() {
       {/* Mini Cases */}
       <ProsfinSectionWrapper>
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">
-            Câu chuyện khách hàng
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2">
+          <H2 className="mb-8">Câu chuyện khách hàng</H2>
+          <div className="grid gap-4 md:gap-6 md:grid-cols-2">
             {miniCases.map((caseItem) => (
               <div
                 key={caseItem.id}
-                className="rounded-lg border bg-card p-6 shadow-sm"
+                className="rounded-lg border bg-card p-4 shadow-sm md:p-6"
               >
-                <p className="mb-2 text-sm font-medium text-muted-foreground">
+                <Text as="p" variant="muted" className="mb-2 font-medium">
                   Tình huống
-                </p>
-                <p className="mb-4 leading-relaxed">{caseItem.situation}</p>
-                <p className="mb-2 text-sm font-medium text-muted-foreground">
+                </Text>
+                <Text as="p" variant="body" className="mb-4">
+                  {caseItem.situation}
+                </Text>
+                <Text as="p" variant="muted" className="mb-2 font-medium">
                   Kết quả
-                </p>
-                <p className="mb-4 leading-relaxed">{caseItem.result}</p>
+                </Text>
+                <Text as="p" variant="body" className="mb-4">
+                  {caseItem.result}
+                </Text>
                 <Link
                   href={`/case-studies/${caseItem.slug}`}
                   className="text-sm font-medium text-primary underline-offset-4 hover:underline"
@@ -125,19 +131,19 @@ export default function ServicesPage() {
       {/* FAQ */}
       <ProsfinSectionWrapper background="muted">
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">
-            Câu hỏi thường gặp về dịch vụ
-          </h2>
+          <H2 className="mb-8">Câu hỏi thường gặp về dịch vụ</H2>
           <div className="space-y-4">
             {faqs.map((faq) => (
               <div
                 key={faq.id}
-                className="rounded-lg border bg-card p-6 shadow-sm"
+                className="rounded-lg border bg-card p-4 shadow-sm md:p-6"
               >
-                <h3 className="mb-2 text-lg font-semibold">{faq.question}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <Text as="p" variant="large" className="mb-2">
+                  {faq.question}
+                </Text>
+                <Text as="p" variant="muted" className="leading-relaxed">
                   {faq.answer}
-                </p>
+                </Text>
               </div>
             ))}
           </div>

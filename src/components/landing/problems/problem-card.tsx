@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ProsfinProblemCardWrapper } from "@/components/shared/card/prosfin-problem-card-wrapper";
+import { ProsfinProblemCardWrapper } from "@/components/shared";
 import { Problem } from "@/data/problem-content";
 
 export interface ProblemCardProps {

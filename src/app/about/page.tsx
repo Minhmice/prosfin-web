@@ -1,10 +1,14 @@
 import { aboutPageContent } from "@/data/about-page";
 import { aboutSectionContent } from "@/data/about-content";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
-import { ProsfinSectionHeading } from "@/components/shared/section/prosfin-section-heading";
-import { ProsfinMetricPill } from "@/components/shared/stat/prosfin-metric-pill";
+import {
+  H2,
+  ProsfinSectionWrapper,
+  ProsfinSectionHeading,
+  ProsfinMetricPill,
+  Text,
+} from "@/components/shared";
 import { TeamGrid } from "@/components/landing/about/team-grid";
-import { ProsfinPrimaryButton } from "@/components/shared/button/prosfin-primary-button";
+import { ProsfinPrimaryButton } from "@/components/shared";
 
 /**
  * About Page
@@ -32,9 +36,7 @@ export default function AboutPage() {
       {/* Story Timeline */}
       <ProsfinSectionWrapper>
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">
-            Câu chuyện hình thành
-          </h2>
+          <H2 className="mb-8">Câu chuyện hình thành</H2>
           <div className="space-y-8">
             {storyTimeline.map((item, idx) => (
               <div key={idx} className="flex gap-6">
@@ -48,13 +50,15 @@ export default function AboutPage() {
                   )}
                 </div>
                 <div className="flex-1 pb-8">
-                  <p className="mb-2 text-sm font-medium text-muted-foreground">
+                  <Text as="p" variant="muted" className="mb-2 font-medium">
                     {item.period}
-                  </p>
-                  <h3 className="mb-2 text-xl font-semibold">{item.title}</h3>
-                  <p className="leading-relaxed text-muted-foreground">
+                  </Text>
+                  <Text as="p" variant="large" className="mb-2">
+                    {item.title}
+                  </Text>
+                  <Text as="p" variant="body" className="text-muted-foreground">
                     {item.description}
-                  </p>
+                  </Text>
                 </div>
               </div>
             ))}
@@ -65,21 +69,19 @@ export default function AboutPage() {
       {/* Principles */}
       <ProsfinSectionWrapper background="muted">
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">
-            Triết lý & nguyên tắc làm việc
-          </h2>
+          <H2 className="mb-8">Triết lý & nguyên tắc làm việc</H2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {principles.map((principle) => (
               <div
                 key={principle.id}
                 className="rounded-lg border bg-card p-6 shadow-sm"
               >
-                <h3 className="mb-2 text-lg font-semibold">
+                <Text as="p" variant="large" className="mb-2">
                   {principle.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                </Text>
+                <Text as="p" variant="muted" className="leading-relaxed">
                   {principle.description}
-                </p>
+                </Text>
               </div>
             ))}
           </div>
@@ -89,9 +91,7 @@ export default function AboutPage() {
       {/* Stats */}
       <ProsfinSectionWrapper>
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">
-            ProsFIN trong số liệu
-          </h2>
+          <H2 className="mb-8">ProsFIN trong số liệu</H2>
           <div className="grid gap-6 md:grid-cols-3">
             {stats.map((stat) => (
               <ProsfinMetricPill
@@ -107,7 +107,7 @@ export default function AboutPage() {
       {/* Team */}
       <ProsfinSectionWrapper background="muted">
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">Đội ngũ</h2>
+          <H2 className="mb-8">Đội ngũ</H2>
           <TeamGrid team={team} />
         </div>
       </ProsfinSectionWrapper>
@@ -115,19 +115,19 @@ export default function AboutPage() {
       {/* Compliance */}
       <ProsfinSectionWrapper>
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">
-            Compliance & Professional Standards
-          </h2>
+          <H2 className="mb-8">Compliance & Professional Standards</H2>
           <div className="space-y-6">
             {complianceNotes.map((note, idx) => (
               <div
                 key={idx}
                 className="rounded-lg border bg-card p-6 shadow-sm"
               >
-                <h3 className="mb-2 text-lg font-semibold">{note.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <Text as="p" variant="large" className="mb-2">
+                  {note.title}
+                </Text>
+                <Text as="p" variant="muted" className="leading-relaxed">
                   {note.content}
-                </p>
+                </Text>
               </div>
             ))}
           </div>
@@ -137,9 +137,7 @@ export default function AboutPage() {
       {/* CTA */}
       <ProsfinSectionWrapper background="muted">
         <div className="text-center">
-          <h2 className="mb-4 text-2xl font-bold sm:text-3xl">
-            Gặp gỡ ProsFIN trong buổi tư vấn đầu tiên
-          </h2>
+          <H2 className="mb-4">Gặp gỡ ProsFIN trong buổi tư vấn đầu tiên</H2>
           <ProsfinPrimaryButton href="/contact" size="lg">
             Đặt lịch tư vấn
           </ProsfinPrimaryButton>

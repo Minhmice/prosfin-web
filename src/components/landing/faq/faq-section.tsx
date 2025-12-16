@@ -1,6 +1,6 @@
 import * as React from "react";
 import { faqSectionContent } from "@/data/faq-content";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
+import { ProsfinSectionWrapper } from "@/components/shared";
 import { FaqHeader } from "./faq-header";
 import { FaqList } from "./faq-list";
 
@@ -15,7 +15,7 @@ import { FaqList } from "./faq-list";
 export function FaqSection() {
   return (
     <ProsfinSectionWrapper id="faq" padding="default" background="muted">
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-8 md:gap-12">
         {/* Header */}
         <FaqHeader
           eyebrow={faqSectionContent.eyebrow}

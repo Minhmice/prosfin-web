@@ -1,8 +1,12 @@
 import { caseStudiesContent } from "@/data/case-studies";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
-import { ProsfinSectionHeading } from "@/components/shared/section/prosfin-section-heading";
-import { ProsfinMetricPill } from "@/components/shared/stat/prosfin-metric-pill";
-import { ProsfinSecondaryButton } from "@/components/shared/button/prosfin-secondary-button";
+import {
+  H2,
+  ProsfinSectionWrapper,
+  ProsfinSectionHeading,
+  ProsfinMetricPill,
+  ProsfinSecondaryButton,
+  Text,
+} from "@/components/shared";
 import Link from "next/link";
 
 /**
@@ -51,18 +55,16 @@ export default function CaseStudiesPage() {
       {/* Case Studies Grid */}
       <ProsfinSectionWrapper background="muted">
         <div>
-          <h2 className="mb-8 text-2xl font-bold sm:text-3xl">
-            Câu chuyện khách hàng
-          </h2>
+          <H2 className="mb-8">Câu chuyện khách hàng</H2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {cases.map((caseItem) => (
               <div
                 key={caseItem.id}
                 className="rounded-lg border bg-card p-6 shadow-sm"
               >
-                <h3 className="mb-4 text-xl font-semibold">
+                <Text as="p" variant="large" className="mb-4">
                   {caseItem.title}
-                </h3>
+                </Text>
                 <div className="mb-4 flex gap-2">
                   <span className="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
                     {caseItem.industry}
@@ -72,9 +74,9 @@ export default function CaseStudiesPage() {
                   </span>
                 </div>
                 <div className="mb-4">
-                  <p className="mb-2 text-sm font-medium text-muted-foreground">
+                  <Text as="p" variant="muted" className="mb-2 font-medium">
                     Vấn đề:
-                  </p>
+                  </Text>
                   <ul className="list-disc space-y-1 pl-6 text-sm leading-relaxed">
                     {caseItem.problems.map((problem, idx) => (
                       <li key={idx}>{problem}</li>
@@ -82,9 +84,9 @@ export default function CaseStudiesPage() {
                   </ul>
                 </div>
                 <div className="mb-4">
-                  <p className="mb-2 text-sm font-medium text-muted-foreground">
+                  <Text as="p" variant="muted" className="mb-2 font-medium">
                     Kết quả:
-                  </p>
+                  </Text>
                   <ul className="list-disc space-y-1 pl-6 text-sm leading-relaxed">
                     {caseItem.results.map((result, idx) => (
                       <li key={idx}>{result}</li>
@@ -107,9 +109,7 @@ export default function CaseStudiesPage() {
       {/* CTA */}
       <ProsfinSectionWrapper>
         <div className="text-center">
-          <h2 className="mb-4 text-2xl font-bold sm:text-3xl">
-            Kể cho ProsFIN câu chuyện của bạn
-          </h2>
+          <H2 className="mb-4">Kể cho ProsFIN câu chuyện của bạn</H2>
           <ProsfinSecondaryButton href="/contact" size="lg">
             Liên hệ với ProsFIN
           </ProsfinSecondaryButton>

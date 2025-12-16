@@ -1,6 +1,6 @@
 import * as React from "react";
 import { SiteLogo } from "@/components/navigation/site-logo";
-import { ProsfinContainer } from "@/components/layout/prosfin-container";
+import { ProsfinContainer } from "@/components/layout/container";
 import { FooterLinks } from "./footer-links";
 import { FooterContact } from "./footer-contact";
 import { FooterLegal } from "./footer-legal";

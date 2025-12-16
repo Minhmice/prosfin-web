@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useInViewAnimation } from "@/hooks/use-in-view-animation";
 import { cn } from "@/lib/utils";
+import { H2 } from "@/components/shared";
 
 export interface StoryBlock {
   id: string;
@@ -92,9 +93,7 @@ export function CaseStudyScrollStory({
                   : "opacity-60 translate-y-2"
             )}
           >
-            <h2 className="mb-6 text-2xl font-bold sm:text-3xl">
-              {block.title}
-            </h2>
+            <H2 className="mb-6">{block.title}</H2>
             <div
               className={cn(
                 "transition-opacity duration-500",

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { servicesSectionContent } from "@/data/services-content";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
+import { ProsfinSectionWrapper } from "@/components/shared";
 import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
 import { ServicesHeader } from "./services-header";
 import { ServicesGrid } from "./services-grid";
@@ -27,14 +27,14 @@ export function ServicesSection({
 }: ServicesSectionProps) {
   return (
     <ProsfinSectionWrapper id="services" padding="default" background="default">
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-8 md:gap-12">
         {/* Header */}
         <RevealOnScroll direction="up" delay={0}>
           <ServicesHeader
             eyebrow={servicesSectionContent.eyebrow}
             title={servicesSectionContent.title}
             subtitle={servicesSectionContent.subtitle}
-            align="left"
+            align="center"
           />
         </RevealOnScroll>
 

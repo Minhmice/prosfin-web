@@ -8,7 +8,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { SiteNav } from "./site-nav";
-import { ProsfinPrimaryButton } from "@/components/shared/button/prosfin-primary-button";
+import { ProsfinPrimaryButton } from "@/components/shared";
 import { NavigationItem } from "@/data/navigation-content";
 import { headerCtaLabel } from "@/data/navigation-content";
 
@@ -57,7 +57,7 @@ export function MobileMenu({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+      <SheetContent side="right" className="w-full md:w-[400px]">
         <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
         </SheetHeader>

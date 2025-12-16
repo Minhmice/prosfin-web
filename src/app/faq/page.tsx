@@ -1,8 +1,7 @@
 import { faqPageContent } from "@/data/faq-page";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
-import { ProsfinSectionHeading } from "@/components/shared/section/prosfin-section-heading";
-import { ProsfinFaqAccordion } from "@/components/shared/accordion/prosfin-faq-accordion";
-import { ProsfinSecondaryButton } from "@/components/shared/button/prosfin-secondary-button";
+import { H2, ProsfinSectionWrapper, ProsfinSectionHeading, Text } from "@/components/shared";
+import { FaqCategoryAccordion } from "@/components/faq/faq-category-accordion";
+import { ProsfinSecondaryButton } from "@/components/shared";
 
 /**
  * FAQ Page
@@ -36,10 +35,8 @@ export default function FaqPage() {
         <div className="space-y-12">
           {itemsByCategory.map(({ category, items: categoryItems }) => (
             <div key={category.id}>
-              <h2 className="mb-6 text-2xl font-bold sm:text-3xl">
-                {category.label}
-              </h2>
-              <ProsfinFaqAccordion
+              <H2 className="mb-6">{category.label}</H2>
+              <FaqCategoryAccordion
                 items={categoryItems.map((item) => ({
                   id: item.id,
                   question: item.question,
@@ -54,13 +51,11 @@ export default function FaqPage() {
       {/* Still Need Help */}
       <ProsfinSectionWrapper background="muted">
         <div className="text-center">
-          <h2 className="mb-4 text-2xl font-bold sm:text-3xl">
-            Vẫn còn câu hỏi riêng?
-          </h2>
-          <p className="mb-6 max-w-2xl mx-auto leading-relaxed text-muted-foreground">
+          <H2 className="mb-4">Vẫn còn câu hỏi riêng?</H2>
+          <Text as="p" variant="lead" className="mb-6 mx-auto max-w-2xl">
             Nếu bạn vẫn còn câu hỏi riêng, hãy để lại thông tin. Chúng tôi sẽ
             phản hồi trong vòng 24 giờ làm việc.
-          </p>
+          </Text>
           <ProsfinSecondaryButton href="/contact" size="lg">
             Liên hệ với ProsFIN
           </ProsfinSecondaryButton>

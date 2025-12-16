@@ -5,10 +5,11 @@ import { Menu } from "lucide-react";
 import { SiteLogo } from "./site-logo";
 import { SiteNav } from "./site-nav";
 import { MobileMenu } from "./mobile-menu";
-import { ProsfinPrimaryButton } from "@/components/shared/button/prosfin-primary-button";
-import { ProsfinContainer } from "@/components/layout/prosfin-container";
+import { ProsfinPrimaryButton } from "@/components/shared";
+import { ProsfinContainer } from "@/components/layout/container";
 import { navigationItems, headerCtaLabel } from "@/data/navigation-content";
 import { cn } from "@/lib/utils";
+import { useHeroModal } from "@/components/landing/hero/hero-modal-context";
 
 export interface SiteHeaderProps {
   /**
@@ -26,6 +27,7 @@ export interface SiteHeaderProps {
  */
 export function SiteHeader({ className }: SiteHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const { openModal } = useHeroModal();
 
   const handleNavClick = (href: string) => {
     if (href.startsWith("#")) {
@@ -52,15 +54,8 @@ export function SiteHeader({ className }: SiteHeaderProps) {
   };
 
   const handleCtaClick = () => {
-    // Navigate to contact page or scroll to contact section
-    if (window.location.pathname === "/") {
-      const element = document.querySelector("#contact");
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    } else {
-      window.location.href = "/contact";
-    }
+    // Step 1: mở mini form modal (UI-only onboarding)
+    openModal();
     setMobileMenuOpen(false);
   };
 
@@ -68,7 +63,7 @@ export function SiteHeader({ className }: SiteHeaderProps) {
     <>
       <header
         className={cn(
-          "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+          "sticky top-0 z-50 w-full border-b bg-background md:bg-background/95 md:backdrop-blur md:supports-[backdrop-filter]:bg-background/60",
           className
         )}
       >

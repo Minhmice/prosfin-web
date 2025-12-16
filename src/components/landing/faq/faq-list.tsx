@@ -1,6 +1,13 @@
+"use client";
+
 import * as React from "react";
 import { FaqItem } from "@/data/faq-content";
-import { ProsfinFaqAccordion } from "@/components/shared/accordion/prosfin-faq-accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/shared/accordion/accordion";
 
 export interface FaqListProps {
   /**
@@ -17,18 +24,18 @@ export interface FaqListProps {
  * FaqList - List component cho FAQ items
  * 
  * Component riêng của FAQ Section.
- * Sử dụng ProsfinFaqAccordion để render items.
+ * Sử dụng Radix Accordion wrapper (shadcn-like) để render items.
  */
 export function FaqList({ items, className }: FaqListProps) {
-  // Convert FaqItem to FaqAccordionItem format
-  const accordionItems = items.map((item) => ({
-    id: item.id,
-    question: item.question,
-    answer: item.answer,
-  }));
-
   return (
-    <ProsfinFaqAccordion items={accordionItems} className={className} />
+    <Accordion type="single" collapsible className={className}>
+      {items.map((item) => (
+        <AccordionItem key={item.id} value={item.id} className="mb-2">
+          <AccordionTrigger>{item.question}</AccordionTrigger>
+          <AccordionContent>{item.answer}</AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
   );
 }
 

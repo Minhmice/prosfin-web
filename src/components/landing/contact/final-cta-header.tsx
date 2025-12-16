@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ProsfinSectionHeading } from "@/components/shared/section/prosfin-section-heading";
+import { ProsfinSectionHeading } from "@/components/shared";
 import { cn } from "@/lib/utils";
 
 export interface FinalCtaHeaderProps {

@@ -38,7 +38,7 @@ export function ProcessStepsGrid({
       : "grid-cols-1";
 
   return (
-    <div className={cn("grid gap-6", gridClasses, className)}>
+    <div className={cn("grid gap-4 md:gap-6", gridClasses, className)}>
       {steps.map((step) => (
         <ProcessStepCard key={step.id} step={step} />
       ))}

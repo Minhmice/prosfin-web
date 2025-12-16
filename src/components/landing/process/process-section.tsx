@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { processSectionContent } from "@/data/process-content";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
+import { ProsfinSectionWrapper } from "@/components/shared";
 import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
 import { ProcessHeader } from "./process-header";
 import { ProcessStepsGrid } from "./process-steps-grid";
@@ -29,7 +29,7 @@ export function ProcessSection({ onCtaClick }: ProcessSectionProps) {
       padding="default"
       background="muted"
     >
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-8 md:gap-12">
         {/* Header */}
         <RevealOnScroll direction="up" delay={0}>
           <ProcessHeader

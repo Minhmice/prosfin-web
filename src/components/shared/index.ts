@@ -3,28 +3,31 @@ export { Section } from "./section";
 export { PageContainer } from "./page-container";
 export { SectionHeading } from "./section-heading";
 
+// Typography primitives (shadcn-like)
+export { Text, InlineCode, Heading, H1, H2, H3, H4, PageTitle, FormTitle, RichText } from "./typography";
+
 // Branded wrapper components
-export { ProsfinButton, type ProsfinButtonProps } from "./prosfin-button";
+export { ProsfinButton, type ProsfinButtonProps } from "./button/brand-button";
 export {
   ProsfinPrimaryButton,
   type ProsfinPrimaryButtonProps,
-} from "./button/prosfin-primary-button";
+} from "./button/primary-button";
 export {
   ProsfinSecondaryButton,
   type ProsfinSecondaryButtonProps,
-} from "./button/prosfin-secondary-button";
+} from "./button/secondary-button";
 export {
   ProsfinGhostButton,
   type ProsfinGhostButtonProps,
-} from "./button/prosfin-ghost-button";
+} from "./button/ghost-button";
 export {
   ProsfinDestructiveButton,
   type ProsfinDestructiveButtonProps,
-} from "./button/prosfin-destructive-button";
+} from "./button/destructive-button";
 export {
   ProsfinLinkButton,
   type ProsfinLinkButtonProps,
-} from "./button/prosfin-link-button";
+} from "./button/link-button";
 export {
   ProsfinCard,
   ProsfinCardHeader,
@@ -34,7 +37,7 @@ export {
   ProsfinCardDescription,
   ProsfinCardContent,
   type ProsfinCardProps,
-} from "./prosfin-card";
+} from "./card/brand-card";
 
 // Image placeholder components
 export {
@@ -49,80 +52,81 @@ export {
 export {
   ProsfinSectionWrapper,
   type ProsfinSectionWrapperProps,
-} from "./section/prosfin-section-wrapper";
+} from "./section/section-wrapper";
 export {
   ProsfinSectionHeading,
   type ProsfinSectionHeadingProps,
-} from "./section/prosfin-section-heading";
+} from "./section/section-heading-block";
 
 // Card wrappers
 export {
   ProsfinProblemCardWrapper,
   type ProsfinProblemCardWrapperProps,
-} from "./card/prosfin-problem-card-wrapper";
+} from "./card/problem-card-wrapper";
 export {
   ProsfinServiceCardWrapper,
   type ProsfinServiceCardWrapperProps,
-} from "./card/prosfin-service-card-wrapper";
+} from "./card/service-card-wrapper";
 export {
   ProsfinProcessCardWrapper,
   type ProsfinProcessCardWrapperProps,
-} from "./card/prosfin-process-card-wrapper";
+} from "./card/process-card-wrapper";
 export {
   ProsfinTeamCardWrapper,
   type ProsfinTeamCardWrapperProps,
-} from "./card/prosfin-team-card-wrapper";
+} from "./card/team-card-wrapper";
 export {
   ProsfinContactCardWrapper,
   type ProsfinContactCardWrapperProps,
-} from "./card/prosfin-contact-card-wrapper";
+} from "./card/contact-card-wrapper";
 
 // Stat/Metric components
 export {
   ProsfinMetricPill,
   type ProsfinMetricPillProps,
-} from "./stat/prosfin-metric-pill";
+} from "./stat/metric-pill";
 
 // Accordion components
 export {
-  ProsfinFaqAccordion,
-  type ProsfinFaqAccordionProps,
-  type FaqAccordionItem,
-} from "./accordion/prosfin-faq-accordion";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./accordion/accordion";
 
 // Badge components
 export {
   ProsfinBadge,
   type ProsfinBadgeProps,
-} from "./badge/prosfin-badge";
+} from "./badge/badge";
 export {
   ProsfinAwardsRow,
   type ProsfinAwardsRowProps,
   type AwardItem,
-} from "./badge/prosfin-awards-row";
+} from "./badge/awards-row";
 
 // Tooltip components
 export {
   ProsfinTooltip,
   type ProsfinTooltipProps,
-} from "./tooltip/prosfin-tooltip";
+} from "./tooltip/tooltip";
 
 // Toast components
 export {
   ProsfinToastProvider,
   useProsfinToast,
   type ToastOptions,
-} from "./toast/prosfin-toast-provider";
+} from "./toast/toast-provider";
 
 // Banner components
 export {
   ProsfinTopBanner,
   type ProsfinTopBannerProps,
-} from "./banner/prosfin-top-banner";
+} from "./banner/top-banner";
 export {
   ProsfinCookieBanner,
   type ProsfinCookieBannerProps,
-} from "./banner/prosfin-cookie-banner";
+} from "./banner/cookie-banner";
 
 // Scroll components
 export {

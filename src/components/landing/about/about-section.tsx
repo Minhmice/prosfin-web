@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { aboutSectionContent } from "@/data/about-content";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
+import { ProsfinSectionWrapper } from "@/components/shared";
 import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
 import { AboutHeader } from "./about-header";
 import { AboutHighlightsRow } from "./about-highlights-row";
@@ -20,7 +20,7 @@ import { TeamGrid } from "./team-grid";
 export function AboutSection() {
   return (
     <ProsfinSectionWrapper id="about" padding="default" background="default">
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-8 md:gap-12">
         {/* Header */}
         <RevealOnScroll direction="up" delay={0}>
           <AboutHeader

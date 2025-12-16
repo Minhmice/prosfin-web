@@ -1,21 +1,20 @@
 "use client";
 
-import * as React from "react";
-import { HeroSection } from "@/components/app/hero-section";
+import { HeroSection } from "@/components/landing/hero/hero-section";
 import { ProblemsSection } from "@/components/landing/problems/problems-section";
 import { ServicesSection } from "@/components/landing/services/services-section";
 import { ProcessSection } from "@/components/landing/process/process-section";
 import { AboutSection } from "@/components/landing/about/about-section";
 import { FaqSection } from "@/components/landing/faq/faq-section";
 import { FinalCtaSection } from "@/components/landing/contact/final-cta-section";
-import { HeroLeadFormModal } from "@/components/app/hero-lead-form-modal";
+import { useHeroModal } from "@/components/landing/hero/hero-modal-context";
 
 export default function Home() {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const { openModal } = useHeroModal();
 
   const handleServiceCtaClick = (serviceId: string, ctaType?: string) => {
     if (ctaType === "modal") {
-      setIsModalOpen(true);
+      openModal();
     }
   };
 
@@ -34,7 +33,6 @@ export default function Home() {
       <AboutSection />
       <FaqSection />
       <FinalCtaSection onSubmitLead={handleContactSubmit} />
-      <HeroLeadFormModal open={isModalOpen} onOpenChange={setIsModalOpen} />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ProsfinServiceCardWrapper } from "@/components/shared/card/prosfin-service-card-wrapper";
-import { ProsfinButton } from "@/components/shared/prosfin-button";
+import { ProsfinServiceCardWrapper } from "@/components/shared";
+import { ProsfinButton } from "@/components/shared";
 import { ServiceItem } from "@/data/services-content";
 
 export interface ServiceCardProps {

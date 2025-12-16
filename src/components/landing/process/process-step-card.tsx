@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ProsfinProcessCardWrapper } from "@/components/shared/card/prosfin-process-card-wrapper";
+import { ProsfinProcessCardWrapper } from "@/components/shared";
 import { ProcessStep } from "@/data/process-content";
 
 export interface ProcessStepCardProps {

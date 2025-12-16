@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { contactSectionContent } from "@/data/contact-content";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
+import { ProsfinSectionWrapper } from "@/components/shared";
 import { FinalCtaHeader } from "./final-cta-header";
 import { FinalCtaBullets } from "./final-cta-bullets";
 import { ContactPanel } from "./contact-panel";
@@ -31,7 +31,7 @@ export function FinalCtaSection({
       padding="lg"
       background="primary"
     >
-      <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
+      <div className="flex flex-col gap-8 md:gap-12 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
         {/* Cột trái - CTA Copy */}
         <div className="flex flex-col gap-6">
           <FinalCtaHeader

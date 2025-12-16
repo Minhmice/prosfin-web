@@ -1,6 +1,6 @@
 import * as React from "react";
 import { HighlightItem } from "@/data/about-content";
-import { ProsfinMetricPill } from "@/components/shared/stat/prosfin-metric-pill";
+import { ProsfinMetricPill } from "@/components/shared";
 import { cn } from "@/lib/utils";
 
 export interface AboutHighlightsRowProps {

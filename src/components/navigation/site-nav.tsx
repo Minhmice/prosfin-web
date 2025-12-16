@@ -64,7 +64,7 @@ export function SiteNav({
   const navClasses =
     orientation === "horizontal"
       ? "flex items-center gap-6"
-      : "flex flex-col gap-4";
+      : "flex flex-col gap-0";
 
   return (
     <nav className={cn(navClasses, className)}>
@@ -73,7 +73,12 @@ export function SiteNav({
           key={item.href}
           href={item.href}
           onClick={(e) => handleClick(item.href, e)}
-          className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          className={cn(
+            "font-medium text-muted-foreground transition-colors hover:text-foreground",
+            orientation === "horizontal"
+              ? "text-sm"
+              : "w-full py-3 text-base"
+          )}
         >
           {item.label}
         </Link>

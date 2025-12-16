@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ProsfinTeamCardWrapper } from "@/components/shared/card/prosfin-team-card-wrapper";
+import { ProsfinTeamCardWrapper } from "@/components/shared";
 import { TeamMember } from "@/data/about-content";
 
 export interface TeamMemberCardProps {

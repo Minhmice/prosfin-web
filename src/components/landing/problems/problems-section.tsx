@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { problemSectionContent } from "@/data/problem-content";
-import { ProsfinSectionWrapper } from "@/components/shared/section/prosfin-section-wrapper";
-import { ProsfinButton } from "@/components/shared/prosfin-button";
+import { ProsfinSectionWrapper } from "@/components/shared";
+import { ProsfinButton } from "@/components/shared";
 import { ProblemsHeader } from "./problems-header";
 import { ProblemsGrid } from "./problems-grid";
 

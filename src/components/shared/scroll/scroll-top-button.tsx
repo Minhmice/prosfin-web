@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ArrowUp } from "lucide-react";
-import { ProsfinButton } from "../prosfin-button";
+import { ProsfinButton } from "../button/brand-button";
 import { cn } from "@/lib/utils";
 
 export interface ScrollTopButtonProps {
