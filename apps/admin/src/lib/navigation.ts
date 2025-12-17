@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   LayoutDashboard,
   Users,
@@ -7,6 +8,7 @@ import {
   Image,
   Settings,
   ChevronRight,
+  FileStack,
 } from "lucide-react";
 
 export interface NavItem {
@@ -55,6 +57,11 @@ export const navGroups: NavGroup[] = [
         title: "Content",
         href: "/content",
         icon: FileText,
+      },
+      {
+        title: "Documents",
+        href: "/documents",
+        icon: FileStack,
       },
       {
         title: "Media",

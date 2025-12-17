@@ -17,6 +17,19 @@
   "rewrites": {
     "beforeFiles": [
       {
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid",
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "internal": true,
+        "regex": "^/clients/(?<nxtPid>[^/]+?)(?:/)?$"
+      },
+      {
         "source": "/leads/:nxtPid",
         "destination": "/(.)leads/:nxtPid",
         "has": [
@@ -35,12 +48,28 @@
   },
   "dynamicRoutes": [
     {
+      "page": "/(.)clients/[id]",
+      "regex": "^/\\(\\.\\)clients/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/\\(\\.\\)clients/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/(.)leads/[id]",
       "regex": "^/\\(\\.\\)leads/([^/]+?)(?:/)?$",
       "routeKeys": {
         "nxtPid": "nxtPid"
       },
       "namedRegex": "^/\\(\\.\\)leads/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/campaigns/[id]",
+      "regex": "^/campaigns/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/campaigns/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
       "page": "/clients/[id]",
@@ -111,6 +140,12 @@
       "regex": "^/dashboard(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/documents",
+      "regex": "^/documents(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/documents(?:/)?$"
     },
     {
       "page": "/leads",

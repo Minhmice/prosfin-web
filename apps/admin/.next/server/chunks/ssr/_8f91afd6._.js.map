@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../../../apps/admin/src/app/%28app%29/%40drawer/default.tsx"],"sourcesContent":["export default function Default() {\r\n  return null;\r\n}\r\n\r\n"],"names":[],"mappings":"oOAAe,SAAS,IACtB,OAAO,IACT"}

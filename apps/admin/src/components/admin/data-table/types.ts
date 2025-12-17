@@ -30,6 +30,7 @@ export interface DataTableProps<T> {
   pageIndex?: number;
   onPageChange?: (pageIndex: number) => void;
   // Toolbar actions
+  filters?: React.ReactNode;
   toolbarRightActions?: React.ReactNode;
 }
 

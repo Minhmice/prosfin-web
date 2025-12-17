@@ -1,51 +1,73 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import {
   AdminPageShell,
-  AdminSectionCard,
-  Button,
-  Input,
-  Label,
   Badge,
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@prosfin/ui";
 import { AppDataTable } from "@/components/admin/data-table/app-data-table";
-import { Copy, Check } from "lucide-react";
-import { listCampaigns, createCampaign, generateUTMLink } from "@/lib/data/campaigns";
-import type { Campaign } from "@/types/admin";
+import { TableRowActions, type RowAction } from "@/components/admin/data-table/table-row-actions";
+import { UTMBuilder } from "@/components/campaigns/utm-builder";
+import { CopyFlows } from "@/components/campaigns/copy-flows";
+import { InlineStatusEdit } from "@/components/campaigns/inline-status-edit";
+import { StatusChangeDialog } from "@/components/campaigns/status-change-dialog";
+import { Filter, X } from "lucide-react";
+import {
+  listCampaigns,
+  createCampaign,
+  updateCampaignStatus,
+  duplicateCampaign,
+  type CreateCampaignInput,
+} from "@/lib/data/campaigns";
+import { useUrlState, useUrlStateArray } from "@/hooks/use-url-state";
+import { showToast } from "@/lib/toast";
+import type { Campaign, CampaignStatus, ChannelPreset } from "@/types/admin";
 import type { DataTableColumn } from "@/components/admin/data-table/types";
 
-const statusColors: Record<Campaign["status"], string> = {
-  draft: "bg-gray-100 text-gray-800",
+const statusColors: Record<CampaignStatus, string> = {
   active: "bg-green-100 text-green-800",
   paused: "bg-yellow-100 text-yellow-800",
-  completed: "bg-blue-100 text-blue-800",
+  archived: "bg-gray-100 text-gray-800",
 };
 
-const presets = [
-  { label: "Facebook", source: "facebook", medium: "social" },
-  { label: "YouTube", source: "youtube", medium: "social" },
-  { label: "TikTok", source: "tiktok", medium: "social" },
-  { label: "LinkedIn", source: "linkedin", medium: "social" },
-  { label: "Email", source: "email", medium: "email" },
-];
+const channelLabels: Record<ChannelPreset, string> = {
+  facebook: "Facebook",
+  youtube: "YouTube",
+  tiktok: "TikTok",
+  linkedin: "LinkedIn",
+  email: "Email",
+  other: "Other",
+};
 
 export default function CampaignsPage() {
+  const router = useRouter();
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [generatedUrl, setGeneratedUrl] = React.useState("");
-  const [copied, setCopied] = React.useState(false);
 
-  const [formData, setFormData] = React.useState({
-    name: "",
-    baseUrl: "https://prosfin.vn",
-    utm_source: "",
-    utm_medium: "",
-    utm_campaign: "",
-    utm_content: "",
-    utm_term: "",
-  });
+  // Status change dialog
+  const [statusDialogOpen, setStatusDialogOpen] = React.useState(false);
+  const [statusDialogCampaign, setStatusDialogCampaign] = React.useState<Campaign | null>(null);
+  const [statusDialogTarget, setStatusDialogTarget] = React.useState<CampaignStatus | null>(null);
+
+  // URL state sync
+  const [search, setSearch] = useUrlState<string>("q", "", { debounce: 300, replace: true });
+  const [statusFilter, setStatusFilter] = useUrlStateArray("status", []);
+  const [channelFilter, setChannelFilter] = useUrlState<string>("channel", "");
+  const [pageIndexStr, setPageIndexStr] = useUrlState<string>("page", "0");
+  const pageIndex = React.useMemo(() => {
+    const parsed = parseInt(pageIndexStr, 10);
+    return isNaN(parsed) || parsed < 0 ? 0 : parsed;
+  }, [pageIndexStr]);
+  const setPageIndex = React.useCallback((index: number) => {
+    setPageIndexStr(String(index));
+  }, [setPageIndexStr]);
 
   React.useEffect(() => {
     listCampaigns().then((data) => {
@@ -54,250 +76,232 @@ export default function CampaignsPage() {
     });
   }, []);
 
-  const handlePreset = (preset: typeof presets[0]) => {
-    setFormData((prev) => ({
-      ...prev,
-      utm_source: preset.source,
-      utm_medium: preset.medium,
-    }));
-  };
+  // Filter campaigns
+  const filteredCampaigns = React.useMemo(() => {
+    let filtered = [...campaigns];
 
-  const handleGenerate = () => {
-    if (!formData.baseUrl || !formData.utm_source || !formData.utm_medium || !formData.utm_campaign) {
-      return;
+    // Exclude archived by default unless explicitly filtered
+    if (statusFilter.length === 0) {
+      filtered = filtered.filter((c) => c.status !== "archived");
+    } else {
+      filtered = filtered.filter((c) => statusFilter.includes(c.status));
     }
-    const url = generateUTMLink({
-      baseUrl: formData.baseUrl,
-      utm_source: formData.utm_source,
-      utm_medium: formData.utm_medium,
-      utm_campaign: formData.utm_campaign,
-      utm_content: formData.utm_content || undefined,
-      utm_term: formData.utm_term || undefined,
-    });
-    setGeneratedUrl(url);
-  };
 
-  const handleCopy = async () => {
-    if (generatedUrl) {
-      await navigator.clipboard.writeText(generatedUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    // Search filter
+    if (search) {
+      const searchLower = search.toLowerCase();
+      filtered = filtered.filter(
+        (c) =>
+          c.name.toLowerCase().includes(searchLower) ||
+          c.utm_campaign.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Channel filter
+    if (channelFilter) {
+      filtered = filtered.filter((c) => c.channelPreset === channelFilter);
+    }
+
+    return filtered;
+  }, [campaigns, search, statusFilter, channelFilter]);
+
+  const handleSaveCampaign = async (input: CreateCampaignInput) => {
+    try {
+      const newCampaign = await createCampaign(input);
+      setCampaigns((prev) => [...prev, newCampaign]);
+      showToast.success("Campaign saved successfully");
+    } catch (error) {
+      showToast.error("Failed to save campaign");
     }
   };
 
-  const handleSave = async () => {
-    if (!formData.name || !generatedUrl) return;
-    const newCampaign = await createCampaign({
-      name: formData.name,
-      baseUrl: formData.baseUrl,
-      utm_source: formData.utm_source,
-      utm_medium: formData.utm_medium,
-      utm_campaign: formData.utm_campaign,
-      utm_content: formData.utm_content || undefined,
-      utm_term: formData.utm_term || undefined,
-      status: "draft",
-    });
-    setCampaigns((prev) => [...prev, newCampaign]);
-    setFormData({
-      name: "",
-      baseUrl: "https://prosfin.vn",
-      utm_source: "",
-      utm_medium: "",
-      utm_campaign: "",
-      utm_content: "",
-      utm_term: "",
-    });
-    setGeneratedUrl("");
+  const handleStatusChange = async (campaignId: string, status: CampaignStatus) => {
+    try {
+      await updateCampaignStatus(campaignId, status);
+      setCampaigns((prev) =>
+        prev.map((c) => (c.id === campaignId ? { ...c, status } : c))
+      );
+      showToast.success(`Campaign ${status}`);
+    } catch (error) {
+      showToast.error("Failed to update status");
+    }
+  };
+
+  const handleNeedsNotes = (campaignId: string, status: CampaignStatus) => {
+    const campaign = campaigns.find((c) => c.id === campaignId);
+    if (campaign) {
+      setStatusDialogCampaign(campaign);
+      setStatusDialogTarget(status);
+      setStatusDialogOpen(true);
+    }
+  };
+
+  const handleDuplicate = async (campaign: Campaign) => {
+    try {
+      const newCampaign = await duplicateCampaign(campaign.id);
+      setCampaigns((prev) => [...prev, newCampaign]);
+      showToast.success("Campaign duplicated");
+    } catch (error) {
+      showToast.error("Failed to duplicate campaign");
+    }
+  };
+
+  const rowActions: RowAction<Campaign>[] = [
+    { label: "View Details", onClick: (row) => router.push(`/campaigns/${row.id}`) },
+    { label: "Duplicate", onClick: (row) => handleDuplicate(row) },
+    { label: "Pause", onClick: (row) => handleNeedsNotes(row.id, "paused") },
+    { label: "Archive", onClick: (row) => handleNeedsNotes(row.id, "archived"), variant: "destructive" },
+  ];
+
+  // Truncate URL for display
+  const truncateUrl = (url: string, maxLength = 40) => {
+    try {
+      const parsed = new URL(url);
+      const display = parsed.hostname + parsed.pathname;
+      return display.length > maxLength ? display.substring(0, maxLength) + "..." : display;
+    } catch {
+      return url.length > maxLength ? url.substring(0, maxLength) + "..." : url;
+    }
   };
 
   const columns: DataTableColumn<Campaign>[] = [
-    {
-      id: "name",
-      header: "Name",
-      accessorKey: "name",
-      enableSorting: true,
-    },
-    {
-      id: "generatedUrl",
-      header: "URL",
-      accessorKey: "generatedUrl",
-      cell: ({ row }) => (
-        <a
-          href={row.original.generatedUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary hover:underline text-sm"
-        >
-          {row.original.generatedUrl}
-        </a>
-      ),
-    },
+    { id: "name", header: "Name", accessorKey: "name", enableSorting: true },
     {
       id: "status",
       header: "Status",
       accessorKey: "status",
       cell: ({ row }) => (
-        <Badge className={statusColors[row.original.status]}>
-          {row.original.status}
-        </Badge>
+        <InlineStatusEdit
+          campaign={row.original}
+          onUpdate={handleStatusChange}
+          onNeedsNotes={handleNeedsNotes}
+        />
       ),
     },
     {
-      id: "createdAt",
-      header: "Created",
-      accessorKey: "createdAt",
+      id: "channel",
+      header: "Channel",
+      accessorKey: "channelPreset",
       cell: ({ row }) =>
-        format(new Date(row.original.createdAt), "MMM dd, yyyy"),
+        row.original.channelPreset ? (
+          <Badge variant="outline">{channelLabels[row.original.channelPreset]}</Badge>
+        ) : (
+          <span className="text-muted-foreground text-sm">—</span>
+        ),
+    },
+    {
+      id: "destination",
+      header: "Destination",
+      accessorKey: "destinationUrl",
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">{truncateUrl(row.original.destinationUrl)}</span>
+      ),
+    },
+    { id: "utm_campaign", header: "Campaign", accessorKey: "utm_campaign" },
+    { id: "utm_source", header: "Source", accessorKey: "utm_source" },
+    { id: "utm_medium", header: "Medium", accessorKey: "utm_medium" },
+    {
+      id: "updatedAt",
+      header: "Updated",
+      accessorKey: "updatedAt",
+      cell: ({ row }) => format(new Date(row.original.updatedAt), "MMM dd, yyyy"),
+    },
+    {
+      id: "copy",
+      header: "",
+      cell: ({ row }) => <CopyFlows campaign={row.original} variant="icons" />,
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => <TableRowActions row={row.original} actions={rowActions} />,
     },
   ];
 
-  return (
-    <AdminPageShell
-      title="Campaigns"
-      description="Manage your marketing campaigns"
-    >
-      <div className="grid gap-6 lg:grid-cols-2">
-        <AdminSectionCard title="UTM Builder">
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Campaign Name</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, name: e.target.value }))
-                }
-                placeholder="Summer 2024 Campaign"
-              />
-            </div>
-            <div>
-              <Label htmlFor="baseUrl">Base URL</Label>
-              <Input
-                id="baseUrl"
-                value={formData.baseUrl}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, baseUrl: e.target.value }))
-                }
-              />
-            </div>
-            <div>
-              <Label>Presets</Label>
-              <div className="flex flex-wrap gap-2">
-                {presets.map((preset) => (
-                  <Button
-                    key={preset.label}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePreset(preset)}
-                  >
-                    {preset.label}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="utm_source">UTM Source *</Label>
-                <Input
-                  id="utm_source"
-                  value={formData.utm_source}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      utm_source: e.target.value,
-                    }))
-                  }
-                  placeholder="google"
-                />
-              </div>
-              <div>
-                <Label htmlFor="utm_medium">UTM Medium *</Label>
-                <Input
-                  id="utm_medium"
-                  value={formData.utm_medium}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      utm_medium: e.target.value,
-                    }))
-                  }
-                  placeholder="cpc"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="utm_campaign">UTM Campaign *</Label>
-              <Input
-                id="utm_campaign"
-                value={formData.utm_campaign}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    utm_campaign: e.target.value,
-                  }))
-                }
-                placeholder="summer-2024"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="utm_content">UTM Content</Label>
-                <Input
-                  id="utm_content"
-                  value={formData.utm_content}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      utm_content: e.target.value,
-                    }))
-                  }
-                  placeholder="ad-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="utm_term">UTM Term</Label>
-                <Input
-                  id="utm_term"
-                  value={formData.utm_term}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      utm_term: e.target.value,
-                    }))
-                  }
-                  placeholder="keyword"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={handleGenerate}>Generate Link</Button>
-              {generatedUrl && (
-                <>
-                  <Button variant="outline" onClick={handleCopy}>
-                    {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-                  </Button>
-                  <Button onClick={handleSave}>Save Campaign</Button>
-                </>
-              )}
-            </div>
-            {generatedUrl && (
-              <div className="rounded-md border bg-muted p-3">
-                <p className="text-muted-foreground text-xs">Generated URL:</p>
-                <p className="break-all text-sm">{generatedUrl}</p>
-              </div>
+  const filters = (
+    <div className="flex items-center gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="h-8">
+            <Filter className="mr-2 size-3" />
+            Status
+            {statusFilter.length > 0 && (
+              <span className="ml-2 rounded-full bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
+                {statusFilter.length}
+              </span>
             )}
-          </div>
-        </AdminSectionCard>
-        <AdminSectionCard title="Campaign History">
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          {(["active", "paused", "archived"] as CampaignStatus[]).map((status) => (
+            <DropdownMenuItem
+              key={status}
+              onClick={() => {
+                const newFilter = statusFilter.includes(status)
+                  ? statusFilter.filter((s) => s !== status)
+                  : [...statusFilter, status];
+                setStatusFilter(newFilter);
+              }}
+            >
+              <input type="checkbox" checked={statusFilter.includes(status)} onChange={() => {}} className="mr-2" />
+              <Badge className={statusColors[status]}>{status}</Badge>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="h-8">
+            <Filter className="mr-2 size-3" />
+            Channel
+            {channelFilter && (
+              <X className="ml-2 size-3" onClick={(e) => { e.stopPropagation(); setChannelFilter(""); }} />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          {(Object.keys(channelLabels) as ChannelPreset[]).map((channel) => (
+            <DropdownMenuItem key={channel} onClick={() => setChannelFilter(channel)}>
+              {channelLabels[channel]}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+
+  return (
+    <AdminPageShell title="Campaigns" description="Create and manage UTM campaign links">
+      <div className="grid gap-6 lg:grid-cols-2">
+        <UTMBuilder onSave={handleSaveCampaign} />
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Campaign History</h3>
           <AppDataTable
             columns={columns}
-            data={campaigns}
+            data={filteredCampaigns}
             isLoading={isLoading}
             searchPlaceholder="Search campaigns..."
             emptyMessage="No campaigns found"
+            searchValue={search}
+            onSearchChange={setSearch}
+            pageIndex={pageIndex}
+            onPageChange={setPageIndex}
+            filters={filters}
+            onRowClick={(campaign) => router.push(`/campaigns/${campaign.id}`)}
           />
-        </AdminSectionCard>
+        </div>
       </div>
+
+      <StatusChangeDialog
+        campaign={statusDialogCampaign}
+        targetStatus={statusDialogTarget}
+        open={statusDialogOpen}
+        onOpenChange={setStatusDialogOpen}
+        onStatusChanged={(id, status) => {
+          setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, status } : c)));
+        }}
+      />
     </AdminPageShell>
   );
 }

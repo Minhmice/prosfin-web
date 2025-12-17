@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { Badge } from "@prosfin/ui";
+import { Badge, Button } from "@prosfin/ui";
+import { AlertTriangle } from "lucide-react";
 import type { Lead } from "@/types/admin";
 
 interface LeadDetailOverviewProps {
@@ -25,8 +26,40 @@ const urgencyColors: Record<"low" | "medium" | "high", string> = {
 };
 
 export function LeadDetailOverview({ lead }: LeadDetailOverviewProps) {
+  const missingEmail = !lead.email || lead.email.trim() === "";
+  const missingPhone = !lead.phone || lead.phone.trim() === "";
+
   return (
     <div className="space-y-6">
+      {/* Validation Warnings */}
+      {(missingEmail || missingPhone) && (
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="size-4 text-destructive" />
+              <span className="text-sm text-destructive">
+                {missingEmail && missingPhone
+                  ? "Email and phone are missing"
+                  : missingEmail
+                  ? "Email is missing"
+                  : "Phone is missing"}
+              </span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7"
+              onClick={() => {
+                // TODO: Open request info dialog
+                console.log("Request info");
+              }}
+            >
+              Request Info
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Contact Information */}
       <div>
         <h3 className="text-sm font-medium text-muted-foreground mb-3">Contact Information</h3>
@@ -43,14 +76,12 @@ export function LeadDetailOverview({ lead }: LeadDetailOverviewProps) {
           )}
           <div>
             <label className="text-xs text-muted-foreground">Email</label>
-            <p className="text-sm font-medium">{lead.email}</p>
+            <p className="text-sm font-medium">{lead.email || "—"}</p>
           </div>
-          {lead.phone && (
-            <div>
-              <label className="text-xs text-muted-foreground">Phone</label>
-              <p className="text-sm font-medium">{lead.phone}</p>
-            </div>
-          )}
+          <div>
+            <label className="text-xs text-muted-foreground">Phone</label>
+            <p className="text-sm font-medium">{lead.phone || "—"}</p>
+          </div>
         </div>
       </div>
 

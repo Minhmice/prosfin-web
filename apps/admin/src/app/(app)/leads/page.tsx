@@ -12,6 +12,17 @@ import { useUrlState, useUrlStateArray } from "@/hooks/use-url-state";
 import { showToast } from "@/lib/toast";
 import { InlineStatusEdit } from "@/components/leads/inline-status-edit";
 import { InlineOwnerEdit } from "@/components/leads/inline-owner-edit";
+import { BulkActionsBar } from "@/components/leads/bulk-actions-bar";
+import { SavedViews } from "@/components/leads/saved-views";
+import { ConvertLeadDialog } from "@/components/leads/convert-lead-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Button,
+} from "@prosfin/ui";
+import { Filter, X } from "lucide-react";
 import type { Lead, LeadStatus } from "@/types/admin";
 import type { DataTableColumn } from "@/components/admin/data-table/types";
 
@@ -29,11 +40,16 @@ export default function LeadsPage() {
   const [leads, setLeads] = React.useState<Lead[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedLeads, setSelectedLeads] = React.useState<Lead[]>([]);
+  const [convertDialogOpen, setConvertDialogOpen] = React.useState(false);
+  const [selectedLeadForConvert, setSelectedLeadForConvert] = React.useState<Lead | null>(null);
 
   // URL state sync
   const [search, setSearch] = useUrlState<string>("q", "", { debounce: 300, replace: true });
   const [statusFilter, setStatusFilter] = useUrlStateArray("status", []);
   const [sourceFilter, setSourceFilter] = useUrlState<string>("source", "");
+  const [ownerFilter, setOwnerFilter] = useUrlState<string>("owner", "");
+  const [interestFilter, setInterestFilter] = useUrlState<string>("interest", "");
+  const [utmCampaignFilter, setUtmCampaignFilter] = useUrlState<string>("utm_campaign", "");
   const [pageIndexStr, setPageIndexStr] = useUrlState<string>("page", "0");
   const pageIndex = React.useMemo(() => {
     const parsed = parseInt(pageIndexStr, 10);
@@ -76,8 +92,27 @@ export default function LeadsPage() {
       filtered = filtered.filter((lead) => lead.source === sourceFilter);
     }
 
+    // Owner filter
+    if (ownerFilter) {
+      if (ownerFilter === "unassigned") {
+        filtered = filtered.filter((lead) => !lead.owner);
+      } else {
+        filtered = filtered.filter((lead) => lead.owner === ownerFilter);
+      }
+    }
+
+    // Service interest filter
+    if (interestFilter) {
+      filtered = filtered.filter((lead) => lead.interest === interestFilter);
+    }
+
+    // UTM Campaign filter (deep-link from campaigns)
+    if (utmCampaignFilter) {
+      filtered = filtered.filter((lead) => lead.utm_campaign === utmCampaignFilter);
+    }
+
     return filtered;
-  }, [leads, search, statusFilter, sourceFilter]);
+  }, [leads, search, statusFilter, sourceFilter, ownerFilter, interestFilter, utmCampaignFilter]);
 
   const handleStatusChange = async (leadId: string, status: LeadStatus) => {
     try {
@@ -137,6 +172,29 @@ export default function LeadsPage() {
     }
   };
 
+  const handleExportRow = (lead: Lead) => {
+    const csv = [
+      ["Name", "Company", "Email", "Phone", "Status", "Owner", "Source"].join(","),
+      [
+        lead.name,
+        lead.company || "",
+        lead.email,
+        lead.phone || "",
+        lead.status,
+        lead.owner || "",
+        lead.source,
+      ].join(","),
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `lead-${lead.id}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast.success("Lead exported");
+  };
+
   const rowActions: RowAction<Lead>[] = [
     {
       label: "Mark as Contacted",
@@ -145,23 +203,19 @@ export default function LeadsPage() {
     {
       label: "Change Status",
       onClick: (row) => {
-        // TODO: Open status change dialog
-        console.log("Change status for", row.id);
+        router.push(`/leads/${row.id}`);
       },
     },
     {
       label: "Convert to Client",
       onClick: (row) => {
-        // TODO: Open convert dialog
-        console.log("Convert", row.id);
+        setSelectedLeadForConvert(row);
+        setConvertDialogOpen(true);
       },
     },
     {
       label: "Export",
-      onClick: (row) => {
-        // TODO: Export row
-        console.log("Export", row.id);
-      },
+      onClick: (row) => handleExportRow(row),
     },
   ];
 
@@ -170,6 +224,157 @@ export default function LeadsPage() {
     medium: "bg-yellow-100 text-yellow-800",
     high: "bg-red-100 text-red-800",
   };
+
+  // Extract unique values for filters
+  const ownerOptions = React.useMemo(() => {
+    const owners = new Set<string>();
+    leads.forEach((lead) => {
+      if (lead.owner) owners.add(lead.owner);
+    });
+    return Array.from(owners).sort();
+  }, [leads]);
+
+  const interestOptions = React.useMemo(() => {
+    const interests = new Set<string>();
+    leads.forEach((lead) => {
+      if (lead.interest) interests.add(lead.interest);
+    });
+    return Array.from(interests).sort();
+  }, [leads]);
+
+  const sourceOptions = React.useMemo(() => {
+    const sources = new Set<string>();
+    leads.forEach((lead) => {
+      if (lead.source) sources.add(lead.source);
+    });
+    return Array.from(sources).sort();
+  }, [leads]);
+
+  const filters = (
+    <div className="flex items-center gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="h-8">
+            <Filter className="mr-2 size-3" />
+            Status
+            {statusFilter.length > 0 && (
+              <span className="ml-2 rounded-full bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
+                {statusFilter.length}
+              </span>
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          {Object.entries(statusColors).map(([status, _]) => (
+            <DropdownMenuItem
+              key={status}
+              onClick={() => {
+                const newFilter = statusFilter.includes(status)
+                  ? statusFilter.filter((s) => s !== status)
+                  : [...statusFilter, status];
+                setStatusFilter(newFilter);
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={statusFilter.includes(status)}
+                onChange={() => {}}
+                className="mr-2"
+              />
+              {status}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="h-8">
+            <Filter className="mr-2 size-3" />
+            Owner
+            {ownerFilter && (
+              <X
+                className="ml-2 size-3"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOwnerFilter("");
+                }}
+              />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          <DropdownMenuItem onClick={() => setOwnerFilter("unassigned")}>
+            Unassigned
+          </DropdownMenuItem>
+          {ownerOptions.map((owner) => (
+            <DropdownMenuItem
+              key={owner}
+              onClick={() => setOwnerFilter(owner)}
+            >
+              {owner}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="h-8">
+            <Filter className="mr-2 size-3" />
+            Interest
+            {interestFilter && (
+              <X
+                className="ml-2 size-3"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setInterestFilter("");
+                }}
+              />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          {interestOptions.map((interest) => (
+            <DropdownMenuItem
+              key={interest}
+              onClick={() => setInterestFilter(interest)}
+            >
+              {interest}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="h-8">
+            <Filter className="mr-2 size-3" />
+            Source
+            {sourceFilter && (
+              <X
+                className="ml-2 size-3"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSourceFilter("");
+                }}
+              />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          {sourceOptions.map((source) => (
+            <DropdownMenuItem
+              key={source}
+              onClick={() => setSourceFilter(source)}
+            >
+              {source}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
 
   const columns: DataTableColumn<Lead>[] = [
     {
@@ -305,21 +510,31 @@ export default function LeadsPage() {
           onPageChange={setPageIndex}
           enableRowSelection={true}
           onSelectionChange={setSelectedLeads}
+          filters={filters}
           toolbarRightActions={<SavedViews />}
           onRowClick={(lead) => {
             router.push(`/leads/${lead.id}`);
           }}
-          // Keyboard navigation: Enter to open detail
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              const selectedRow = filteredLeads[pageIndex * 10];
-              if (selectedRow) {
-                router.push(`/leads/${selectedRow.id}`);
-              }
-            }
-          }}
         />
       </div>
+
+      {selectedLeadForConvert && (
+        <ConvertLeadDialog
+          lead={selectedLeadForConvert}
+          open={convertDialogOpen}
+          onOpenChange={(open) => {
+            setConvertDialogOpen(open);
+            if (!open) {
+              setSelectedLeadForConvert(null);
+            }
+          }}
+          onConverted={(clientId) => {
+            showToast.success("Lead converted successfully");
+            setConvertDialogOpen(false);
+            setSelectedLeadForConvert(null);
+          }}
+        />
+      )}
     </AdminPageShell>
   );
 }

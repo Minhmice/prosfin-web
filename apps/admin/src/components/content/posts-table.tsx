@@ -6,10 +6,39 @@ import { format } from "date-fns";
 import { AppDataTable } from "@/components/admin/data-table/app-data-table";
 import { TableRowActions, type RowAction } from "@/components/admin/data-table/table-row-actions";
 import { Badge, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@prosfin/ui";
-import { listPosts, updatePostStatus, deletePost, duplicatePost, publish, unpublish } from "@/lib/data/posts";
+import {
+  listPosts,
+  updatePostStatus,
+  deletePost,
+  duplicatePost,
+  publish,
+  unpublish,
+  archivePost,
+  restorePost,
+  publishNow,
+  cancelSchedule,
+  reschedulePost,
+  isSlugUnique,
+} from "@/lib/data/posts";
+import { formatDistanceToNow } from "date-fns";
 import type { Post, PostStatus, ContentBucket } from "@/types/content";
 import type { DataTableColumn } from "@/components/admin/data-table/types";
-import { MoreHorizontal, Plus, FileEdit, Copy, Eye, Calendar, Trash2, CheckCircle2, XCircle } from "lucide-react";
+import {
+  MoreHorizontal,
+  Plus,
+  FileEdit,
+  Copy,
+  Eye,
+  Calendar,
+  Trash2,
+  CheckCircle2,
+  XCircle,
+  Archive,
+  RotateCcw,
+  Play,
+  X,
+  AlertCircle,
+} from "lucide-react";
 
 const statusColors: Record<PostStatus, string> = {
   draft: "bg-gray-100 text-gray-800",
@@ -39,19 +68,31 @@ export function PostsTable({ initialBucket, onEdit, onPreview }: PostsTableProps
   );
   const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
   const [selectedRows, setSelectedRows] = React.useState<Post[]>([]);
+  const [needsAttentionFilter, setNeedsAttentionFilter] = React.useState(false);
 
   React.useEffect(() => {
     loadPosts();
-  }, [selectedStatus, selectedBucket, selectedTags]);
+  }, [selectedStatus, selectedBucket, selectedTags, needsAttentionFilter]);
 
   const loadPosts = async () => {
     setIsLoading(true);
     const bucket = selectedBucket.length === 1 ? selectedBucket[0] : undefined;
-    const data = await listPosts(bucket, {
+    let data = await listPosts(bucket, {
       status: selectedStatus.length > 0 ? selectedStatus : undefined,
       bucket: selectedBucket.length > 0 ? selectedBucket : undefined,
       tags: selectedTags.length > 0 ? selectedTags : undefined,
     });
+
+    // "Needs attention" filter (mock)
+    if (needsAttentionFilter) {
+      data = data.filter((post) => {
+        const missingCover = !post.cover;
+        const missingSEO = !post.seoTitle || !post.seoDescription;
+        // Check slug uniqueness (mock - in Phase 3 will be real check)
+        return missingCover || missingSEO;
+      });
+    }
+
     setPosts(data);
     setIsLoading(false);
   };
@@ -117,37 +158,139 @@ export function PostsTable({ initialBucket, onEdit, onPreview }: PostsTableProps
     }
   };
 
-  const rowActions: RowAction<Post>[] = [
-    {
-      label: "Edit",
-      onClick: (row) => onEdit?.(row) || window.location.assign(`/content/${row.slug}`),
-    },
-    {
-      label: "Duplicate",
-      onClick: (row) => handleDuplicate(row),
-    },
-    {
-      label: "Preview",
-      onClick: (row) => onPreview?.(row) || window.open(`/content/preview/${row.slug}`, "_blank"),
-    },
-    {
-      label: (row) => (row.status === "published" ? "Unpublish" : "Publish"),
-      onClick: (row) =>
-        row.status === "published" ? handleUnpublish(row.id) : handlePublish(row.id),
-    },
-    {
-      label: "Schedule",
-      onClick: (row) => {
-        // TODO: Open schedule dialog
-        console.log("Schedule", row.id);
+  const handleBulkArchive = async () => {
+    if (selectedRows.length === 0) return;
+    for (const post of selectedRows) {
+      if (post.status !== "archived") {
+        await archivePost(post.id);
+      }
+    }
+    loadPosts();
+    setSelectedRows([]);
+  };
+
+  const handleBulkRestore = async () => {
+    if (selectedRows.length === 0) return;
+    for (const post of selectedRows) {
+      if (post.status === "archived") {
+        await restorePost(post.id);
+      }
+    }
+    loadPosts();
+    setSelectedRows([]);
+  };
+
+  const handleReschedule = async (post: Post) => {
+    // TODO: Open schedule dialog
+    window.location.assign(`/content/${post.slug}`);
+  };
+
+  const handlePublishNow = async (postId: string) => {
+    await publishNow(postId);
+    loadPosts();
+  };
+
+  const handleCancelSchedule = async (postId: string) => {
+    await cancelSchedule(postId);
+    loadPosts();
+  };
+
+  const handleArchive = async (postId: string) => {
+    if (confirm("Are you sure you want to archive this post?")) {
+      await archivePost(postId);
+      loadPosts();
+    }
+  };
+
+  const handleRestore = async (postId: string) => {
+    await restorePost(postId);
+    loadPosts();
+  };
+
+  const getRowActions = (post: Post): RowAction<Post>[] => {
+    const actions: RowAction<Post>[] = [
+      {
+        label: "Edit",
+        onClick: () => onEdit?.(post) || window.location.assign(`/content/${post.slug}`),
       },
-    },
-    {
-      label: "Delete",
-      onClick: (row) => handleDelete(row.id),
-      variant: "destructive",
-    },
-  ];
+    ];
+
+    if (post.status === "draft") {
+      actions.push(
+        {
+          label: "Preview",
+          onClick: () => {
+            const secret = "your-secret-token";
+            window.open(`/api/draft?secret=${secret}&slug=${post.slug}&bucket=${post.bucket}`, "_blank");
+          },
+        },
+        {
+          label: "Publish",
+          onClick: () => handlePublish(post.id),
+        },
+        {
+          label: "Schedule",
+          onClick: () => handleReschedule(post),
+        }
+      );
+    } else if (post.status === "scheduled") {
+      actions.push(
+        {
+          label: "Preview",
+          onClick: () => {
+            const secret = "your-secret-token";
+            window.open(`/api/draft?secret=${secret}&slug=${post.slug}&bucket=${post.bucket}`, "_blank");
+          },
+        },
+        {
+          label: "Reschedule",
+          onClick: () => handleReschedule(post),
+        },
+        {
+          label: "Publish Now",
+          onClick: () => handlePublishNow(post.id),
+        },
+        {
+          label: "Cancel Schedule",
+          onClick: () => handleCancelSchedule(post.id),
+        }
+      );
+    } else if (post.status === "published") {
+      actions.push(
+        {
+          label: "Preview Public",
+          onClick: () => window.open(`/${post.bucket}/${post.slug}`, "_blank"),
+        },
+        {
+          label: "Unpublish",
+          onClick: () => handleUnpublish(post.id),
+        },
+        {
+          label: "Archive",
+          onClick: () => handleArchive(post.id),
+        }
+      );
+    } else if (post.status === "archived") {
+      actions.push({
+        label: "Restore",
+        onClick: () => handleRestore(post.id),
+      });
+    }
+
+    actions.push(
+      {
+        label: "Duplicate",
+        onClick: () => handleDuplicate(post),
+      },
+      {
+        label: "Delete",
+        onClick: () => handleDelete(post.id),
+        variant: "destructive",
+      }
+    );
+
+    return actions;
+  };
 
   const columns: DataTableColumn<Post>[] = [
     {
@@ -183,11 +326,41 @@ export function PostsTable({ initialBucket, onEdit, onPreview }: PostsTableProps
       id: "status",
       header: "Status",
       accessorKey: "status",
-      cell: ({ row }) => (
-        <Badge className={statusColors[row.original.status]}>
-          {row.original.status}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const post = row.original;
+        let hint: string | null = null;
+
+        if (post.status === "scheduled" && post.scheduledFor) {
+          try {
+            const scheduledDate = new Date(post.scheduledFor);
+            const now = new Date();
+            if (scheduledDate <= now) {
+              hint = "Ready to publish";
+            } else {
+              hint = `Publishes ${formatDistanceToNow(scheduledDate, { addSuffix: true })}`;
+            }
+          } catch {
+            hint = null;
+          }
+        } else if (post.status === "published" && post.publishedAt) {
+          try {
+            hint = `Published ${formatDistanceToNow(new Date(post.publishedAt), { addSuffix: true })}`;
+          } catch {
+            hint = null;
+          }
+        }
+
+        return (
+          <div className="flex flex-col gap-1">
+            <Badge className={statusColors[post.status]}>
+              {post.status}
+            </Badge>
+            {hint && (
+              <span className="text-muted-foreground text-xs">{hint}</span>
+            )}
+          </div>
+        );
+      },
     },
     {
       id: "tags",
@@ -234,7 +407,7 @@ export function PostsTable({ initialBucket, onEdit, onPreview }: PostsTableProps
     {
       id: "actions",
       header: "",
-      cell: ({ row }) => <TableRowActions row={row.original} actions={rowActions} />,
+      cell: ({ row }) => <TableRowActions row={row.original} actions={getRowActions(row.original)} />,
     },
   ];
 
@@ -245,7 +418,7 @@ export function PostsTable({ initialBucket, onEdit, onPreview }: PostsTableProps
   const StatusFilter = () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" suppressHydrationWarning>
           Status
           {selectedStatus.length > 0 && (
             <Badge variant="secondary" className="ml-2">
@@ -276,10 +449,21 @@ export function PostsTable({ initialBucket, onEdit, onPreview }: PostsTableProps
     </DropdownMenu>
   );
 
+  const NeedsAttentionFilter = () => (
+    <Button
+      variant={needsAttentionFilter ? "default" : "outline"}
+      size="sm"
+      onClick={() => setNeedsAttentionFilter(!needsAttentionFilter)}
+    >
+      <AlertCircle className="mr-2 size-4" />
+      Needs Attention
+    </Button>
+  );
+
   const BucketFilter = () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" suppressHydrationWarning>
           Bucket
           {selectedBucket.length > 0 && (
             <Badge variant="secondary" className="ml-2">
@@ -319,6 +503,7 @@ export function PostsTable({ initialBucket, onEdit, onPreview }: PostsTableProps
         <div className="flex items-center gap-2">
           <StatusFilter />
           {!initialBucket && <BucketFilter />}
+          <NeedsAttentionFilter />
           {selectedRows.length > 0 && (
             <>
               <div className="mx-2 h-6 w-px bg-border" />
@@ -338,6 +523,22 @@ export function PostsTable({ initialBucket, onEdit, onPreview }: PostsTableProps
                 onClick={handleBulkUnpublish}
               >
                 Unpublish
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBulkArchive}
+              >
+                <Archive className="mr-2 size-4" />
+                Archive
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBulkRestore}
+              >
+                <RotateCcw className="mr-2 size-4" />
+                Restore
               </Button>
               <Button
                 variant="outline"

@@ -14,7 +14,9 @@ export type LeadStatus =
 
 export type ClientStatus = "active" | "inactive" | "onboarding";
 
-export type CampaignStatus = "draft" | "active" | "paused" | "completed";
+export type CampaignStatus = "active" | "paused" | "archived";
+
+export type ChannelPreset = "facebook" | "youtube" | "tiktok" | "linkedin" | "email" | "other";
 
 export interface AttributionData {
   landingPath: string;
@@ -80,17 +82,36 @@ export interface Client {
   updatedAt: string;
 }
 
+export interface CampaignTimelineEvent {
+  id: string;
+  type: "created" | "edited" | "status_changed" | "copied" | "duplicated";
+  title: string;
+  timestamp: string;
+  actor?: string;
+  payload?: {
+    oldStatus?: CampaignStatus;
+    newStatus?: CampaignStatus;
+    notes?: string;
+  };
+}
+
 export interface Campaign {
   id: string;
   name: string;
-  baseUrl: string;
+  destinationUrl: string;
   utm_source: string;
   utm_medium: string;
   utm_campaign: string;
   utm_content?: string;
   utm_term?: string;
+  channelPreset?: ChannelPreset;
   generatedUrl: string;
+  shortLabel?: string;
   status: CampaignStatus;
+  notes?: string;
+  tags?: string[];
+  createdBy?: string;
+  timeline?: CampaignTimelineEvent[];
   createdAt: string;
   updatedAt: string;
 }

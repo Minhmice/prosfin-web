@@ -67,7 +67,7 @@ const baseMockPosts: Post[] = [
     author: mockAuthor,
     status: "published",
   },
-  // Insights - Draft
+  // Insights - Draft (missing cover - for "Needs attention" filter)
   {
     id: "post-2",
     bucket: "insights",
@@ -78,28 +78,48 @@ const baseMockPosts: Post[] = [
     content: createEditorState(
       "Thị trường bất động sản năm 2024 đang có nhiều biến động thú vị. Các nhà đầu tư cần nắm bắt các xu hướng mới để đưa ra quyết định đúng đắn."
     ),
+    // Missing cover - for testing "Needs attention" filter
     updatedAt: "2024-01-20T14:30:00Z",
     createdAt: "2024-01-18T09:00:00Z",
     author: mockAuthor,
     status: "draft",
   },
-  // Insights - Scheduled
+  // Insights - Scheduled (future date)
   {
     id: "post-3",
     bucket: "insights",
     title: "Hướng Dẫn Quản Lý Dòng Tiền Cho Startup",
     slug: "huong-dan-quan-ly-dong-tien-cho-startup",
     excerpt: "Các bước cơ bản để quản lý dòng tiền hiệu quả cho các startup mới thành lập.",
+    cover: "/brand/prosfin-logo.svg",
     tags: ["startup", "quản lý dòng tiền", "tài chính"],
     content: createEditorState(
       "Quản lý dòng tiền là một trong những thách thức lớn nhất đối với các startup. Bài viết này sẽ hướng dẫn bạn các phương pháp quản lý dòng tiền hiệu quả."
     ),
-    publishedAt: "2024-02-01T08:00:00Z",
+    seoTitle: "Hướng Dẫn Quản Lý Dòng Tiền Cho Startup | ProsFin",
+    seoDescription: "Các bước cơ bản để quản lý dòng tiền hiệu quả cho các startup mới thành lập.",
     updatedAt: "2024-01-25T16:00:00Z",
     createdAt: "2024-01-25T16:00:00Z",
     author: mockAuthor,
     status: "scheduled",
-    scheduledFor: "2024-02-01T08:00:00Z",
+    scheduledFor: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
+  },
+  // Insights - Scheduled (near future)
+  {
+    id: "post-9",
+    bucket: "insights",
+    title: "Chiến Lược Tài Chính Cho Doanh Nghiệp Vừa Và Nhỏ",
+    slug: "chien-luoc-tai-chinh-cho-doanh-nghiep-vua-va-nho",
+    excerpt: "Khám phá các chiến lược tài chính phù hợp cho doanh nghiệp vừa và nhỏ.",
+    tags: ["chiến lược", "tài chính", "SME"],
+    content: createEditorState(
+      "Doanh nghiệp vừa và nhỏ cần có chiến lược tài chính riêng phù hợp với quy mô và nguồn lực của mình."
+    ),
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
+    author: mockAuthor,
+    status: "scheduled",
+    scheduledFor: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days from now
   },
   // Resources - Published
   {
@@ -121,17 +141,19 @@ const baseMockPosts: Post[] = [
     author: mockAuthor,
     status: "published",
   },
-  // Resources - Draft
+  // Resources - Draft (missing SEO - for "Needs attention" filter)
   {
     id: "post-5",
     bucket: "resources",
     title: "Checklist Kiểm Tra Tài Chính Định Kỳ",
     slug: "checklist-kiem-tra-tai-chinh-dinh-ky",
     excerpt: "Danh sách kiểm tra toàn diện để đánh giá tình hình tài chính doanh nghiệp.",
+    cover: "/brand/prosfin-logo.svg",
     tags: ["checklist", "kiểm tra", "tài chính"],
     content: createEditorState(
       "Kiểm tra tài chính định kỳ là việc làm cần thiết để đảm bảo doanh nghiệp hoạt động hiệu quả. Checklist này sẽ giúp bạn không bỏ sót bất kỳ yếu tố quan trọng nào."
     ),
+    // Missing seoTitle and seoDescription - for testing "Needs attention" filter
     updatedAt: "2024-01-22T11:00:00Z",
     createdAt: "2024-01-20T10:00:00Z",
     author: mockAuthor,
@@ -223,9 +245,17 @@ function generateMockPosts(): Post[] {
     const daysAgo = Math.floor(Math.random() * 365);
     const createdAt = new Date(now - daysAgo * 24 * 60 * 60 * 1000).toISOString();
     const updatedAt = new Date(now - Math.floor(Math.random() * daysAgo) * 24 * 60 * 60 * 1000).toISOString();
-    const publishedAt = status === "published" || status === "scheduled" 
-      ? new Date(now - Math.floor(Math.random() * daysAgo) * 24 * 60 * 60 * 1000).toISOString()
-      : undefined;
+    let publishedAt: string | undefined;
+    let scheduledFor: string | undefined;
+    
+    if (status === "published") {
+      publishedAt = new Date(now - Math.floor(Math.random() * daysAgo) * 24 * 60 * 60 * 1000).toISOString();
+    } else if (status === "scheduled") {
+      // Scheduled posts should have future dates
+      const daysInFuture = Math.floor(Math.random() * 30) + 1; // 1-30 days from now
+      scheduledFor = new Date(now + daysInFuture * 24 * 60 * 60 * 1000).toISOString();
+      publishedAt = scheduledFor; // For scheduled posts, publishedAt = scheduledFor
+    }
     
     const tags = [
       topic.toLowerCase(),
@@ -248,7 +278,7 @@ function generateMockPosts(): Post[] {
       createdAt,
       author: mockAuthor,
       status,
-      scheduledFor: status === "scheduled" ? publishedAt : undefined,
+      scheduledFor,
     });
   }
   

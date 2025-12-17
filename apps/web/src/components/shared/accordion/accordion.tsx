@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 /**
@@ -19,7 +20,9 @@ type AccordionContextValue = {
   toggle: (value: string) => void;
 };
 
-const AccordionContext = React.createContext<AccordionContextValue | null>(null);
+const AccordionContext = React.createContext<AccordionContextValue | null>(
+  null
+);
 
 type AccordionProps = React.HTMLAttributes<HTMLDivElement> & {
   type: AccordionType;
@@ -45,7 +48,8 @@ export function Accordion({
   });
 
   const isOpen = React.useCallback(
-    (value: string) => (type === "single" ? openSingle === value : openMultiple.includes(value)),
+    (value: string) =>
+      type === "single" ? openSingle === value : openMultiple.includes(value),
     [openMultiple, openSingle, type]
   );
 
@@ -58,7 +62,11 @@ export function Accordion({
         });
         return;
       }
-      setOpenMultiple((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
+      setOpenMultiple((prev) =>
+        prev.includes(value)
+          ? prev.filter((v) => v !== value)
+          : [...prev, value]
+      );
     },
     [collapsible, type]
   );
@@ -84,7 +92,8 @@ type AccordionItemContextValue = {
   open: boolean;
 };
 
-const AccordionItemContext = React.createContext<AccordionItemContextValue | null>(null);
+const AccordionItemContext =
+  React.createContext<AccordionItemContextValue | null>(null);
 
 export function AccordionItem({
   value,
@@ -100,7 +109,9 @@ export function AccordionItem({
   const open = ctx.isOpen(value);
 
   return (
-    <AccordionItemContext.Provider value={{ value, triggerId, contentId, open }}>
+    <AccordionItemContext.Provider
+      value={{ value, triggerId, contentId, open }}
+    >
       <div
         data-state={open ? "open" : "closed"}
         className={cn("rounded-lg border bg-card", className)}
@@ -117,7 +128,8 @@ export function AccordionTrigger({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const ctx = React.useContext(AccordionContext);
   const item = React.useContext(AccordionItemContext);
-  if (!ctx || !item) throw new Error("AccordionTrigger must be used within AccordionItem");
+  if (!ctx || !item)
+    throw new Error("AccordionTrigger must be used within AccordionItem");
 
   return (
     <h3 className="flex">
@@ -129,7 +141,7 @@ export function AccordionTrigger({
         data-state={item.open ? "open" : "closed"}
         onClick={() => ctx.toggle(item.value)}
         className={cn(
-          "flex flex-1 items-center justify-between gap-4 p-4 text-left font-semibold text-foreground transition-colors hover:bg-accent/50",
+          "flex flex-1 items-center justify-between gap-4 p-4 text-left font-semibold text-foreground transition-all duration-300",
           className
         )}
         {...props}
@@ -149,24 +161,35 @@ export function AccordionTrigger({
 export function AccordionContent({
   className,
   children,
-  ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const item = React.useContext(AccordionItemContext);
-  if (!item) throw new Error("AccordionContent must be used within AccordionItem");
-  if (!item.open) return null;
+  if (!item)
+    throw new Error("AccordionContent must be used within AccordionItem");
 
   return (
-    <div
-      id={item.contentId}
-      role="region"
-      aria-labelledby={item.triggerId}
-      data-state="open"
-      className={cn("px-4 pb-4 text-sm leading-relaxed text-muted-foreground", className)}
-      {...props}
-    >
-      {children}
-    </div>
+    <AnimatePresence>
+      {item.open && (
+        <motion.div
+          id={item.contentId}
+          role="region"
+          aria-labelledby={item.triggerId}
+          data-state="open"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 150,
+            damping: 22,
+            duration: 0.3,
+          }}
+          className={cn("overflow-hidden", className)}
+        >
+          <div className="px-4 pb-4 text-sm leading-relaxed text-muted-foreground">
+            {children}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
-
-

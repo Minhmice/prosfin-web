@@ -30,7 +30,7 @@ export function ProsfinContainer({
 }: ProsfinContainerProps) {
   const maxWidthClasses = {
     lg: "max-w-5xl",
-    xl: "max-w-6xl",
+    xl: "max-w-7xl",
     "2xl": "max-w-7xl",
     full: "max-w-full",
   };

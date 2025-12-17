@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { Input, Label, Textarea, Button, Badge, Separator } from "@prosfin/ui";
+import { Input, Label, Textarea, Button, Badge, Separator, Tabs, TabsList, TabsTrigger, TabsContent } from "@prosfin/ui";
 import { Calendar } from "lucide-react";
 import type { Post, PostFormData, ContentBucket, PostStatus } from "@/types/content";
 import { contentBucketSchema, postStatusSchema } from "@/types/content";
+import { VersionPanel } from "./version-panel";
+import { ContentChecklistDisplay } from "./content-checklist";
 
 interface MetadataPanelProps {
   post?: Post;
@@ -112,9 +114,25 @@ export function MetadataPanel({
     updateField("tags", localData.tags?.filter((t) => t !== tag) || []);
   };
 
+  const handleRestorePublished = async () => {
+    // TODO: Implement restore published → draft
+    console.log("Restore published to draft");
+  };
+
   return (
-    <div className="flex h-full flex-col overflow-y-auto">
-      <div className="space-y-6 p-6">
+    <div className="flex h-full flex-col overflow-hidden">
+      <Tabs defaultValue="metadata" className="flex h-full flex-col">
+        <TabsList className="mx-4 mt-4">
+          <TabsTrigger value="metadata">Metadata</TabsTrigger>
+          <TabsTrigger value="versions">Versions</TabsTrigger>
+        </TabsList>
+        <TabsContent value="metadata" className="flex-1 overflow-y-auto">
+          <div className="space-y-6 p-6">
+            {/* Content Checklist */}
+            <div className="rounded-md border bg-background p-4">
+              <ContentChecklistDisplay formData={formData} postId={post?.id} />
+            </div>
+            <Separator />
         {/* Basic Info */}
         <div className="space-y-4">
           <h3 className="font-semibold">Basic Information</h3>
@@ -220,9 +238,17 @@ export function MetadataPanel({
           <h3 className="font-semibold">Status</h3>
           <select
             value={localData.status || "draft"}
-            onChange={(e) =>
-              updateField("status", e.target.value as PostStatus)
-            }
+            onChange={(e) => {
+              const newStatus = e.target.value as PostStatus;
+              // Edge case: If changing from scheduled to draft, cancel schedule
+              if (localData.status === "scheduled" && newStatus === "draft" && post) {
+                // Cancel schedule will be handled by EditorShell
+                updateField("status", newStatus);
+                updateField("scheduledFor", undefined);
+              } else {
+                updateField("status", newStatus);
+              }
+            }}
             className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             {statusOptions.map((opt) => (
@@ -232,7 +258,7 @@ export function MetadataPanel({
             ))}
           </select>
 
-          {localData.status === "scheduled" && (
+          {localData.status === "scheduled" && localData.scheduledFor && (
             <div className="space-y-2">
               <Label htmlFor="scheduledFor">Schedule For</Label>
               <Input
@@ -252,6 +278,14 @@ export function MetadataPanel({
                   )
                 }
               />
+              <p className="text-muted-foreground text-xs">
+                Changes to slug/SEO will be applied when the post is published.
+              </p>
+            </div>
+          )}
+          {localData.status === "scheduled" && !localData.scheduledFor && (
+            <div className="rounded-md border border-yellow-200 bg-yellow-50 p-2 text-yellow-800 text-xs">
+              Scheduled but no date set. Please reschedule.
             </div>
           )}
         </div>
@@ -312,7 +346,16 @@ export function MetadataPanel({
             </Label>
           </div>
         </div>
-      </div>
+          </div>
+        </TabsContent>
+        <TabsContent value="versions" className="flex-1 overflow-y-auto">
+          <VersionPanel
+            post={post}
+            formData={formData}
+            onRestorePublished={handleRestorePublished}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

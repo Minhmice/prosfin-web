@@ -12,6 +12,7 @@ import { servicesSectionContent } from "@/data/services-content";
 import { processSectionContent } from "@/data/process-content";
 import { faqSectionContent } from "@/data/faq-content";
 import { contactSectionContent } from "@/data/contact-content";
+import { trustBarContent } from "@/data/trust-bar-content";
 
 /**
  * Get landing page content
@@ -37,13 +38,8 @@ export function getLandingContent(): LandingContent {
       },
     },
     trust: {
-      title: "Được tin tưởng bởi",
-      logos: [
-        // Placeholder - sẽ thay bằng logos thật
-        { name: "Client 1", logo: "/images/logo-placeholder.svg" },
-        { name: "Client 2", logo: "/images/logo-placeholder.svg" },
-        { name: "Client 3", logo: "/images/logo-placeholder.svg" },
-      ],
+      title: trustBarContent.title,
+      logos: trustBarContent.logos,
     },
     solutions: {
       eyebrow: problemSectionContent.eyebrow,
@@ -132,6 +128,13 @@ export function getLandingContent(): LandingContent {
           result: "Tối ưu chi phí và tăng lợi nhuận 15%",
           description: "Studio dịch vụ sáng tạo đã xác định được các khoản chi phí không cần thiết và tối ưu hóa ngân sách.",
           link: "/case-studies/example-2",
+        },
+        {
+          id: "proof-3",
+          industry: "Thương mại",
+          result: "Tối ưu chi phí và tăng lợi nhuận 15%",
+          description: "Studio dịch vụ sáng tạo đã xác định được các khoản chi phí không cần thiết và tối ưu hóa ngân sách.",
+          link: "/case-studies/example-3",
         },
       ],
       cta: {

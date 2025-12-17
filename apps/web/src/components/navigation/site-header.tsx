@@ -79,7 +79,7 @@ export function SiteHeader({ className }: SiteHeaderProps) {
             <SiteLogo />
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex md:items-center md:gap-6">
+            <div className="hidden md:flex md:items-center md:gap-6 mr-6">
               <SiteNav items={navigationItems} onNavClick={handleNavClick} />
               <ProsfinPrimaryButton onClick={handleCtaClick} size="sm">
                 {headerCtaLabel}

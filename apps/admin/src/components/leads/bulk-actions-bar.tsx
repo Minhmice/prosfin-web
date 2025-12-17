@@ -74,7 +74,7 @@ export function BulkActionsBar({
       <div className="flex items-center gap-2">
         <DropdownMenu open={statusMenuOpen} onOpenChange={setStatusMenuOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-7">
+            <Button variant="outline" size="sm" className="h-7" suppressHydrationWarning>
               <Tag className="mr-2 size-3" />
               Update Status
             </Button>
@@ -93,7 +93,7 @@ export function BulkActionsBar({
 
         <DropdownMenu open={ownerMenuOpen} onOpenChange={setOwnerMenuOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-7">
+            <Button variant="outline" size="sm" className="h-7" suppressHydrationWarning>
               <User className="mr-2 size-3" />
               Assign Owner
             </Button>

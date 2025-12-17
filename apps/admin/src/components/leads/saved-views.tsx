@@ -92,7 +92,7 @@ export function SavedViews() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8">
+        <Button variant="outline" size="sm" className="h-8" suppressHydrationWarning>
           <Filter className="mr-2 size-3" />
           Views
           <ChevronDown className="ml-2 size-3" />

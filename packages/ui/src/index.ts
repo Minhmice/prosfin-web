@@ -22,6 +22,11 @@ export * from "./components/ui/textarea";
 export * from "./components/ui/dropdown-menu";
 export * from "./components/ui/collapsible";
 export * from "./components/ui/radio-group";
+export * from "./components/ui/select";
+export * from "./components/ui/toggle-group";
+export * from "./components/ui/tooltip";
+export * from "./components/ui/sidebar";
+export * from "./components/ui/avatar";
 
 // Admin-specific components
 export * from "./components/admin/admin-page-shell";

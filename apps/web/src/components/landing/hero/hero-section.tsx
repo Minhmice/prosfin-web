@@ -54,7 +54,7 @@ export function HeroSection({ content, className }: HeroSectionProps) {
         id="hero"
       >
         <PageContainer>
-          <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+          <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
             {/* Cột trái - Text Block */}
             <RevealOnScroll direction="right" delay={0} className="order-1 lg:order-1">
               <HeroTextBlock

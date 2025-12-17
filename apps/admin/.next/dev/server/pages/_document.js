@@ -1,5 +1,5 @@
 var R=require("../chunks/ssr/[turbopack]_runtime.js")("server/pages/_document.js")
-R.c("server/chunks/ssr/node_modules__pnpm_7572d9b1._.js")
+R.c("server/chunks/ssr/node_modules__pnpm_77a1b852._.js")
 R.c("server/chunks/ssr/[root-of-the-server]__e6a4d965._.js")
-R.m("[project]/node_modules/.pnpm/next@16.0.10_@babel+core@7.28.5_babel-plugin-react-compiler@1.0.0_react-dom@19.2.1_react@19.2.1__react@19.2.1/node_modules/next/document.js [ssr] (ecmascript)")
-module.exports=R.m("[project]/node_modules/.pnpm/next@16.0.10_@babel+core@7.28.5_babel-plugin-react-compiler@1.0.0_react-dom@19.2.1_react@19.2.1__react@19.2.1/node_modules/next/document.js [ssr] (ecmascript)").exports
+R.m("[project]/node_modules/.pnpm/next@16.0.10_@babel+core@7._ec44244442018e0307372bcc14db556f/node_modules/next/document.js [ssr] (ecmascript)")
+module.exports=R.m("[project]/node_modules/.pnpm/next@16.0.10_@babel+core@7._ec44244442018e0307372bcc14db556f/node_modules/next/document.js [ssr] (ecmascript)").exports

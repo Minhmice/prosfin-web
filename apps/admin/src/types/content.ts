@@ -130,3 +130,34 @@ export const postFormSchema = z.object({
 
 export type PostFormSchema = z.infer<typeof postFormSchema>;
 
+/**
+ * Post revision (placeholder for Phase 3)
+ */
+export interface PostRevision {
+  id: string;
+  postId: string;
+  version: number;
+  content: LexicalEditorState;
+  metadata: Partial<PostFormData>;
+  createdAt: string;
+  createdBy: string;
+}
+
+/**
+ * Activity event for post timeline
+ */
+export interface PostActivityEvent {
+  id: string;
+  type: "created" | "edited" | "scheduled" | "published" | "archived" | "restored" | "unpublished";
+  title: string;
+  description?: string;
+  timestamp: string;
+  actor?: string;
+  payload?: {
+    oldStatus?: PostStatus;
+    newStatus?: PostStatus;
+    scheduledFor?: string;
+    publishedAt?: string;
+  };
+}
+

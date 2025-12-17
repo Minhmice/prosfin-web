@@ -1,6 +1,6 @@
 /**
  * ProcessPreviewSection - Preview quy trình 4 bước
- * 
+ *
  * 4 steps, mỗi step có deliverables ngắn.
  * CTA → /process
  */
@@ -8,7 +8,17 @@
 "use client";
 
 import * as React from "react";
-import { AppSection, AppContainer, SectionHeader, AppCard, AppCardHeader, AppCardTitle, AppCardContent, AppCardDescription, AppLink } from "@/components/shared";
+import {
+  AppSection,
+  AppContainer,
+  SectionHeader,
+  AppCard,
+  AppCardHeader,
+  AppCardTitle,
+  AppCardContent,
+  AppCardDescription,
+  AppLink,
+} from "@/components/shared";
 import { type LandingContent } from "@/lib/content/types";
 
 interface ProcessPreviewSectionProps {
@@ -17,7 +27,7 @@ interface ProcessPreviewSectionProps {
 
 /**
  * ProcessPreviewSection - Process preview component
- * 
+ *
  * @example
  * ```tsx
  * <ProcessPreviewSection content={landingContent.processPreview} />
@@ -42,13 +52,19 @@ export function ProcessPreviewSection({ content }: ProcessPreviewSectionProps) {
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {content.steps.map((step, index) => (
-              <AppCard key={step.id} variant="elevated" className="flex flex-col">
+              <AppCard
+                key={step.id}
+                variant="elevated"
+                className="flex flex-col"
+              >
                 <AppCardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+                  <div className="flex gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold aspect-square">
                       {step.order || index + 1}
                     </div>
-                    <AppCardTitle className="text-lg">{step.title}</AppCardTitle>
+                    <AppCardTitle className="text-lg">
+                      {step.title}
+                    </AppCardTitle>
                   </div>
                 </AppCardHeader>
                 <AppCardContent className="flex flex-1 flex-col gap-3">
@@ -57,7 +73,10 @@ export function ProcessPreviewSection({ content }: ProcessPreviewSectionProps) {
                     <ul className="mt-auto space-y-1 text-sm text-muted-foreground">
                       {step.deliverables.slice(0, 2).map((deliverable, idx) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <span className="mt-1 text-primary" aria-hidden="true">
+                          <span
+                            className="mt-1 text-primary"
+                            aria-hidden="true"
+                          >
                             •
                           </span>
                           <span>{deliverable}</span>
@@ -82,4 +101,3 @@ export function ProcessPreviewSection({ content }: ProcessPreviewSectionProps) {
     </AppSection>
   );
 }
-

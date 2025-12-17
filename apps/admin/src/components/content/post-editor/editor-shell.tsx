@@ -1,12 +1,25 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button, Separator } from "@prosfin/ui";
-import { Save, Eye, Calendar, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { MetadataPanel } from "./metadata-panel";
+import { EditorActionBar } from "./editor-action-bar";
+import { PublishDialog } from "./publish-dialog";
+import { ScheduleDialog } from "./schedule-dialog";
 import type { Post, PostFormData } from "@/types/content";
+import {
+  saveDraft,
+  publish,
+  unpublish,
+  archivePost,
+  restorePost,
+  reschedulePost,
+  publishNow,
+  cancelSchedule,
+  createDraftRevision,
+  updatePublishedPost,
+} from "@/lib/data/posts";
+import { showToast } from "@/lib/toast";
 
 interface EditorShellProps {
   post?: Post;
@@ -20,9 +33,9 @@ interface EditorShellProps {
 
 export function EditorShell({
   post,
-  onSave,
-  onPublish,
-  onSchedule,
+  onSave: externalOnSave,
+  onPublish: externalOnPublish,
+  onSchedule: externalOnSchedule,
   formData: externalFormData,
   onFormDataChange: externalOnFormDataChange,
   children,
@@ -31,23 +44,13 @@ export function EditorShell({
   const [isSaving, setIsSaving] = React.useState(false);
   const [isSaved, setIsSaved] = React.useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
+  const [lastSavedAt, setLastSavedAt] = React.useState<string | undefined>();
   const [internalFormData, setInternalFormData] = React.useState<PostFormData | null>(null);
+  const [publishDialogOpen, setPublishDialogOpen] = React.useState(false);
+  const [scheduleDialogOpen, setScheduleDialogOpen] = React.useState(false);
 
   const formData = externalFormData ?? internalFormData;
   const setFormData = externalOnFormDataChange ?? setInternalFormData;
-
-  // Track unsaved changes
-  React.useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [hasUnsavedChanges]);
 
   // Auto-save to localStorage and trigger save callback
   React.useEffect(() => {
@@ -58,27 +61,51 @@ export function EditorShell({
         
         // Auto-save draft (silent, don't show saved indicator)
         try {
-          await onSave(formData);
-          setHasUnsavedChanges(false);
+          await handleSaveInternal();
         } catch (error) {
           console.error("Auto-save failed:", error);
         }
       }, 3000); // Auto-save after 3 seconds of inactivity
       return () => clearTimeout(timer);
     }
-  }, [formData, hasUnsavedChanges, post, onSave]);
+  }, [formData, hasUnsavedChanges, post]);
+
+  const handleSaveInternal = async () => {
+    if (!formData || !post) return;
+    await saveDraft(formData, post.id);
+    setLastSavedAt(new Date().toISOString());
+    setHasUnsavedChanges(false);
+  };
 
   const handleSave = async () => {
     if (!formData) return;
 
     setIsSaving(true);
     try {
-      await onSave(formData);
+      if (post) {
+        await saveDraft(formData, post.id);
+        const updated = await import("@/lib/data/posts").then((m) => m.getPostById(post.id));
+        if (updated) {
+          // Update formData with saved data
+          setFormData({
+            ...formData,
+            status: updated.status,
+            scheduledFor: updated.scheduledFor,
+          });
+        }
+      } else {
+        const saved = await saveDraft(formData);
+        router.push(`/content/${saved.slug}`);
+        return;
+      }
       setIsSaved(true);
+      setLastSavedAt(new Date().toISOString());
       setHasUnsavedChanges(false);
       setTimeout(() => setIsSaved(false), 2000);
+      showToast.success("Draft saved");
     } catch (error) {
       console.error("Failed to save:", error);
+      showToast.error("Failed to save draft");
     } finally {
       setIsSaving(false);
     }
@@ -89,66 +116,179 @@ export function EditorShell({
 
     setIsSaving(true);
     try {
-      await onPublish?.(formData);
+      if (post) {
+        await publish(post.id);
+      } else {
+        const saved = await saveDraft(formData);
+        await publish(saved.id);
+      }
+      showToast.success("Post published");
       router.push("/content");
     } catch (error) {
       console.error("Failed to publish:", error);
+      showToast.error("Failed to publish post");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handlePreview = () => {
+  const handleSchedule = async (scheduledFor: string | null) => {
+    if (!formData) return;
+
+    setIsSaving(true);
+    try {
+      if (scheduledFor === null) {
+        // Publish immediately
+        if (post) {
+          await publish(post.id);
+        } else {
+          const saved = await saveDraft(formData);
+          await publish(saved.id);
+        }
+        showToast.success("Post published");
+      } else {
+        // Schedule for later
+        if (post) {
+          await reschedulePost(post.id, scheduledFor);
+        } else {
+          const saved = await saveDraft(formData);
+          await reschedulePost(saved.id, scheduledFor);
+        }
+        showToast.success("Post scheduled");
+      }
+      router.push("/content");
+    } catch (error) {
+      console.error("Failed to schedule:", error);
+      showToast.error("Failed to schedule post");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleUnpublish = async () => {
+    if (!post) return;
+
+    setIsSaving(true);
+    try {
+      await unpublish(post.id);
+      showToast.success("Post unpublished");
+      router.push("/content");
+    } catch (error) {
+      console.error("Failed to unpublish:", error);
+      showToast.error("Failed to unpublish post");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleArchive = async () => {
+    if (!post) return;
+
+    setIsSaving(true);
+    try {
+      await archivePost(post.id);
+      showToast.success("Post archived");
+      router.push("/content");
+    } catch (error) {
+      console.error("Failed to archive:", error);
+      showToast.error("Failed to archive post");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    if (!post) return;
+
+    setIsSaving(true);
+    try {
+      await restorePost(post.id);
+      showToast.success("Post restored");
+      router.push("/content");
+    } catch (error) {
+      console.error("Failed to restore:", error);
+      showToast.error("Failed to restore post");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePublishNow = async () => {
+    if (!post) return;
+
+    setIsSaving(true);
+    try {
+      await publishNow(post.id);
+      showToast.success("Post published");
+      router.push("/content");
+    } catch (error) {
+      console.error("Failed to publish now:", error);
+      showToast.error("Failed to publish post");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancelSchedule = async () => {
+    if (!post) return;
+
+    setIsSaving(true);
+    try {
+      await cancelSchedule(post.id);
+      showToast.success("Schedule cancelled");
+      router.push("/content");
+    } catch (error) {
+      console.error("Failed to cancel schedule:", error);
+      showToast.error("Failed to cancel schedule");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleUpdatePublished = async (mode: "update" | "draft") => {
     if (!formData || !post) return;
-    const slug = formData.slug || post.slug;
-    window.open(`/content/preview/${slug}`, "_blank");
+
+    setIsSaving(true);
+    try {
+      if (mode === "update") {
+        await updatePublishedPost(post.id, formData);
+        showToast.success("Published post updated");
+      } else {
+        const draftRevision = await createDraftRevision(post.id, formData);
+        showToast.success("Draft revision created");
+        router.push(`/content/${draftRevision.slug}`);
+        return;
+      }
+      router.push("/content");
+    } catch (error) {
+      console.error("Failed to update published:", error);
+      showToast.error("Failed to update published post");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="flex h-screen flex-col">
-      {/* Top Action Bar */}
-      <div className="border-b bg-background">
-        <div className="flex h-14 items-center justify-between px-6">
-          <div className="flex items-center gap-4">
-            <Link href="/content">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="size-4" />
-              </Button>
-            </Link>
-            <Separator orientation="vertical" className="h-6" />
-            <div className="flex items-center gap-2">
-              {isSaved && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="size-4 text-green-600" />
-                  <span>Saved</span>
-                </div>
-              )}
-              {hasUnsavedChanges && !isSaved && (
-                <span className="text-sm text-muted-foreground">Unsaved changes</span>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={handleSave}
-              disabled={isSaving || !hasUnsavedChanges}
-            >
-              <Save className="mr-2 size-4" />
-              {isSaving ? "Saving..." : "Save Draft"}
-            </Button>
-            {post && (
-              <Button variant="outline" onClick={handlePreview}>
-                <Eye className="mr-2 size-4" />
-                Preview
-              </Button>
-            )}
-            <Button onClick={handlePublish} disabled={isSaving || !formData}>
-              Publish
-            </Button>
-          </div>
-        </div>
-      </div>
+      <EditorActionBar
+        post={post}
+        formData={formData}
+        hasUnsavedChanges={hasUnsavedChanges}
+        isSaving={isSaving}
+        isSaved={isSaved}
+        lastSavedAt={lastSavedAt}
+        onSave={handleSave}
+        onPublish={handlePublish}
+        onSchedule={handleSchedule}
+        onUnpublish={handleUnpublish}
+        onArchive={handleArchive}
+        onRestore={handleRestore}
+        onReschedule={() => setScheduleDialogOpen(true)}
+        onPublishNow={handlePublishNow}
+        onCancelSchedule={handleCancelSchedule}
+        onUpdatePublished={() => setPublishDialogOpen(true)}
+        onUnsavedChangesChange={setHasUnsavedChanges}
+      />
 
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
@@ -163,14 +303,29 @@ export function EditorShell({
             post={post}
             formData={formData}
             onFormDataChange={(data) => {
+              // Edge case: If status changed from scheduled to draft, cancel schedule
+              if (post?.status === "scheduled" && data.status === "draft" && post.scheduledFor) {
+                cancelSchedule(post.id).catch(console.error);
+              }
               setFormData(data);
               setHasUnsavedChanges(true);
             }}
-            onSchedule={onSchedule}
           />
         </div>
       </div>
+
+      {/* Dialogs */}
+      <PublishDialog
+        open={publishDialogOpen}
+        onOpenChange={setPublishDialogOpen}
+        onConfirm={handleUpdatePublished}
+      />
+      <ScheduleDialog
+        open={scheduleDialogOpen}
+        onOpenChange={setScheduleDialogOpen}
+        onConfirm={handleSchedule}
+        currentScheduledFor={post?.scheduledFor}
+      />
     </div>
   );
 }
-

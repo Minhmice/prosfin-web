@@ -41,24 +41,6 @@ export function HeroVisual({ content, className }: HeroVisualProps) {
           />
         )}
       </div>
-
-      {/* Stats Overlay Card */}
-      {content.stats && content.stats.length > 0 && (
-        <div className="absolute -bottom-4 left-4 right-4 rounded-lg border bg-background/95 p-4 shadow-lg backdrop-blur-sm sm:left-8 sm:right-auto sm:w-auto">
-          <div className="flex flex-wrap gap-4 sm:gap-6">
-            {content.stats.map((stat, index) => (
-              <div key={index} className="flex flex-col">
-                <Text as="div" variant="metric">
-                  {stat.value}
-                </Text>
-                <Text as="div" variant="caption">
-                  {stat.label}
-                </Text>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import * as React from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@prosfin/ui";
 import { ChevronDown, User } from "lucide-react";
 import type { Lead } from "@/types/admin";
+import { updateLeadOwner } from "@/lib/data/leads";
 import { showToast } from "@/lib/toast";
 
 interface InlineOwnerEditProps {
@@ -26,9 +27,7 @@ export function InlineOwnerEdit({ lead, onUpdate }: InlineOwnerEditProps) {
     onUpdate(lead.id, newOwner);
 
     try {
-      // TODO: Call API to update owner
-      // For now, just show toast
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await updateLeadOwner(lead.id, newOwner);
       showToast.success(newOwner ? `Assigned to ${newOwner}` : "Unassigned");
     } catch (error) {
       // Revert on error
@@ -42,7 +41,7 @@ export function InlineOwnerEdit({ lead, onUpdate }: InlineOwnerEditProps) {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1 hover:opacity-80 transition-opacity text-sm">
+        <button className="flex items-center gap-1 hover:opacity-80 transition-opacity text-sm" suppressHydrationWarning>
           {lead.owner ? (
             <>
               <User className="size-3" />

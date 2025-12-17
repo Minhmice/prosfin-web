@@ -57,7 +57,7 @@ export function InlineStatusEdit({ lead, onUpdate }: InlineStatusEditProps) {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1 hover:opacity-80 transition-opacity">
+        <button className="flex items-center gap-1 hover:opacity-80 transition-opacity" suppressHydrationWarning>
           <Badge className={statusColors[lead.status]}>
             {lead.status}
           </Badge>

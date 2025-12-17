@@ -63,7 +63,7 @@ export function HeroTextBlock({
       <Text
         as="p"
         variant="lead"
-        className="mx-auto max-w-md md:max-w-2xl"
+        className="max-w-md md:max-w-2xl"
       >
         {content.subheadline}
       </Text>

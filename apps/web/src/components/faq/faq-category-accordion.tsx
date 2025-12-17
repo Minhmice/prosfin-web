@@ -18,7 +18,11 @@ export type FaqAccordionEntry = {
  * FaqCategoryAccordion
  * Wrapper client component để đảm bảo accordion luôn hydrate & clickable trong Server Pages.
  */
-export function FaqCategoryAccordion({ items }: { items: FaqAccordionEntry[] }) {
+export function FaqCategoryAccordion({
+  items,
+}: {
+  items: FaqAccordionEntry[];
+}) {
   return (
     <Accordion type="single" collapsible>
       {items.map((item) => (
@@ -30,5 +34,3 @@ export function FaqCategoryAccordion({ items }: { items: FaqAccordionEntry[] }) 
     </Accordion>
   );
 }
-
-

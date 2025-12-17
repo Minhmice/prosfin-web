@@ -14,7 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn"
+  ),
   title: {
     default: "ProsFIN - Tư vấn tài chính doanh nghiệp chuẩn Big4",
     template: "%s | ProsFIN",

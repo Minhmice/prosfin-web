@@ -4,6 +4,12 @@ import * as React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { NavigationItem } from "@/data/navigation-content";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/shared/tooltip/animated-tooltip";
 
 export interface SiteNavProps {
   /**
@@ -27,7 +33,7 @@ export interface SiteNavProps {
 
 /**
  * SiteNav - Navigation component
- * 
+ *
  * Render list link tới các section.
  * Component riêng của Navigation.
  */
@@ -67,23 +73,35 @@ export function SiteNav({
       : "flex flex-col gap-0";
 
   return (
-    <nav className={cn(navClasses, className)}>
-      {items.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          onClick={(e) => handleClick(item.href, e)}
-          className={cn(
-            "font-medium text-muted-foreground transition-colors hover:text-foreground",
-            orientation === "horizontal"
-              ? "text-sm"
-              : "w-full py-3 text-base"
-          )}
-        >
-          {item.label}
-        </Link>
-      ))}
-    </nav>
+    <TooltipProvider>
+      <nav className={cn(navClasses, className)}>
+        {items.map((item) => (
+          <Tooltip key={item.href} side="bottom">
+            <TooltipTrigger asChild>
+              <Link
+                href={item.href}
+                onClick={(e) => handleClick(item.href, e)}
+                className={cn(
+                  "font-medium text-muted-foreground transition-colors hover:text-foreground",
+                  orientation === "horizontal" ? "text-sm" : "w-full py-3 text-base"
+                )}
+              >
+                {item.label}
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <div className="space-y-1">
+                <p className="font-semibold">{item.label}</p>
+                {item.description && (
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
+                )}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </nav>
+    </TooltipProvider>
   );
 }
-

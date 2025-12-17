@@ -16,11 +16,11 @@
       "static/media/fba5a26ea33df6a3-s.p.1bbdebe6.woff2",
       "static/media/797e433ab948586e-s.p.dbea232f.woff2"
     ],
-    "[project]/apps/admin/src/app/(app)/content/preview/[slug]/page": [
+    "[project]/apps/admin/src/app/(app)/dashboard/page": [
       "static/media/fba5a26ea33df6a3-s.p.1bbdebe6.woff2",
       "static/media/797e433ab948586e-s.p.dbea232f.woff2"
     ],
-    "[project]/apps/admin/src/app/(app)/dashboard/page": [
+    "[project]/apps/admin/src/app/(app)/documents/page": [
       "static/media/fba5a26ea33df6a3-s.p.1bbdebe6.woff2",
       "static/media/797e433ab948586e-s.p.dbea232f.woff2"
     ],

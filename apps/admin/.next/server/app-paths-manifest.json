@@ -1,5 +1,7 @@
 {
+  "/(app)/@drawer/(.)clients/[id]/page": "app/(app)/@drawer/(.)clients/[id]/page.js",
   "/(app)/@drawer/(.)leads/[id]/page": "app/(app)/@drawer/(.)leads/[id]/page.js",
+  "/(app)/campaigns/[id]/page": "app/(app)/campaigns/[id]/page.js",
   "/(app)/campaigns/page": "app/(app)/campaigns/page.js",
   "/(app)/clients/[id]/page": "app/(app)/clients/[id]/page.js",
   "/(app)/clients/page": "app/(app)/clients/page.js",
@@ -7,6 +9,7 @@
   "/(app)/content/page": "app/(app)/content/page.js",
   "/(app)/content/preview/[slug]/page": "app/(app)/content/preview/[slug]/page.js",
   "/(app)/dashboard/page": "app/(app)/dashboard/page.js",
+  "/(app)/documents/page": "app/(app)/documents/page.js",
   "/(app)/leads/[id]/page": "app/(app)/leads/[id]/page.js",
   "/(app)/leads/page": "app/(app)/leads/page.js",
   "/(app)/media/page": "app/(app)/media/page.js",

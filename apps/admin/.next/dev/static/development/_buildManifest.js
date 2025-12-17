@@ -13,8 +13,8 @@ self.__BUILD_MANIFEST = {
             "value": "/.*"
           }
         ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
       },
       {
         "has": [
@@ -35,217 +35,8 @@ self.__BUILD_MANIFEST = {
             "value": "/.*"
           }
         ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
-      },
-      {
-        "has": [
-          {
-            "type": "header",
-            "key": "next-url",
-            "value": "/.*"
-          }
-        ],
-        "source": "/leads/:nxtPid",
-        "destination": "/(.)leads/:nxtPid"
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
       },
       {
         "has": [
@@ -290,6 +81,171 @@ self.__BUILD_MANIFEST = {
         ],
         "source": "/clients/:nxtPid",
         "destination": "/(.)clients/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/leads/:nxtPid",
+        "destination": "/(.)leads/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/leads/:nxtPid",
+        "destination": "/(.)leads/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/leads/:nxtPid",
+        "destination": "/(.)leads/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/leads/:nxtPid",
+        "destination": "/(.)leads/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/leads/:nxtPid",
+        "destination": "/(.)leads/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/leads/:nxtPid",
+        "destination": "/(.)leads/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/leads/:nxtPid",
+        "destination": "/(.)leads/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/clients/:nxtPid",
+        "destination": "/(.)clients/:nxtPid"
+      },
+      {
+        "has": [
+          {
+            "type": "header",
+            "key": "next-url",
+            "value": "/.*"
+          }
+        ],
+        "source": "/leads/:nxtPid",
+        "destination": "/(.)leads/:nxtPid"
       }
     ],
     "fallback": []

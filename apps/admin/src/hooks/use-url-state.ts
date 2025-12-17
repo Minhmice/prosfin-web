@@ -42,6 +42,12 @@ export function useUrlState<T extends string | number | boolean>(
   // Update URL with new value
   const setValue = useCallback(
     (newValue: T) => {
+      // Don't update if value hasn't changed
+      const currentValue = urlValue ? (parseValue(urlValue, defaultValue) as T) : defaultValue;
+      if (currentValue === newValue) {
+        return;
+      }
+
       // Clear existing debounce timer
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
@@ -70,7 +76,7 @@ export function useUrlState<T extends string | number | boolean>(
         updateUrl();
       }
     },
-    [key, defaultValue, searchParams, pathname, router, options]
+    [key, defaultValue, urlValue, searchParams, pathname, router, options]
   );
 
   // Cleanup debounce timer on unmount
@@ -120,6 +126,12 @@ export function useUrlStateArray(
 
   const setValue = useCallback(
     (newValue: string[]) => {
+      // Don't update if value hasn't changed
+      const currentValue = urlValue ? urlValue.split(",").filter(Boolean) : defaultValue;
+      if (JSON.stringify(currentValue) === JSON.stringify(newValue)) {
+        return;
+      }
+
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
@@ -145,7 +157,7 @@ export function useUrlStateArray(
         updateUrl();
       }
     },
-    [key, defaultValue, searchParams, pathname, router, options]
+    [key, defaultValue, urlValue, searchParams, pathname, router, options]
   );
 
   useEffect(() => {

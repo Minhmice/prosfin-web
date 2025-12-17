@@ -3,7 +3,7 @@ import { ProsfinContainer } from "@/components/layout/container";
 
 /**
  * NotFound - 404 page component
- * 
+ *
  * Page hiển thị khi route không tồn tại.
  */
 export default function NotFound() {
@@ -24,4 +24,3 @@ export default function NotFound() {
     </div>
   );
 }
-

@@ -2,13 +2,31 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, Tabs, TabsList, TabsTrigger, TabsContent, Badge, Button } from "@prosfin/ui";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  Badge,
+  Button,
+} from "@prosfin/ui";
 import { X, Copy, User, Tag, ArrowRight } from "lucide-react";
 import { LeadDetailOverview } from "./lead-detail-overview";
 import { LeadDetailActivity } from "./lead-detail-activity";
+import { LeadDetailNotes } from "./lead-detail-notes";
 import { LeadDetailAttribution } from "./lead-detail-attribution";
+import { ConvertLeadDialog } from "./convert-lead-dialog";
+import { StatusChangeDialog } from "./status-change-dialog";
 import { showToast } from "@/lib/toast";
-import type { Lead } from "@/types/admin";
+import type { Lead, LeadStatus } from "@/types/admin";
 
 interface LeadDetailDrawerProps {
   lead: Lead | null;
@@ -25,9 +43,27 @@ const statusColors: Record<Lead["status"], string> = {
   lost: "bg-red-100 text-red-800",
 };
 
+// Hook to detect if mobile
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  return isMobile;
+}
+
 export function LeadDetailDrawer({ lead, open, onOpenChange }: LeadDetailDrawerProps) {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const [convertDialogOpen, setConvertDialogOpen] = React.useState(false);
+  const [statusDialogOpen, setStatusDialogOpen] = React.useState(false);
 
   const handleClose = React.useCallback(() => {
     router.push("/leads");
@@ -61,112 +97,130 @@ export function LeadDetailDrawer({ lead, open, onOpenChange }: LeadDetailDrawerP
     }
   };
 
-  return (
-    <Sheet open={open} onOpenChange={handleClose}>
-      <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
-        <SheetHeader className="sticky top-0 bg-background z-10 pb-4 border-b">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <SheetTitle className="text-lg font-semibold mb-2">
-                {lead.name}
-              </SheetTitle>
-              <div className="flex items-center gap-2 flex-wrap">
-                {lead.company && (
-                  <span className="text-sm text-muted-foreground">{lead.company}</span>
-                )}
-                <Badge className={statusColors[lead.status]}>
-                  {lead.status}
+  const drawerContent = (
+    <>
+      <div className="sticky top-0 bg-background z-10 pb-4 border-b">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h2 className="text-lg font-semibold mb-2">{lead.name}</h2>
+            <div className="flex items-center gap-2 flex-wrap">
+              {lead.company && (
+                <span className="text-sm text-muted-foreground">{lead.company}</span>
+              )}
+              <Badge className={statusColors[lead.status]}>
+                {lead.status}
+              </Badge>
+              {lead.owner && (
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <User className="size-3" />
+                  {lead.owner}
                 </Badge>
-                {lead.owner && (
-                  <Badge variant="outline" className="flex items-center gap-1">
-                    <User className="size-3" />
-                    {lead.owner}
-                  </Badge>
-                )}
-              </div>
+              )}
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClose}
-              className="h-8 w-8"
-            >
-              <X className="size-4" />
-            </Button>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleClose}
+            className="h-8 w-8"
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
 
-          {/* Quick Actions */}
-          <div className="flex items-center gap-2 mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                // TODO: Open status change dialog
-                showToast.info("Status change dialog (coming soon)");
-              }}
-            >
-              <Tag className="mr-2 size-3" />
-              Change Status
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setConvertDialogOpen(true)}
-            >
-              <ArrowRight className="mr-2 size-3" />
-              Convert to Client
-            </Button>
+        {/* Quick Actions */}
+        <div className="flex items-center gap-2 mt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setStatusDialogOpen(true)}
+          >
+            <Tag className="mr-2 size-3" />
+            Change Status
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setConvertDialogOpen(true)}
+          >
+            <ArrowRight className="mr-2 size-3" />
+            Convert to Client
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleCopyEmail}
+            className="h-8 w-8"
+            title="Copy email"
+          >
+            <Copy className="size-4" />
+          </Button>
+          {lead.phone && (
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleCopyEmail}
+              onClick={handleCopyPhone}
               className="h-8 w-8"
-              title="Copy email"
+              title="Copy phone"
             >
               <Copy className="size-4" />
             </Button>
-            {lead.phone && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleCopyPhone}
-                className="h-8 w-8"
-                title="Copy phone"
-              >
-                <Copy className="size-4" />
-              </Button>
-            )}
-          </div>
-        </SheetHeader>
-
-        <div className="mt-6">
-          <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
-              <TabsTrigger value="notes">Notes</TabsTrigger>
-              <TabsTrigger value="attribution">Attribution</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="overview" className="mt-4">
-              <LeadDetailOverview lead={lead} />
-            </TabsContent>
-
-            <TabsContent value="activity" className="mt-4">
-              <LeadDetailActivity lead={lead} />
-            </TabsContent>
-
-            <TabsContent value="notes" className="mt-4">
-              <LeadDetailNotes lead={lead} />
-            </TabsContent>
-
-            <TabsContent value="attribution" className="mt-4">
-              <LeadDetailAttribution lead={lead} />
-            </TabsContent>
-          </Tabs>
+          )}
         </div>
-      </SheetContent>
+      </div>
 
+      <div className="mt-6">
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
+            <TabsTrigger value="notes">Notes</TabsTrigger>
+            <TabsTrigger value="attribution">Attribution</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="mt-4">
+            <LeadDetailOverview lead={lead} />
+          </TabsContent>
+
+          <TabsContent value="activity" className="mt-4">
+            <LeadDetailActivity lead={lead} />
+          </TabsContent>
+
+          <TabsContent value="notes" className="mt-4">
+            <LeadDetailNotes lead={lead} />
+          </TabsContent>
+
+          <TabsContent value="attribution" className="mt-4">
+            <LeadDetailAttribution lead={lead} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </>
+  );
+
+  return (
+    <>
+      {isMobile ? (
+        <Sheet open={open} onOpenChange={handleClose}>
+          <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
+            {drawerContent}
+          </SheetContent>
+        </Sheet>
+      ) : (
+        <Dialog open={open} onOpenChange={handleClose}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            {drawerContent}
+          </DialogContent>
+        </Dialog>
+      )}
+      <StatusChangeDialog
+        lead={lead}
+        open={statusDialogOpen}
+        onOpenChange={setStatusDialogOpen}
+        onStatusChanged={(leadId, newStatus) => {
+          // Status updated - parent should refresh if needed
+        }}
+      />
       <ConvertLeadDialog
         lead={lead}
         open={convertDialogOpen}
@@ -176,7 +230,7 @@ export function LeadDetailDrawer({ lead, open, onOpenChange }: LeadDetailDrawerP
           showToast.success("Lead converted successfully");
         }}
       />
-    </Sheet>
+    </>
   );
 }
 
