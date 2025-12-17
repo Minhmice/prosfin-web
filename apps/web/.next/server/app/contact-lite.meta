@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/contact-lite/layout,_N_T_/contact-lite/page,_N_T_/contact-lite"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/contact-lite/__PAGE__",
+    "/contact-lite",
+    "/_index",
+    "/_head"
+  ]
+}

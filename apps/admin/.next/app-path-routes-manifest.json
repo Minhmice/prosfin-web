@@ -1,0 +1,16 @@
+{
+  "/(app)/@drawer/(.)leads/[id]/page": "/(.)leads/[id]",
+  "/(app)/campaigns/page": "/campaigns",
+  "/(app)/clients/[id]/page": "/clients/[id]",
+  "/(app)/clients/page": "/clients",
+  "/(app)/content/[slug]/page": "/content/[slug]",
+  "/(app)/content/page": "/content",
+  "/(app)/content/preview/[slug]/page": "/content/preview/[slug]",
+  "/(app)/dashboard/page": "/dashboard",
+  "/(app)/leads/[id]/page": "/leads/[id]",
+  "/(app)/leads/page": "/leads",
+  "/(app)/media/page": "/media",
+  "/(app)/settings/page": "/settings",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found"
+}

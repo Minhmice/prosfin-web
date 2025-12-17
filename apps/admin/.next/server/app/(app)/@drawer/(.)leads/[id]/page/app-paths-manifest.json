@@ -1,0 +1,3 @@
+{
+  "/(app)/@drawer/(.)leads/[id]/page": "app/(app)/@drawer/(.)leads/[id]/page.js"
+}

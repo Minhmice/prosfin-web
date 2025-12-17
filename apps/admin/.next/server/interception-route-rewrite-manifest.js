@@ -1,0 +1,1 @@
+self.__INTERCEPTION_ROUTE_REWRITE_MANIFEST="[{\"source\":\"/leads/:nxtPid\",\"destination\":\"/(.)leads/:nxtPid\",\"has\":[{\"type\":\"header\",\"key\":\"next-url\",\"value\":\"/.*\"}],\"internal\":true,\"regex\":\"^/leads/(?<nxtPid>[^/]+?)(?:/)?$\"}]";

@@ -1,0 +1,12 @@
+{
+  "/(app)/campaigns/page": "app/(app)/campaigns/page.js",
+  "/(app)/clients/page": "app/(app)/clients/page.js",
+  "/(app)/content/[slug]/page": "app/(app)/content/[slug]/page.js",
+  "/(app)/content/page": "app/(app)/content/page.js",
+  "/(app)/content/preview/[slug]/page": "app/(app)/content/preview/[slug]/page.js",
+  "/(app)/dashboard/page": "app/(app)/dashboard/page.js",
+  "/(app)/leads/page": "app/(app)/leads/page.js",
+  "/(app)/media/page": "app/(app)/media/page.js",
+  "/(app)/settings/page": "app/(app)/settings/page.js",
+  "/_not-found/page": "app/_not-found/page.js"
+}

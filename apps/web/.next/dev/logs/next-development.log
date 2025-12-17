@@ -1,0 +1,41 @@
+[00:00:01.013] Server  LOG      ✓ Ready in 770ms
+[00:00:31.019] Server  LOG      ○ Compiling / ...
+[00:00:32.943] Server  WARN     ⚠ Cross origin request detected from 192.168.0.211 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:00:32.988] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:34.059] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:00:34.061] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:11:12.277] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:11:12.377] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:11:12.825] Browser WARN    Image with src "http://localhost:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:11:12.891] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:11:17.440] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:12:48.013] Server  LOG      ✓ Compiled in 125ms
+[00:12:48.243] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:12:52.819] Server  LOG      ✓ Compiled in 132ms
+[00:12:53.004] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:12:56.963] Server  LOG      ✓ Compiled in 87ms
+[00:12:57.148] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:23:02.227] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:23:02.387] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:23:02.741] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:23:43.322] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:23:43.493] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:23:45.674] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:23:45.819] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:23:46.095] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:24:27.210] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:27.399] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:24:28.257] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:28.422] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:24:29.090] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:24:29.220] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:29.461] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:24:30.247] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:30.431] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:24:30.870] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+[00:24:31.026] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:31.281] Browser WARN    Image with src "http://192.168.0.211:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:55:32.432] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:55:32.587] Browser WARN    Image with src "http://localhost:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:55:35.321] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null

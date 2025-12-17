@@ -1,0 +1,3 @@
+module.exports=[26642,a=>{"use strict";var b=a.i(87842);a.i(30154);var c=a.i(70771);function d(){return(0,b.jsxs)("div",{className:"space-y-4",children:[(0,b.jsx)(c.AdminSkeleton,{variant:"rectangular",className:"h-10 w-full"}),Array.from({length:5}).map((a,d)=>(0,b.jsx)(c.AdminSkeleton,{variant:"rectangular",className:"h-16 w-full"},d))]})}a.s(["default",()=>d])}];
+
+//# sourceMappingURL=apps_admin_src_app_%28app%29_leads_loading_tsx_248e5cdb._.js.map

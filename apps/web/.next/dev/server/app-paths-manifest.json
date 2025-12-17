@@ -1,0 +1,6 @@
+{
+  "/(marketing)/about/page": "app/(marketing)/about/page.js",
+  "/(marketing)/case-studies/page": "app/(marketing)/case-studies/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js"
+}
