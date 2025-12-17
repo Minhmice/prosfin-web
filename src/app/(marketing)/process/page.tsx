@@ -7,7 +7,6 @@ import {
   ProsfinSectionHeading,
   ProsfinPrimaryButton,
 } from "@/components/shared";
-import { ProcessTimelineScroll } from "@/components/shared/animation/process-timeline-scroll";
 import { StepDetailsSection } from "./components/step-details-section";
 import { TimelineSection } from "./components/timeline-section";
 import { PersonasSection } from "./components/personas-section";

@@ -68,7 +68,7 @@ export function ContactForm({
       });
       
       form.reset();
-    } catch (error) {
+    } catch {
       toast.toast({
         description: formContent.contactForm.errorMessage,
         variant: "error",

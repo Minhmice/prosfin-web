@@ -34,11 +34,6 @@ export interface RevealOnScrollProps {
    * Additional className
    */
   className?: string;
-  /**
-   * HTML tag to render
-   * @default "div"
-   */
-  as?: keyof JSX.IntrinsicElements;
 }
 
 /**
@@ -61,7 +56,6 @@ export function RevealOnScroll({
   distance = 30,
   duration = 0.6,
   className,
-  as: Component = "div",
 }: RevealOnScrollProps) {
   const { ref, isInView } = useInViewAnimation({ delay, threshold: 0.1 });
 
@@ -97,11 +91,9 @@ export function RevealOnScroll({
     }
   };
 
-  const MotionComponent = motion[Component as keyof typeof motion] || motion.div;
-
   return (
-    <MotionComponent
-      ref={ref as React.Ref<HTMLElement>}
+    <motion.div
+      ref={ref as React.Ref<HTMLDivElement>}
       initial={getInitialPosition()}
       animate={isInView ? getAnimatePosition() : getInitialPosition()}
       transition={{
@@ -111,7 +103,7 @@ export function RevealOnScroll({
       className={cn(className)}
     >
       {children}
-    </MotionComponent>
+    </motion.div>
   );
 }
 

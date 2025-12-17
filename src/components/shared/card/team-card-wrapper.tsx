@@ -62,15 +62,6 @@ export function ProsfinTeamCardWrapper({
   linkedInUrl,
   className,
 }: ProsfinTeamCardWrapperProps) {
-  const getInitials = (fullName: string) => {
-    return fullName
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <Card
       className={cn(
@@ -94,9 +85,6 @@ export function ProsfinTeamCardWrapper({
             </div>
           ) : (
             <AvatarPlaceholder
-              label={getInitials(name)}
-              icon={undefined}
-              size="lg"
               className="h-24 w-24 rounded-full"
             />
           )}

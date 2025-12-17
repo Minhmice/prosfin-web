@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { H1, H2, ProsfinPrimaryButton, Text } from "@/components/shared";
 import { ProsfinContainer } from "@/components/layout/container";
 

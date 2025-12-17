@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import { caseStudyDetailMap } from "@/data/case-detail";
 import { H1, H2, ProsfinSectionWrapper, ProsfinPrimaryButton, Text } from "@/components/shared";
 import { CaseStudyScrollStory } from "@/components/shared/animation/case-study-scroll-story";
-import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
 
 interface CaseStudyDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -156,7 +155,7 @@ export default function CaseStudyDetailPage({
           <div className="max-w-3xl">
             <div className="rounded-lg border-l-4 border-primary bg-muted/50 p-6">
               <Text as="p" variant="large" className="italic leading-relaxed">
-                "{quote}"
+                &ldquo;{quote}&rdquo;
               </Text>
             </div>
           </div>

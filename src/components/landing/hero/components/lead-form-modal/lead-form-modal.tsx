@@ -13,6 +13,7 @@ import {
 import { Form } from "@/components/ui/form";
 import { useProsfinToast } from "@/components/shared";
 import { formContent } from "@/data/form-content";
+import { useAttribution } from "@/hooks/use-attribution";
 import { LeadFormActions } from "./lead-form-actions";
 import { LeadFormFields } from "./lead-form-fields";
 import { leadFormSchema, type LeadFormValues } from "./schema";
@@ -27,6 +28,7 @@ interface HeroLeadFormModalProps {
  */
 export function HeroLeadFormModal({ open, onOpenChange }: HeroLeadFormModalProps) {
   const toast = useProsfinToast();
+  const { attribution } = useAttribution();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<LeadFormValues>({
@@ -43,8 +45,14 @@ export function HeroLeadFormModal({ open, onOpenChange }: HeroLeadFormModalProps
   const onSubmit = async (data: LeadFormValues) => {
     setIsSubmitting(true);
     try {
+      // Include attribution in submission (for Phase 3 API)
+      const payload = {
+        ...data,
+        attribution: attribution || undefined,
+      };
+      
       // TODO: Connect to API endpoint /api/leads or Supabase
-      console.log("Lead form submitted:", data);
+      console.log("Lead form submitted with attribution:", payload);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast.toast({

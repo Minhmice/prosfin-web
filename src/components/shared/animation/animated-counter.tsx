@@ -60,8 +60,8 @@ export function AnimatedCounter({
 }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = React.useState(0);
   const { ref, isInView } = useInViewAnimation({ delay: 100, threshold: 0.3 });
-  const animationFrameRef = React.useRef<number>();
-  const startTimeRef = React.useRef<number>();
+  const animationFrameRef = React.useRef<number | undefined>(undefined);
+  const startTimeRef = React.useRef<number | undefined>(undefined);
 
   React.useEffect(() => {
     if (!isInView) {

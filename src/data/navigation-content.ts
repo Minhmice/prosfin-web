@@ -13,11 +13,11 @@ export interface NavigationItem {
 export const navigationItems: NavigationItem[] = [
   {
     label: "Dịch vụ",
-    href: "/services",
+    href: "/#services", // Anchor link to landing section
   },
   {
     label: "Quy trình",
-    href: "/process",
+    href: "/#process", // Anchor link to landing section
   },
   {
     label: "Câu chuyện khách hàng",
@@ -29,7 +29,7 @@ export const navigationItems: NavigationItem[] = [
   },
   {
     label: "FAQ",
-    href: "/faq",
+    href: "/#faq", // Anchor link to landing section
   },
 ];
 

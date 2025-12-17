@@ -6,12 +6,14 @@ import { HeroTextBlock } from "./hero-text-block";
 import { HeroVisual } from "./hero-visual";
 import { MiniLeadFormModal } from "./components/mini-lead-form/mini-lead-form-modal";
 import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
-import { heroContent } from "@/data/heroContent";
 import { useHeroModal } from "./hero-modal-context";
 import { cn } from "@/lib/utils";
 
 
+import { type LandingContent } from "@/lib/content/types";
+
 interface HeroSectionProps {
+  content: LandingContent["hero"];
   className?: string;
 }
 
@@ -22,8 +24,25 @@ interface HeroSectionProps {
  * Desktop: grid 2 cột, Mobile: stack dọc.
  * Chiều cao khoảng 80-100vh, padding responsive.
  */
-export function HeroSection({ className }: HeroSectionProps) {
+export function HeroSection({ content, className }: HeroSectionProps) {
   const { isModalOpen, openModal, closeModal } = useHeroModal();
+
+  // Convert LandingContent hero to HeroContent format
+  const heroContent = {
+    eyebrow: content.eyebrow || "",
+    headline: content.title,
+    subheadline: content.subtitle || "",
+    primaryCta: content.cta
+      ? {
+          label: content.cta.label,
+          href: content.cta.href || "#",
+        }
+      : { label: "Đặt lịch", href: "#" },
+    secondaryCta: { label: "Xem dịch vụ", href: "/services" },
+    note: "",
+    stats: content.stats || [],
+    heroImage: content.heroImage || "",
+  };
 
   return (
     <>

@@ -1,13 +1,23 @@
 import * as React from "react";
-import { Badge, type BadgeProps } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
+import { type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-export interface ProsfinBadgeProps extends BadgeProps {
+export interface ProsfinBadgeProps
+  extends Omit<React.ComponentProps<typeof Badge>, "variant"> {
   /**
    * Badge variant for different use cases
    * @default "default"
    */
   badgeVariant?: "default" | "primary" | "success" | "warning" | "info";
+  /**
+   * Shadcn variant (optional, will be overridden by badgeVariant)
+   */
+  variant?: VariantProps<typeof badgeVariants>["variant"];
+  /**
+   * Children content
+   */
+  children?: React.ReactNode;
 }
 
 /**
@@ -23,7 +33,7 @@ export function ProsfinBadge({
   variant,
   ...props
 }: ProsfinBadgeProps) {
-  const variantMap: Record<string, BadgeProps["variant"]> = {
+  const variantMap: Record<string, VariantProps<typeof badgeVariants>["variant"]> = {
     default: "default",
     primary: "default",
     success: "default",

@@ -11,7 +11,7 @@ import { contactSectionContent } from "@/data/contact-content";
  * Trang liên hệ và đặt lịch tư vấn.
  */
 export default function ContactPage() {
-  const { hero, formFields, privacyNote, faqs } = contactPageContent;
+  const { hero, privacyNote, faqs } = contactPageContent;
 
   return (
     <>

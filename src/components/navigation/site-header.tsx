@@ -34,21 +34,27 @@ export function SiteHeader({ className }: SiteHeaderProps) {
       // Anchor link - scroll to section
       const element = document.querySelector(href);
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     } else if (href.startsWith("/")) {
       // Page link - navigate to page
-      // If on landing page and link has anchor, scroll to section
       if (window.location.pathname === "/" && href.includes("#")) {
+        // On landing page, scroll to anchor
         const [path, anchor] = href.split("#");
         if (path === "/" && anchor) {
           const element = document.querySelector(`#${anchor}`);
           if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         }
+      } else if (href.startsWith("/#")) {
+        // Link to landing page anchor from other pages
+        const anchor = href.replace("/#", "#");
+        window.location.href = `/${anchor}`;
+      } else {
+        // Regular page navigation - let Next.js handle
+        window.location.href = href;
       }
-      // Otherwise, let Next.js Link handle navigation
     }
     setMobileMenuOpen(false);
   };

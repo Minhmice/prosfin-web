@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormTitle, ProsfinPrimaryButton, Text } from "@/components/shared";
 import { useLeadDraft } from "@/hooks/use-lead-draft";
+import { useAttribution } from "@/hooks/use-attribution";
 
 const miniLeadSchema = z.object({
   fullName: z.string().min(2, "Họ tên cần ít nhất 2 ký tự"),
@@ -41,6 +42,7 @@ export function MiniLeadForm({
 }) {
   const router = useRouter();
   const { draft, hydrated, updateDraft } = useLeadDraft();
+  const { attribution } = useAttribution();
   const [submitting, setSubmitting] = React.useState(false);
 
   const form = useForm<MiniLeadValues>({
@@ -71,6 +73,16 @@ export function MiniLeadForm({
     setSubmitting(true);
     try {
       updateDraft(values);
+      
+      // Include attribution in submission (for Phase 3 API)
+      const payload = {
+        ...values,
+        attribution: attribution || undefined,
+      };
+      
+      // TODO: Connect to API endpoint /api/leads or Supabase
+      console.log("Lead form submitted with attribution:", payload);
+      
       onSubmitted?.();
       router.push("/onboarding/thanks");
     } finally {

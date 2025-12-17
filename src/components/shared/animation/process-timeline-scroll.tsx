@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useInViewAnimation } from "@/hooks/use-in-view-animation";
 import { cn } from "@/lib/utils";
 
 export interface ProcessTimelineStep {

@@ -16,7 +16,7 @@ import Link from "next/link";
  * Trang tổng quan về các dịch vụ của ProsFIN.
  */
 export default function ServicesPage() {
-  const { hero, packages, segments, valueProps, miniCases, faqs } =
+  const { hero, packages, valueProps, miniCases, faqs } =
     servicesPageContent;
 
   return (

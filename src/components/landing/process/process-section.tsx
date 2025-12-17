@@ -22,7 +22,7 @@ export interface ProcessSectionProps {
  * 
  * Server Component (không có state phức tạp, chỉ render UI).
  */
-export function ProcessSection({ onCtaClick }: ProcessSectionProps) {
+export function ProcessSection({}: ProcessSectionProps) {
   return (
     <ProsfinSectionWrapper
       id="process"

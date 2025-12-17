@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 export interface ProsfinButtonProps
@@ -25,7 +26,7 @@ export function ProsfinButton({
   ...props
 }: ProsfinButtonProps) {
   // Map brand variants to shadcn variants
-  const variantMap: Record<string, ButtonProps["variant"]> = {
+  const variantMap: Record<string, VariantProps<typeof buttonVariants>["variant"]> = {
     primary: "default",
     secondary: "secondary",
     outline: "outline",

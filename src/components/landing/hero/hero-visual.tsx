@@ -36,11 +36,8 @@ export function HeroVisual({ content, className }: HeroVisualProps) {
         ) : (
           <HeroImagePlaceholder
             className="absolute inset-0 h-full w-full"
-            aspectRatio="auto"
             showBorder={true}
             dashed={true}
-            label="Dashboard Mockup"
-            icon="📊"
           />
         )}
       </div>

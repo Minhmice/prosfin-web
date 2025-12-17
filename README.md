@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ProsFIN Web
 
-## Getting Started
+Website marketing cho ProsFIN (B2B/financial advisory), xây bằng Next.js App Router.
 
-First, run the development server:
+## Tech stack
+
+- **Next.js**: 16.x (App Router)
+- **React**: 19.x
+- **TypeScript**: 5.x
+- **Tailwind CSS**: v4 (import qua `src/app/globals.css`)
+- **shadcn/ui + Radix**: UI primitives trong `src/components/ui/**`
+- **Form**: React Hook Form + Zod
+- **Animation**: Framer Motion + GSAP (một số section)
+
+## Yêu cầu hệ thống
+
+- **Node.js**: khuyến nghị **>= 20**
+- **npm**: repo đang dùng `package-lock.json`
+
+## Cài đặt
+
+```bash
+npm install
+```
+
+## Chạy local (dev)
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mở `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **dev**: `npm run dev`
+- **lint**: `npm run lint`
+- **build**: `npm run build`
+- **start** (production): `npm run start`
 
-## Learn More
+> Lưu ý: hiện tại project **không có file `.env*`** và cũng **không dùng `process.env`** trong `src/`.
 
-To learn more about Next.js, take a look at the following resources:
+## Routes chính (App Router)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Các page nằm trong `src/app/**`:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `/` – Landing
+- `/services` – Dịch vụ
+- `/services/[slug]` – Chi tiết dịch vụ
+- `/process` – Quy trình
+- `/case-studies` – Câu chuyện khách hàng
+- `/case-studies/[slug]` – Chi tiết case study
+- `/about` – Về ProsFIN
+- `/faq` – FAQ
+- `/contact` – Liên hệ
+- `/onboarding/*` – Flow onboarding (form)
 
-## Deploy on Vercel
+## Cấu trúc thư mục (high-level)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `src/app/`: route + layout (Next App Router)
+- `src/components/`:
+  - `landing/`: section của landing (hero, services, process, about, faq, contact…)
+  - `navigation/`: header/nav/mobile menu/sticky CTA
+  - `layout/`: layout wrappers (vd: `MarketingLayout`)
+  - `shared/`: wrapper UI dùng chung (button/card/section/toast/animation…)
+  - `ui/`: **shadcn/ui** (Radix primitives)
+- `src/data/`: nội dung dạng data-driven (CTA/microcopy, services, process, faq…)
+- `src/hooks/`: custom hooks
+- `src/lib/`: utilities (vd: `cn`/helpers)
+- `public/`: static assets (logo, icon…)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Styling & theme
+
+- Global styles + token màu nằm ở `src/app/globals.css` (định nghĩa CSS variables cho theme).
+- Alias import: `@/*` trỏ về `src/*` (xem `tsconfig.json`).
+
+## Quy ước khi phát triển (để dễ maintain)
+
+- **Không chỉnh trực tiếp shadcn/ui**: không sửa file trong `src/components/ui/**`. Nếu cần “custom UI”, tạo wrapper trong `src/components/shared/**` hoặc `src/components/**` rồi compose từ `@/components/ui/...`.
+- **Component TSX giữ gọn**: ưu tiên tách nhỏ component/hook nếu file bắt đầu dài/khó đọc.
+- **Microcopy/data**: text/label/CTA nên đặt trong `src/data/**` thay vì hardcode.
+
+## Ghi chú về form (demo)
+
+Một số form/CTA hiện đang ở mode demo (log/alert) và chưa nối backend/API (có TODO trong code).
+
+## Deploy
+
+Có thể deploy lên Vercel như một Next.js app tiêu chuẩn. Nếu cần cấu hình domain/SEO/analytics, hãy bổ sung theo môi trường triển khai.

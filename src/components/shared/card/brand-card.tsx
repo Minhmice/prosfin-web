@@ -7,11 +7,10 @@ import {
   CardAction,
   CardDescription,
   CardContent,
-  type CardProps,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-export interface ProsfinCardProps extends CardProps {
+export interface ProsfinCardProps extends React.ComponentProps<typeof Card> {
   /**
    * Card variant for different use cases
    * @default "default"

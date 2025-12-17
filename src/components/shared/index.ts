@@ -134,3 +134,9 @@ export {
   type ScrollTopButtonProps,
 } from "./scroll/scroll-top-button";
 
+// Wrapper components (Phase 1)
+export * from "./wrappers";
+
+// Pattern components (Phase 1)
+export * from "./patterns";
+
