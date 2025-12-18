@@ -1,4 +1,4 @@
-import type { Client } from "@/types"
+import type { Client } from "@/features/crm/types"
 
 const names = [
   "Alice Johnson", "Bob Williams", "Carol Miller", "Derek Moore", "Eva Taylor",
@@ -22,36 +22,72 @@ const companies = [
   "Photon Group", "Atom Corp", "Molecule Tech", "Compound Systems", "Element Group",
 ]
 
+const titles = [
+  "CEO", "CFO", "CTO", "COO", "CMO", "VP Sales", "VP Marketing", "Director", "Manager", undefined,
+]
+
 const owners = [
-  "John Manager", "Jane Director", "Mike Lead", "Sarah Admin", undefined,
+  { id: "user-1", name: "John Manager" },
+  { id: "user-2", name: "Jane Director" },
+  { id: "user-3", name: "Mike Lead" },
+  { id: "user-4", name: "Sarah Admin" },
+  undefined,
 ]
 
 const statuses: Client["status"][] = ["active", "inactive", "archived"]
 
+const tags = [
+  ["vip", "enterprise"],
+  ["startup"],
+  ["sme"],
+  ["enterprise", "vip"],
+  [],
+  ["startup", "sme"],
+  ["vip"],
+  [],
+  ["enterprise"],
+  ["sme"],
+]
+
+// Fixed dates để data không thay đổi
+const baseDate = new Date("2024-01-01T00:00:00Z")
+const daysAgo = (days: number) => new Date(baseDate.getTime() - days * 24 * 60 * 60 * 1000)
+
 function generateClients(count: number): Client[] {
   const clients: Client[] = []
-  const now = new Date()
 
   for (let i = 0; i < count; i++) {
     const name = names[i % names.length]
     const company = companies[i % companies.length]
     const email = `${name.toLowerCase().replace(/\s+/g, ".")}@${company.toLowerCase().replace(/\s+/g, "")}.com`
-    const status = statuses[Math.floor(Math.random() * statuses.length)]
-    const owner = owners[Math.floor(Math.random() * owners.length)]
-    const createdAt = new Date(now.getTime() - Math.random() * 180 * 24 * 60 * 60 * 1000)
+    const status = statuses[i % statuses.length]
+    const owner = owners[i % owners.length]
+    const title = titles[i % titles.length]
+    const clientTags = tags[i % tags.length]
+    const createdAt = daysAgo(180 - (i % 180))
+    const updatedAt = daysAgo(180 - (i % 180) - (i % 30))
+    const lastContactedAt = i % 3 === 0 ? daysAgo(30 - (i % 30)) : undefined
+    const phone = i % 2 === 0 ? `+84${900000000 + i}` : undefined
 
     clients.push({
       id: `client-${i + 1}`,
       name,
       company,
+      title,
       email,
+      phone,
       status,
-      owner,
+      ownerId: owner?.id,
+      ownerName: owner?.name,
+      tags: clientTags,
+      lastContactedAt,
       createdAt,
+      updatedAt,
     })
   }
 
   return clients
 }
 
-export const mockClients = generateClients(50)
+// Generate once và export constant để data không thay đổi
+export const mockClients: Client[] = generateClients(50)

@@ -8,6 +8,7 @@ import { z } from "zod"
 export const clientSchema = z.object({
   name: z.string().min(1, "Name is required"),
   company: z.string().min(1, "Company is required"),
+  title: z.string().optional(),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
   status: z.enum(["active", "inactive", "archived"]),
@@ -15,6 +16,19 @@ export const clientSchema = z.object({
   ownerName: z.string().optional(),
   tags: z.array(z.string()).default([]),
   lastContactedAt: z.date().optional(),
+})
+
+export const clientListQuerySchema = z.object({
+  q: z.string().optional(),
+  status: z.enum(["active", "inactive", "archived"]).optional(),
+  owner: z.string().optional(),
+  tags: z.union([
+    z.array(z.string()),
+    z.string().transform((val) => [val]),
+  ]).optional(),
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(100).default(20),
+  sort: z.string().optional(), // format: "-updatedAt" or "name.asc"
 })
 
 export type ClientFormData = z.infer<typeof clientSchema>

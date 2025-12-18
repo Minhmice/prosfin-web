@@ -1,0 +1,280 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Auth
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  passwordHash  String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  roles         UserRole[]
+  accounts      Account[]
+  sessions      Session[]
+  posts         Post[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  
+  users       UserRole[]
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, roleId])
+}
+
+// CRM
+model Client {
+  id             String    @id @default(cuid())
+  name           String
+  company        String
+  email          String
+  phone          String?
+  status         String    @default("active")
+  ownerId        String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  lastContactedAt DateTime?
+  
+  tags           ClientTag[]
+  activityEvents ActivityEvent[]
+  
+  @@index([status])
+  @@index([createdAt])
+  @@index([ownerId])
+}
+
+model ClientTag {
+  id       String   @id @default(cuid())
+  clientId String
+  tagId    String
+  createdAt DateTime @default(now())
+  
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@unique([clientId, tagId])
+}
+
+model Lead {
+  id             String    @id @default(cuid())
+  name           String
+  company        String
+  email          String
+  phone          String?
+  interest       String?
+  status         String    @default("new")
+  source         String
+  ownerId        String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  attribution    LeadAttribution?
+  tags           LeadTag[]
+  activityEvents ActivityEvent[]
+  
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
+  @@index([ownerId])
+}
+
+model LeadTag {
+  id       String   @id @default(cuid())
+  leadId   String
+  tagId    String
+  createdAt DateTime @default(now())
+  
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@unique([leadId, tagId])
+}
+
+model LeadAttribution {
+  id          String   @id @default(cuid())
+  leadId      String   @unique
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmTerm     String?
+  utmContent  String?
+  referrer    String?
+  landingPath String?
+  userAgent   String?  @db.Text
+  createdAt   DateTime @default(now())
+  
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  clientTags ClientTag[]
+  leadTags   LeadTag[]
+  postTags   PostTag[]
+}
+
+model ActivityEvent {
+  id        String   @id @default(cuid())
+  type      String
+  entityType String
+  entityId   String
+  userId     String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  
+  client Client? @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  lead   Lead?   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+}
+
+// Content
+model Post {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?   @db.Text
+  content     String    @db.Text
+  status      String    @default("draft")
+  coverMediaId String?
+  categoryId  String?
+  authorId    String
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  category    Category? @relation(fields: [categoryId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id])
+  coverMedia  MediaAsset? @relation("PostCoverMedia", fields: [coverMediaId], references: [id])
+  tags        PostTag[]
+  schedules   Schedule[]
+  comments    Comment[]
+  
+  @@index([status])
+  @@index([slug])
+  @@index([scheduledAt])
+  @@index([publishedAt])
+  @@index([createdAt])
+  @@index([authorId])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  posts Post[]
+}
+
+model PostTag {
+  id       String   @id @default(cuid())
+  postId   String
+  tagId    String
+  createdAt DateTime @default(now())
+  
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@unique([postId, tagId])
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  type      String
+  name      String
+  size      Int
+  mime      String
+  url       String
+  key       String   @unique
+  width     Int?
+  height    Int?
+  createdBy String
+  createdAt DateTime @default(now())
+  
+  coverPosts Post[] @relation("PostCoverMedia")
+  
+  @@index([key])
+  @@index([createdAt])
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  postId      String
+  scheduledAt DateTime
+  status      String   @default("queued")
+  channel     String?
+  createdAt   DateTime @default(now())
+  
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  authorName String
+  authorEmail String?
+  content   String   @db.Text
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+

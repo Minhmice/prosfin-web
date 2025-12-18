@@ -50,6 +50,7 @@ export function ClientFormSheet({
     defaultValues: {
       name: client?.name || "",
       company: client?.company || "",
+      title: client?.title || "",
       email: client?.email || "",
       phone: client?.phone || "",
       status: client?.status || "active",
@@ -64,6 +65,7 @@ export function ClientFormSheet({
       form.reset({
         name: client.name,
         company: client.company,
+        title: client.title,
         email: client.email,
         phone: client.phone,
         status: client.status,
@@ -75,6 +77,7 @@ export function ClientFormSheet({
       form.reset({
         name: "",
         company: "",
+        title: "",
         email: "",
         phone: "",
         status: "active",
@@ -109,7 +112,7 @@ export function ClientFormSheet({
       <SheetContent>
         <SheetHeader>
           <SheetTitle>{client ? "Edit Client" : "New Client"}</SheetTitle>
-          <SheetDescription>
+          <SheetDescription aria-describedby={undefined}>
             {client
               ? "Update client information"
               : "Create a new client record"}
@@ -138,6 +141,19 @@ export function ClientFormSheet({
                   <FormLabel>Company</FormLabel>
                   <FormControl>
                     <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="e.g. CEO, CFO" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

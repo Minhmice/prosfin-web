@@ -1,6 +1,0 @@
-1:"$Sreact.fragment"
-2:I[89082,["/_next/static/chunks/35be7839fcca7c9f.js","/_next/static/chunks/9eb712146a0609c7.js","/_next/static/chunks/234471e80b66f4cd.js"],"ProsfinPrimaryButton"]
-3:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/2fdd8267dca97db1.js"],"OutletBoundary"]
-4:"$Sreact.suspense"
-0:{"buildId":"2X--QPgWep3XmfmRhA45T","rsc":["$","$1","c",{"children":[["$","div",null,{"className":"flex min-h-screen items-center justify-center","children":["$","div",null,{"className":"mx-auto w-full px-4 md:px-6 lg:px-8 max-w-7xl","children":["$","div",null,{"className":"flex flex-col items-center justify-center gap-6 text-center","children":[["$","h1",null,{"className":"scroll-m-20 tracking-tight text-foreground text-4xl font-extrabold lg:text-5xl","children":"404"}],["$","h2",null,{"className":"scroll-m-20 tracking-tight text-foreground text-3xl font-semibold","children":"Trang bạn tìm không tồn tại"}],["$","p",null,{"className":"text-lg leading-7 text-muted-foreground max-w-md","children":"Có thể link đã sai hoặc nội dung đã được cập nhật."}],["$","$L2",null,{"href":"/","children":"Quay về trang chủ"}]]}]}]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
-5:null

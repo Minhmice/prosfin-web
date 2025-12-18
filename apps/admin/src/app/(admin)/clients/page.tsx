@@ -1,109 +1,136 @@
 "use client"
 
 import * as React from "react"
-import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "@/components/table"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { PageHeader } from "@/components/shared/page-header"
 import { PageBody } from "@/components/shared/page-body"
-import { mockClients } from "@/data/clients"
-import type { Client } from "@/types"
-import { ClientDetailPanel } from "@/components/clients/client-detail-panel"
-import { ClientFormSheet } from "@/features/crm/clients/client-form-sheet"
-import { archiveClient, bulkArchiveClients } from "@/lib/actions/clients"
-import { notifyInfo } from "@/lib/notify"
+import type { Client } from "@/features/crm/types"
+import { ClientSheet } from "@/features/crm/clients/client-sheet"
 import { crmProvider } from "@/features/crm/data/provider"
-
-const columns: ColumnDef<Client>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "company",
-    header: "Company",
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string
-      return (
-        <Badge variant="outline">
-          {status}
-        </Badge>
-      )
-    },
-  },
-  {
-    accessorKey: "ownerName",
-    header: "Owner",
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Created",
-    cell: ({ row }) => {
-      const date = row.getValue("createdAt") as Date
-      return date.toLocaleDateString()
-    },
-  },
-]
+import { useClientListQuery } from "@/hooks/use-client-list-query"
+import { clientsTableColumns } from "@/features/crm/clients/clients-table-columns"
+import { ClientsTableToolbar } from "@/features/crm/clients/clients-table-toolbar"
+import { getClientsRowActions } from "@/features/crm/clients/clients-table-row-actions"
+import { clientsBulkActions } from "@/features/crm/clients/clients-bulk-actions"
+import { toast } from "sonner"
 
 export default function ClientsPage() {
+  const { query, updateQuery, updateSearch, resetFilters } = useClientListQuery()
+  const [clients, setClients] = React.useState<Client[]>([])
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [pageCount, setPageCount] = React.useState(0)
+  const [rowCount, setRowCount] = React.useState(0)
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false)
+  const [sheetMode, setSheetMode] = React.useState<"create" | "view" | "edit">("create")
   const [selectedClient, setSelectedClient] = React.useState<Client | null>(null)
-  const [isDetailOpen, setIsDetailOpen] = React.useState(false)
-  const [isFormOpen, setIsFormOpen] = React.useState(false)
-  const [editingClient, setEditingClient] = React.useState<Client | null>(null)
-  const [clients, setClients] = React.useState<Client[]>(mockClients as Client[])
 
-  const refreshClients = React.useCallback(async () => {
-    const result = await crmProvider.listClients({ page: 1, pageSize: 100 })
-    setClients(result.data)
-  }, [])
+  // Fetch clients based on query
+  const fetchClients = React.useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const result = await crmProvider.listClients({
+        q: query.q,
+        status: query.status,
+        ownerId: query.owner,
+        tags: query.tags,
+        page: query.page,
+        pageSize: query.pageSize,
+        sort: query.sort,
+      })
+      setClients(result.data)
+      setPageCount(result.meta.totalPages)
+      setRowCount(result.meta.total)
+    } catch (error: any) {
+      toast.error(error.message || "Failed to fetch clients")
+    } finally {
+      setIsLoading(false)
+    }
+  }, [query])
 
   React.useEffect(() => {
-    refreshClients()
-  }, [refreshClients])
+    fetchClients()
+  }, [fetchClients])
 
-  const handleRowAction = async (action: string, row: Client) => {
-    switch (action) {
-      case "view":
-        setSelectedClient(row)
-        setIsDetailOpen(true)
-        break
-      case "edit":
-        setEditingClient(row)
-        setIsFormOpen(true)
-        break
-      case "archive":
-        await archiveClient(row.id)
-        await refreshClients()
-        break
-      default:
-        break
-    }
-  }
+  const handlePaginationChange = React.useCallback(
+    (page: number, pageSize: number) => {
+      updateQuery({ page, pageSize })
+    },
+    [updateQuery]
+  )
 
-  const handleBulkAction = async (action: string, rows: Client[]) => {
-    switch (action) {
-      case "archive":
-        await bulkArchiveClients(rows.map((r) => r.id))
-        await refreshClients()
-        break
-      default:
-        break
-    }
-  }
+  const handleSortingChange = React.useCallback(
+    (sort: { field: string; direction: "asc" | "desc" } | null) => {
+      const sortString = sort ? `${sort.direction === "desc" ? "-" : ""}${sort.field}` : undefined
+      updateQuery({ sort: sortString, page: 1 })
+    },
+    [updateQuery]
+  )
+
+  const handleFilterChange = React.useCallback(
+    (filters: Record<string, any>) => {
+      // Filters are handled individually via toolbar
+      updateQuery({ page: 1 })
+    },
+    [updateQuery]
+  )
+
+  const handleRowAction = React.useCallback(
+    async (action: string, row: Client) => {
+      switch (action) {
+        case "view":
+          setSelectedClient(row)
+          setSheetMode("view")
+          setIsSheetOpen(true)
+          break
+        case "edit":
+          setSelectedClient(row)
+          setSheetMode("edit")
+          setIsSheetOpen(true)
+          break
+        case "delete":
+          if (confirm(`Are you sure you want to delete ${row.name}?`)) {
+            try {
+              await crmProvider.deleteClient(row.id)
+              toast.success("Client deleted")
+              fetchClients()
+            } catch (error: any) {
+              toast.error(error.message || "Failed to delete client")
+            }
+          }
+          break
+        default:
+          break
+      }
+    },
+    [fetchClients]
+  )
+
+  const handleBulkAction = React.useCallback(
+    async (action: string, rows: Client[]) => {
+      switch (action) {
+        case "archive":
+          // TODO: Implement bulk archive
+          toast.info(`Archive ${rows.length} clients`)
+          break
+        default:
+          break
+      }
+    },
+    []
+  )
 
   const handleNewClient = () => {
-    setEditingClient(null)
-    setIsFormOpen(true)
+    setSelectedClient(null)
+    setSheetMode("create")
+    setIsSheetOpen(true)
+  }
+
+  const handleSheetSuccess = () => {
+    setIsSheetOpen(false)
+    setSelectedClient(null)
+    fetchClients()
   }
 
   return (
@@ -119,30 +146,49 @@ export default function ClientsPage() {
         }
       />
       <PageBody>
-        <DataTable
-          data={clients}
-          columns={columns}
-          enableRowSelection
-          enableColumnVisibility
-          enableSorting
-          enableFiltering
-          onRowAction={handleRowAction}
-          onBulkAction={handleBulkAction}
-        />
+        <div className="space-y-4">
+          <ClientsTableToolbar
+            query={query}
+            onSearchChange={updateSearch}
+            onStatusChange={(status) => updateQuery({ status, page: 1 })}
+            onOwnerChange={(owner) => updateQuery({ owner, page: 1 })}
+            onTagsChange={(tags) => updateQuery({ tags, page: 1 })}
+            onReset={resetFilters}
+          />
+          <DataTable
+            data={clients}
+            columns={clientsTableColumns}
+            manualPagination
+            manualSorting
+            manualFiltering
+            pageCount={pageCount}
+            rowCount={rowCount}
+            enableRowSelection
+            enableColumnVisibility
+            enableSorting
+            enableFiltering
+            onPaginationChange={handlePaginationChange}
+            onSortingChange={handleSortingChange}
+            onFilterChange={handleFilterChange}
+            onRowAction={handleRowAction}
+            onBulkAction={handleBulkAction}
+            rowActions={getClientsRowActions}
+            bulkActions={clientsBulkActions}
+          />
+        </div>
       </PageBody>
-      <ClientDetailPanel
-        client={selectedClient}
-        open={isDetailOpen}
-        onOpenChange={setIsDetailOpen}
-      />
-      <ClientFormSheet
-        open={isFormOpen}
+      <ClientSheet
+        open={isSheetOpen}
         onOpenChange={(open) => {
-          setIsFormOpen(open)
-          if (!open) setEditingClient(null)
+          setIsSheetOpen(open)
+          if (!open) {
+            setSelectedClient(null)
+            setSheetMode("create")
+          }
         }}
-        client={editingClient}
-        onSuccess={refreshClients}
+        mode={sheetMode}
+        client={selectedClient}
+        onSuccess={handleSheetSuccess}
       />
     </>
   )

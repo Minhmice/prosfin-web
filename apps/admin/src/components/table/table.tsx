@@ -37,12 +37,17 @@ export function DataTable<TData>({
   data,
   columns,
   manualPagination = false,
+  manualSorting = false,
+  manualFiltering = false,
   pageCount,
   rowCount,
   enableRowSelection = true,
   enableColumnVisibility = true,
   enableSorting = true,
   enableFiltering = true,
+  onPaginationChange,
+  onSortingChange,
+  onFilterChange,
   onRowAction,
   onBulkAction,
   rowActions,
@@ -146,6 +151,39 @@ export function DataTable<TData>({
       ]
     : []
 
+  // Handle pagination change
+  React.useEffect(() => {
+    if (onPaginationChange && manualPagination) {
+      onPaginationChange(pagination.pageIndex + 1, pagination.pageSize)
+    }
+  }, [pagination, manualPagination, onPaginationChange])
+
+  // Handle sorting change
+  React.useEffect(() => {
+    if (onSortingChange && manualSorting) {
+      const sort = sorting[0]
+      if (sort) {
+        onSortingChange({
+          field: sort.id,
+          direction: sort.desc ? "desc" : "asc",
+        })
+      } else {
+        onSortingChange(null)
+      }
+    }
+  }, [sorting, manualSorting, onSortingChange])
+
+  // Handle filter change
+  React.useEffect(() => {
+    if (onFilterChange && manualFiltering) {
+      const filters: Record<string, any> = {}
+      columnFilters.forEach((filter) => {
+        filters[filter.id] = filter.value
+      })
+      onFilterChange(filters)
+    }
+  }, [columnFilters, manualFiltering, onFilterChange])
+
   const table = useReactTable({
     data,
     columns: finalColumns,
@@ -163,12 +201,14 @@ export function DataTable<TData>({
     onColumnVisibilityChange: enableColumnVisibility ? setColumnVisibility : undefined,
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: enableFiltering ? getFilteredRowModel() : undefined,
+    getFilteredRowModel: enableFiltering && !manualFiltering ? getFilteredRowModel() : undefined,
     getPaginationRowModel: manualPagination ? undefined : getPaginationRowModel(),
-    getSortedRowModel: enableSorting ? getSortedRowModel() : undefined,
-    getFacetedRowModel: enableFiltering ? getFacetedRowModel() : undefined,
-    getFacetedUniqueValues: enableFiltering ? getFacetedUniqueValues() : undefined,
+    getSortedRowModel: enableSorting && !manualSorting ? getSortedRowModel() : undefined,
+    getFacetedRowModel: enableFiltering && !manualFiltering ? getFacetedRowModel() : undefined,
+    getFacetedUniqueValues: enableFiltering && !manualFiltering ? getFacetedUniqueValues() : undefined,
     manualPagination,
+    manualSorting,
+    manualFiltering,
     pageCount: manualPagination ? pageCount : undefined,
   })
 
