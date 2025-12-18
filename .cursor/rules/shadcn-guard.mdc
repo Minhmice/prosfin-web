@@ -19,7 +19,7 @@ Applies to any work related to components under `@/components/ui/**` (or the equ
   - `components/ui/**`
   - `src/components/ui/**`
   - `lib/shadcn/**`
-- **File size limit**: Each `.tsx` file MUST be under **200 lines**:
+- **File size limit**: Each `.tsx` file MUST be under **300 lines**:
   - Break down large components into smaller, reusable pieces
   - Extract common logic into custom hooks (`hooks/**`)
   - Extract repeated UI patterns into shared components (`components/shared/**`)
