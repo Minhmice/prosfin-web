@@ -1,107 +1,146 @@
 import { notFound } from "next/navigation";
-import { servicesDetailMap } from "@/data/services-detail";
+import type { Metadata } from "next";
+import {
+  getServiceBySlug,
+  getRelatedServices,
+  getPeopleByIds,
+  getPostsByIds,
+  getAllServices,
+  getPostsByTags,
+} from "@/lib/content/services";
 import { ProsfinSectionWrapper } from "@/components/shared";
-import { ServiceHero } from "./components/service-hero";
-import { ProblemOutcomeSection } from "./components/problem-outcome";
-import { StepsSection } from "./components/steps-section";
-import { DeliverablesExclusionsSection } from "./components/deliverables-exclusions";
-import { ServiceMetaSection } from "./components/service-meta";
-import { RelatedCasesSection } from "./components/related-cases";
-import { ServiceFaqSection } from "./components/service-faq";
-import { ServiceFinalCta } from "./components/final-cta";
+import { SiteBreadcrumbs } from "@/components/site/breadcrumbs";
+import { ServiceRenderer } from "@/components/services/service-renderer";
+import { RelatedPosts } from "@/components/services/related-posts";
+import { OurPeople } from "@/components/services/our-people";
+import { SeeMore } from "@/components/services/see-more";
+import { ServiceCta } from "@/components/services/service-cta";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
 /**
+ * Generate static params for all service slugs
+ */
+export async function generateStaticParams() {
+  const services = getAllServices();
+  return services.map((service) => ({
+    slug: service.slug,
+  }));
+}
+
+/**
+ * Generate metadata for service page
+ */
+export async function generateMetadata({
+  params,
+}: ServiceDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const service = getServiceBySlug(slug);
+
+  if (!service) {
+    return {
+      title: "Service Not Found | ProsFIN",
+    };
+  }
+
+  const title = `${service.title} | ProsFIN`;
+  const description = service.excerpt || service.shortDescription;
+
+  return {
+    title,
+    description,
+    keywords: service.tags?.join(", "),
+    openGraph: {
+      title,
+      description,
+      images: service.coverImage
+        ? [
+            {
+              url: service.coverImage,
+              width: 1200,
+              height: 630,
+              alt: service.title,
+            },
+          ]
+        : undefined,
+    },
+  };
+}
+
+/**
  * Service Detail Page
  * 
- * Trang chi tiết từng dịch vụ.
+ * Trang chi tiết từng dịch vụ với breadcrumb, ServiceRenderer, và các modules.
  */
 export default async function ServiceDetailPage({
   params,
 }: ServiceDetailPageProps) {
   const { slug } = await params;
-  const service = servicesDetailMap[slug];
+  const service = getServiceBySlug(slug);
 
   if (!service) {
     notFound();
   }
 
-  const {
-    hero,
-    problems,
-    outcomes,
-    steps,
-    deliverables,
-    exclusions,
-    timeline,
-    format,
-    requirementsFromClient,
-    pricingNote,
-    relatedCases,
-    faqs,
-  } = service;
+  // Get related data
+  // Combine posts from IDs and tags
+  const postsByIds = getPostsByIds(service.relatedPostIds || []);
+  const postsByTags = service.relatedPostTags
+    ? getPostsByTags(service.relatedPostTags)
+    : [];
+  // Merge and deduplicate
+  const allRelatedPosts = [...postsByIds, ...postsByTags];
+  const uniquePosts = Array.from(
+    new Map(allRelatedPosts.map((post) => [post.id, post])).values()
+  );
+  const relatedPosts = uniquePosts.slice(0, 6); // Limit to 6 posts
+
+  const relatedPeople = getPeopleByIds(service.peopleIds || []);
+  const allServices = getAllServices();
+
+  // Build breadcrumb
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "Services", href: "/services" },
+    { label: service.title },
+  ];
 
   return (
     <>
-      {/* Hero Section */}
+      {/* Breadcrumb */}
+      <ProsfinSectionWrapper padding="sm" background="default">
+        <SiteBreadcrumbs items={breadcrumbItems} />
+      </ProsfinSectionWrapper>
+
+      {/* Hero + Service Content */}
       <ProsfinSectionWrapper background="muted" padding="lg">
-        <ServiceHero
-          tags={hero.tags}
-          title={hero.title}
-          summaryBullets={hero.summaryBullets}
-          primaryCta={hero.primaryCta}
-          secondaryCta={hero.secondaryCta}
-        />
+        <ServiceRenderer service={service} />
       </ProsfinSectionWrapper>
 
-      {/* Problem → Outcome */}
-      <ProsfinSectionWrapper>
-        <ProblemOutcomeSection problems={problems} outcomes={outcomes} />
-      </ProsfinSectionWrapper>
-
-      {/* Steps */}
-      <ProsfinSectionWrapper background="muted">
-        <StepsSection steps={steps} />
-      </ProsfinSectionWrapper>
-
-      {/* Deliverables & Exclusions */}
-      <ProsfinSectionWrapper>
-        <DeliverablesExclusionsSection
-          deliverables={deliverables}
-          exclusions={exclusions}
-        />
-      </ProsfinSectionWrapper>
-
-      {/* Timeline, Format, Requirements */}
-      <ProsfinSectionWrapper background="muted">
-        <ServiceMetaSection
-          timeline={timeline}
-          format={format}
-          pricingNote={pricingNote}
-          requirementsFromClient={requirementsFromClient}
-        />
-      </ProsfinSectionWrapper>
-
-      {/* Related Cases */}
-      {relatedCases && relatedCases.length > 0 && (
+      {/* Our Thinking */}
+      {relatedPosts.length > 0 && (
         <ProsfinSectionWrapper>
-          <RelatedCasesSection cases={relatedCases} />
+          <RelatedPosts posts={relatedPosts} />
         </ProsfinSectionWrapper>
       )}
 
-      {/* FAQ */}
-      {faqs && faqs.length > 0 && (
+      {/* Our People */}
+      {relatedPeople.length > 0 && (
         <ProsfinSectionWrapper background="muted">
-          <ServiceFaqSection title="Câu hỏi thường gặp về gói này" faqs={faqs} />
+          <OurPeople people={relatedPeople} />
         </ProsfinSectionWrapper>
       )}
 
-      {/* Final CTA */}
+      {/* See more services */}
       <ProsfinSectionWrapper>
-        <ServiceFinalCta />
+        <SeeMore services={allServices} currentSlug={slug} />
+      </ProsfinSectionWrapper>
+
+      {/* CTA Leads */}
+      <ProsfinSectionWrapper background="muted">
+        <ServiceCta cta={service.cta} />
       </ProsfinSectionWrapper>
     </>
   );

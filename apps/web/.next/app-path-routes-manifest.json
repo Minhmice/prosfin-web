@@ -9,6 +9,7 @@
   "/(marketing)/services/page": "/services",
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
+  "/api/draft/route": "/api/draft",
   "/contact-lite/page": "/contact-lite",
   "/favicon.ico/route": "/favicon.ico",
   "/insights/[slug]/page": "/insights/[slug]",

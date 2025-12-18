@@ -235,6 +235,34 @@ export function TooltipContent({
     return 0;
   };
 
+  // Filter out props that conflict with framer-motion
+  // Only keep safe props like id, data-*, aria-*, style, etc.
+  const {
+    onDrag,
+    onDragStart,
+    onDragEnd,
+    onDragEnter,
+    onDragExit,
+    onDragLeave,
+    onDragOver,
+    onDrop,
+    onAnimationStart,
+    onAnimationEnd,
+    onAnimationIteration,
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
+    onMouseMove,
+    onMouseDown,
+    onMouseUp,
+    onFocus,
+    onBlur,
+    onKeyDown,
+    onKeyUp,
+    onKeyPress,
+    ...motionProps
+  } = props;
+
   return (
     <AnimatePresence>
       {open && (
@@ -253,7 +281,7 @@ export function TooltipContent({
             getSideClasses(side, sideOffset || 2),
             className
           )}
-          {...props}
+          {...motionProps}
         >
           {children}
         </motion.div>

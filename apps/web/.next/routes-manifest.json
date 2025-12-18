@@ -87,6 +87,12 @@
       "namedRegex": "^/about(?:/)?$"
     },
     {
+      "page": "/api/draft",
+      "regex": "^/api/draft(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/draft(?:/)?$"
+    },
+    {
       "page": "/case-studies",
       "regex": "^/case\\-studies(?:/)?$",
       "routeKeys": {},

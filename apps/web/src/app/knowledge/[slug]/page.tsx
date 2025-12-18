@@ -27,7 +27,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const isDraft = draftMode().isEnabled;
+  const draft = await draftMode();
+  const isDraft = draft.isEnabled;
   const post = await getPost(slug, isDraft);
 
   return generateMetadataHelper(post, isDraft);
@@ -39,7 +40,8 @@ export default async function KnowledgePostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const isDraft = draftMode().isEnabled;
+  const draft = await draftMode();
+  const isDraft = draft.isEnabled;
   const post = await getPost(slug, isDraft);
 
   if (!post) {

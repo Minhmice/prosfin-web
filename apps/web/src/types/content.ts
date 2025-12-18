@@ -18,15 +18,73 @@ export interface BaseContent {
 }
 
 /**
+ * Service section types
+ */
+export type ServiceSectionType =
+  | "hero"
+  | "highlights"
+  | "narrative"
+  | "list"
+  | "stats"
+  | "faq"
+  | "steps"
+  | "quote"
+  | "ctaInline";
+
+/**
+ * Service section content
+ */
+export interface ServiceSection {
+  type: ServiceSectionType;
+  title?: string;
+  subtitle?: string;
+  content?: string;
+  items?: string[];
+  highlights?: Array<{ label: string; value: string }>;
+  steps?: Array<{ title: string; description: string }>;
+  stats?: Array<{ value: string; label: string }>;
+  quote?: { text: string; author?: string };
+  cta?: CtaConfig;
+}
+
+/**
+ * Service layout variants
+ */
+export type ServiceLayoutVariant =
+  | "advisor"
+  | "execution-coaching"
+  | "consulting"
+  | "mentor"
+  | "headhunt"
+  | "test"
+  | "audit"
+  | "seminar"
+  | "executive-brief"
+  | "journey-roadmap"
+  | "toolkit-modules"
+  | "transformation-story";
+
+/**
  * Service content
  */
 export interface Service extends BaseContent {
+  slug: string; // Required for routing
   shortDescription: string;
+  excerpt: string; // For card display
   idealClient?: string;
   pillBenefits?: string[];
   ctaLabel?: string;
   ctaType?: "link" | "scroll" | "modal";
   ctaTarget?: string;
+  layoutVariant: ServiceLayoutVariant;
+  sections: ServiceSection[];
+  breadcrumb?: Array<{ label: string; href?: string }>;
+  relatedPostIds: string[];
+  peopleIds: string[];
+  category?: string; // Phân loại dịch vụ (để filter See More)
+  bodySections?: ServiceSection[]; // Tách riêng sections cho body (nếu cần)
+  relatedPostTags?: string[]; // Tags để filter posts (bổ sung cho relatedPostIds)
+  cta?: CtaConfig; // CTA config cho service
 }
 
 /**
@@ -154,5 +212,39 @@ export interface LandingContent {
       required?: boolean;
     }>;
   };
+}
+
+/**
+ * Person (Our People)
+ */
+export interface Person {
+  id: string;
+  name: string;
+  title: string;
+  avatarUrl?: string;
+  email?: string;
+  phone?: string;
+  tooltipBio: string; // Deprecated: dùng bioLong thay thế
+  tags: string[];
+  bioShort?: string; // Bio ngắn (cho card)
+  bioLong?: string; // Bio dài (cho tooltip/hovercard)
+  focusAreas?: string[]; // Lĩnh vực chuyên sâu
+  bestFor?: string[]; // Phù hợp cho (vd: "SME", "Startup", "M&A")
+}
+
+/**
+ * Post (Our Thinking)
+ */
+export interface Post {
+  id: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  tags: string[];
+  href: string;
+  coverImage?: string;
+  serviceSlugs?: string[]; // Services liên quan
+  readingTime?: number; // Thời gian đọc (phút)
+  category?: string; // Category của post
 }
 

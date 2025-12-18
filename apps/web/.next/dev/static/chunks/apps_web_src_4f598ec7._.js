@@ -151,11 +151,11 @@ const TooltipContext = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
 function useTooltipContext() {
     _s();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(1);
-    if ($[0] !== "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471") {
+    if ($[0] !== "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35") {
         for(let $i = 0; $i < 1; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471";
+        $[0] = "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35";
     }
     const context = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useContext"](TooltipContext);
     if (!context) {
@@ -167,11 +167,11 @@ _s(useTooltipContext, "b9L3QQ+jgeyIrH0NfHrJ8nn7VMU=");
 function TooltipProvider(t0) {
     _s1();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(18);
-    if ($[0] !== "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471") {
+    if ($[0] !== "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35") {
         for(let $i = 0; $i < 18; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471";
+        $[0] = "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35";
     }
     const { children, openDelay: t1, closeDelay: t2, transition: t3 } = t0;
     const openDelay = t1 === undefined ? 700 : t1;
@@ -303,11 +303,11 @@ _c = TooltipProvider;
 function Tooltip(t0) {
     _s2();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(22);
-    if ($[0] !== "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471") {
+    if ($[0] !== "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35") {
         for(let $i = 0; $i < 22; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471";
+        $[0] = "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35";
     }
     const { children, side: t1, sideOffset: t2, align: t3, alignOffset: t4 } = t0;
     const side = t1 === undefined ? "top" : t1;
@@ -442,11 +442,11 @@ _s2(Tooltip, "xNVe3FDtnNKj1DBKDA4AtM4W9jc=");
 _c1 = Tooltip;
 function TooltipTrigger(t0) {
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(15);
-    if ($[0] !== "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471") {
+    if ($[0] !== "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35") {
         for(let $i = 0; $i < 15; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471";
+        $[0] = "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35";
     }
     let children;
     let className;
@@ -518,12 +518,12 @@ const getSideClasses = (side, sideOffset)=>{
 };
 function TooltipContent(t0) {
     _s3();
-    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(18);
-    if ($[0] !== "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471") {
-        for(let $i = 0; $i < 18; $i += 1){
+    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(20);
+    if ($[0] !== "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35") {
+        for(let $i = 0; $i < 20; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471";
+        $[0] = "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35";
     }
     let children;
     let className;
@@ -563,8 +563,17 @@ function TooltipContent(t0) {
         t2 = $[7];
     }
     const getInitialY = t2;
+    let motionProps;
+    if ($[8] !== props) {
+        const { onDrag, onDragStart, onDragEnd, onDragEnter, onDragExit, onDragLeave, onDragOver, onDrop, ...t3 } = props;
+        motionProps = t3;
+        $[8] = props;
+        $[9] = motionProps;
+    } else {
+        motionProps = $[9];
+    }
     let t3;
-    if ($[8] !== children || $[9] !== className || $[10] !== getInitialY || $[11] !== open || $[12] !== props || $[13] !== side || $[14] !== sideOffset) {
+    if ($[10] !== children || $[11] !== className || $[12] !== getInitialY || $[13] !== motionProps || $[14] !== open || $[15] !== side || $[16] !== sideOffset) {
         t3 = open && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
             initial: {
                 opacity: 0,
@@ -587,37 +596,37 @@ function TooltipContent(t0) {
                 damping: 35
             },
             className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("absolute z-50 rounded-md bg-popover px-4 py-3 text-sm text-popover-foreground shadow-lg", "max-w-xs w-max", getSideClasses(side, sideOffset || 2), className),
-            ...props,
+            ...motionProps,
             children: children
         }, void 0, false, {
             fileName: "[project]/apps/web/src/components/shared/tooltip/animated-tooltip.tsx",
-            lineNumber: 447,
+            lineNumber: 466,
             columnNumber: 18
         }, this);
-        $[8] = children;
-        $[9] = className;
-        $[10] = getInitialY;
-        $[11] = open;
-        $[12] = props;
-        $[13] = side;
-        $[14] = sideOffset;
-        $[15] = t3;
+        $[10] = children;
+        $[11] = className;
+        $[12] = getInitialY;
+        $[13] = motionProps;
+        $[14] = open;
+        $[15] = side;
+        $[16] = sideOffset;
+        $[17] = t3;
     } else {
-        t3 = $[15];
+        t3 = $[17];
     }
     let t4;
-    if ($[16] !== t3) {
+    if ($[18] !== t3) {
         t4 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnimatePresence"], {
             children: t3
         }, void 0, false, {
             fileName: "[project]/apps/web/src/components/shared/tooltip/animated-tooltip.tsx",
-            lineNumber: 477,
+            lineNumber: 496,
             columnNumber: 10
         }, this);
-        $[16] = t3;
-        $[17] = t4;
+        $[18] = t3;
+        $[19] = t4;
     } else {
-        t4 = $[17];
+        t4 = $[19];
     }
     return t4;
 }
@@ -630,11 +639,11 @@ _c3 = TooltipContent;
 function TooltipArrow(t0) {
     _s4();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(12);
-    if ($[0] !== "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471") {
+    if ($[0] !== "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35") {
         for(let $i = 0; $i < 12; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "5238e069171b10770b460cf1288926a8e07e4898b1dbbaa75a537434be472471";
+        $[0] = "a6578cd0636efc73c972fe9764cf0beeef316511f894180fc1b914abed2b8b35";
     }
     let className;
     let props;
@@ -676,7 +685,7 @@ function TooltipArrow(t0) {
             ...t3
         }, void 0, false, {
             fileName: "[project]/apps/web/src/components/shared/tooltip/animated-tooltip.tsx",
-            lineNumber: 541,
+            lineNumber: 560,
             columnNumber: 10
         }, this);
         $[9] = t2;
@@ -4307,14 +4316,14 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$lib$2f
 ;
 ;
 function ProsfinServiceCardWrapper(t0) {
-    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(30);
-    if ($[0] !== "eaba5f9d9ac2f7da07530c224fa7bc7928315d272386d4c1bf8fe46efb0785b9") {
-        for(let $i = 0; $i < 30; $i += 1){
+    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(34);
+    if ($[0] !== "c7974874cdf084ffd7bee9466412a2fc415f07de56cea1d198a8bd9eb2dcf338") {
+        for(let $i = 0; $i < 34; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "eaba5f9d9ac2f7da07530c224fa7bc7928315d272386d4c1bf8fe46efb0785b9";
+        $[0] = "c7974874cdf084ffd7bee9466412a2fc415f07de56cea1d198a8bd9eb2dcf338";
     }
-    const { title, description, benefits, icon, idealClient, cta, className, variant: t1 } = t0;
+    const { title, description, benefits, icon, coverImage, idealClient, cta, className, variant: t1 } = t0;
     const variant = t1 === undefined ? "default" : t1;
     let T0;
     let t2;
@@ -4335,89 +4344,113 @@ function ProsfinServiceCardWrapper(t0) {
         t2 = $[4];
     }
     let t3;
-    if ($[5] !== icon) {
-        t3 = icon && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    if ($[5] !== coverImage || $[6] !== title) {
+        t3 = coverImage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "relative h-48 w-full overflow-hidden rounded-t-lg",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                src: coverImage,
+                alt: title,
+                className: "h-full w-full object-cover"
+            }, void 0, false, {
+                fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
+                lineNumber: 93,
+                columnNumber: 91
+            }, this)
+        }, void 0, false, {
+            fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
+            lineNumber: 93,
+            columnNumber: 24
+        }, this);
+        $[5] = coverImage;
+        $[6] = title;
+        $[7] = t3;
+    } else {
+        t3 = $[7];
+    }
+    let t4;
+    if ($[8] !== icon) {
+        t4 = icon && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "mb-3",
             children: icon
         }, void 0, false, {
             fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 88,
+            lineNumber: 102,
             columnNumber: 18
         }, this);
-        $[5] = icon;
-        $[6] = t3;
+        $[8] = icon;
+        $[9] = t4;
     } else {
-        t3 = $[6];
+        t4 = $[9];
     }
-    let t4;
-    if ($[7] !== title) {
-        t4 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
+    let t5;
+    if ($[10] !== title) {
+        t5 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
             className: "text-base leading-tight md:text-xl",
             children: title
         }, void 0, false, {
             fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 96,
+            lineNumber: 110,
             columnNumber: 10
         }, this);
-        $[7] = title;
-        $[8] = t4;
+        $[10] = title;
+        $[11] = t5;
     } else {
-        t4 = $[8];
+        t5 = $[11];
     }
-    let t5;
-    if ($[9] !== description) {
-        t5 = description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
+    let t6;
+    if ($[12] !== description) {
+        t6 = description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
             className: "mt-2 text-sm leading-relaxed md:text-base",
             children: description
         }, void 0, false, {
             fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 104,
+            lineNumber: 118,
             columnNumber: 25
         }, this);
-        $[9] = description;
-        $[10] = t5;
+        $[12] = description;
+        $[13] = t6;
     } else {
-        t5 = $[10];
+        t6 = $[13];
     }
-    let t6;
-    if ($[11] !== t3 || $[12] !== t4 || $[13] !== t5) {
-        t6 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
+    let t7;
+    if ($[14] !== t4 || $[15] !== t5 || $[16] !== t6) {
+        t7 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
             className: "p-4 md:p-6",
             children: [
-                t3,
                 t4,
-                t5
+                t5,
+                t6
             ]
         }, void 0, true, {
             fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 112,
+            lineNumber: 126,
             columnNumber: 10
         }, this);
-        $[11] = t3;
-        $[12] = t4;
-        $[13] = t5;
-        $[14] = t6;
+        $[14] = t4;
+        $[15] = t5;
+        $[16] = t6;
+        $[17] = t7;
     } else {
-        t6 = $[14];
+        t7 = $[17];
     }
-    let t7;
-    if ($[15] !== benefits) {
-        t7 = benefits && benefits.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+    let t8;
+    if ($[18] !== benefits) {
+        t8 = benefits && benefits.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
             className: "flex flex-col gap-2",
             children: benefits.map(_ProsfinServiceCardWrapperBenefitsMap)
         }, void 0, false, {
             fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 122,
+            lineNumber: 136,
             columnNumber: 45
         }, this);
-        $[15] = benefits;
-        $[16] = t7;
+        $[18] = benefits;
+        $[19] = t8;
     } else {
-        t7 = $[16];
+        t8 = $[19];
     }
-    let t8;
-    if ($[17] !== idealClient) {
-        t8 = idealClient && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    let t9;
+    if ($[20] !== idealClient) {
+        t9 = idealClient && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "mt-auto rounded-md bg-muted/50 p-3 text-xs text-muted-foreground",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4425,79 +4458,81 @@ function ProsfinServiceCardWrapper(t0) {
                     children: "Phù hợp: "
                 }, void 0, false, {
                     fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                    lineNumber: 130,
+                    lineNumber: 144,
                     columnNumber: 107
                 }, this),
                 idealClient
             ]
         }, void 0, true, {
             fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 130,
+            lineNumber: 144,
             columnNumber: 25
         }, this);
-        $[17] = idealClient;
-        $[18] = t8;
-    } else {
-        t8 = $[18];
-    }
-    let t9;
-    if ($[19] !== t7 || $[20] !== t8) {
-        t9 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
-            className: "flex flex-1 flex-col gap-2 p-4 md:gap-4 md:p-6",
-            children: [
-                t7,
-                t8
-            ]
-        }, void 0, true, {
-            fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 138,
-            columnNumber: 10
-        }, this);
-        $[19] = t7;
-        $[20] = t8;
+        $[20] = idealClient;
         $[21] = t9;
     } else {
         t9 = $[21];
     }
     let t10;
-    if ($[22] !== cta) {
-        t10 = cta && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardFooter"], {
+    if ($[22] !== t8 || $[23] !== t9) {
+        t10 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
+            className: "flex flex-1 flex-col gap-2 p-4 md:gap-4 md:p-6",
+            children: [
+                t8,
+                t9
+            ]
+        }, void 0, true, {
+            fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
+            lineNumber: 152,
+            columnNumber: 11
+        }, this);
+        $[22] = t8;
+        $[23] = t9;
+        $[24] = t10;
+    } else {
+        t10 = $[24];
+    }
+    let t11;
+    if ($[25] !== cta) {
+        t11 = cta && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardFooter"], {
             className: "p-4 pt-0 md:p-6 md:pt-4",
             children: cta
         }, void 0, false, {
             fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 147,
+            lineNumber: 161,
             columnNumber: 18
         }, this);
-        $[22] = cta;
-        $[23] = t10;
+        $[25] = cta;
+        $[26] = t11;
     } else {
-        t10 = $[23];
+        t11 = $[26];
     }
-    let t11;
-    if ($[24] !== T0 || $[25] !== t10 || $[26] !== t2 || $[27] !== t6 || $[28] !== t9) {
-        t11 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(T0, {
+    let t12;
+    if ($[27] !== T0 || $[28] !== t10 || $[29] !== t11 || $[30] !== t2 || $[31] !== t3 || $[32] !== t7) {
+        t12 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(T0, {
             className: t2,
             children: [
-                t6,
-                t9,
-                t10
+                t3,
+                t7,
+                t10,
+                t11
             ]
         }, void 0, true, {
             fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-            lineNumber: 155,
+            lineNumber: 169,
             columnNumber: 11
         }, this);
-        $[24] = T0;
-        $[25] = t10;
-        $[26] = t2;
-        $[27] = t6;
-        $[28] = t9;
+        $[27] = T0;
+        $[28] = t10;
         $[29] = t11;
+        $[30] = t2;
+        $[31] = t3;
+        $[32] = t7;
+        $[33] = t12;
     } else {
-        t11 = $[29];
+        t12 = $[33];
     }
-    return t11;
+    return t12;
 }
 _c = ProsfinServiceCardWrapper;
 function _ProsfinServiceCardWrapperBenefitsMap(benefit, index) {
@@ -4509,7 +4544,7 @@ function _ProsfinServiceCardWrapperBenefitsMap(benefit, index) {
                 children: "•"
             }, void 0, false, {
                 fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                lineNumber: 168,
+                lineNumber: 183,
                 columnNumber: 61
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4517,13 +4552,13 @@ function _ProsfinServiceCardWrapperBenefitsMap(benefit, index) {
                 children: benefit
             }, void 0, false, {
                 fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                lineNumber: 168,
+                lineNumber: 183,
                 columnNumber: 107
             }, this)
         ]
     }, index, true, {
         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-        lineNumber: 168,
+        lineNumber: 183,
         columnNumber: 10
     }, this);
 }
@@ -7849,7 +7884,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 const navigationItems = [
     {
         label: "Dịch vụ",
-        href: "/#services",
+        href: "/services",
         description: "Tư vấn tài chính, kế toán thuế, kiểm soát nội bộ và CFO đồng hành cho doanh nghiệp SME, startup và hộ kinh doanh."
     },
     {

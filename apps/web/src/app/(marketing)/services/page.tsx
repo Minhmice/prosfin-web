@@ -1,158 +1,101 @@
-import { servicesPageContent } from "@/data/services-page";
+import { getAllServices, getAllPosts, getAllPeople } from "@/lib/content/services";
 import {
-  H2,
   ProsfinSectionWrapper,
   ProsfinSectionHeading,
   ProsfinPrimaryButton,
-  ProsfinSecondaryButton,
-  ProsfinServiceCardWrapper,
-  Text,
 } from "@/components/shared";
-import Link from "next/link";
+import { ServiceCard } from "@/components/services/service-card";
+import { RelatedPosts } from "@/components/services/related-posts";
+import { OurPeople } from "@/components/services/our-people";
+import { SeeMore } from "@/components/services/see-more";
+import { ServiceCta } from "@/components/services/service-cta";
 
 /**
  * Services Page
  * 
  * Trang tổng quan về các dịch vụ của ProsFIN.
+ * Layout: Hero, Services Grid, Our Thinking, Our People, See more, CTA
  */
 export default function ServicesPage() {
-  const { hero, packages, valueProps, miniCases, faqs } =
-    servicesPageContent;
+  const services = getAllServices();
+  const posts = getAllPosts();
+  const people = getAllPeople();
+
+  // Get featured posts (union of all relatedPostIds or first 6)
+  const featuredPostIds = Array.from(
+    new Set(services.flatMap((s) => s.relatedPostIds))
+  );
+  const featuredPosts = posts
+    .filter((p) => featuredPostIds.includes(p.id))
+    .slice(0, 6);
+
+  // Get featured people (union of all peopleIds or first 6)
+  const featuredPeopleIds = Array.from(
+    new Set(services.flatMap((s) => s.peopleIds))
+  );
+  const featuredPeople = people
+    .filter((p) => featuredPeopleIds.includes(p.id))
+    .slice(0, 6);
 
   return (
     <>
       {/* Hero Section */}
       <ProsfinSectionWrapper background="muted" padding="lg">
         <ProsfinSectionHeading
-          eyebrow={hero.eyebrow}
-          title={hero.title}
-          subtitle={hero.subtitle}
+          title="Dịch vụ ProsFIN"
+          subtitle="Các giải pháp ProsFIN đồng hành cùng tài chính doanh nghiệp. Từ khám sức khỏe tài chính đến đồng hành dài hạn, ProsFIN thiết kế gói dịch vụ phù hợp với từng giai đoạn phát triển của doanh nghiệp."
           align="center"
           titleSize="xl"
         />
-        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <ProsfinPrimaryButton href={hero.primaryCta.href} size="lg">
-            {hero.primaryCta.label}
+        <div className="mt-8 flex justify-center">
+          <ProsfinPrimaryButton href="/contact" size="lg">
+            Đặt lịch tư vấn miễn phí
           </ProsfinPrimaryButton>
-          <ProsfinSecondaryButton href={hero.secondaryCta.href} size="lg">
-            {hero.secondaryCta.label}
-          </ProsfinSecondaryButton>
         </div>
       </ProsfinSectionWrapper>
 
-      {/* Service Packages Grid */}
+      {/* Services Grid */}
       <ProsfinSectionWrapper>
-        <div>
-          <H2 className="mb-8">Các gói dịch vụ</H2>
-          <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {packages.map((pkg) => (
-              <ProsfinServiceCardWrapper
-                key={pkg.id}
-                title={pkg.title}
-                description={pkg.scope}
-                benefits={pkg.benefits}
-                idealClient={pkg.targetAudience.join(", ")}
-                cta={
-                  <ProsfinSecondaryButton
-                    href={`/services/${pkg.slug}`}
-                    className="w-full"
-                  >
-                    Xem chi tiết
-                  </ProsfinSecondaryButton>
-                }
-              />
+        <div className="space-y-8">
+          <ProsfinSectionHeading
+            title="Các dịch vụ"
+            align="left"
+            titleSize="lg"
+          />
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {services.map((service) => (
+              <ServiceCard key={service.id} service={service} />
             ))}
           </div>
         </div>
       </ProsfinSectionWrapper>
 
-      {/* Value Props */}
+      {/* Our Thinking */}
+      {featuredPosts.length > 0 && (
+        <ProsfinSectionWrapper background="muted">
+          <RelatedPosts posts={featuredPosts} />
+        </ProsfinSectionWrapper>
+      )}
+
+      {/* Our People */}
+      {featuredPeople.length > 0 && (
+        <ProsfinSectionWrapper>
+          <OurPeople people={featuredPeople} />
+        </ProsfinSectionWrapper>
+      )}
+
+      {/* See more services */}
       <ProsfinSectionWrapper background="muted">
-        <div>
-          <H2 className="mb-8">ProsFIN làm việc khác biệt như thế nào?</H2>
-          <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {valueProps.map((prop) => (
-              <div
-                key={prop.id}
-                className="rounded-lg border bg-card p-4 shadow-sm md:p-6"
-              >
-                <Text as="p" variant="large" className="mb-2">
-                  {prop.title}
-                </Text>
-                <Text as="p" variant="muted" className="leading-relaxed">
-                  {prop.description}
-                </Text>
-              </div>
-            ))}
-          </div>
-        </div>
+        <SeeMore
+          services={services.slice(0, 4)}
+          currentSlug=""
+          title="Xem thêm dịch vụ"
+        />
       </ProsfinSectionWrapper>
 
-      {/* Mini Cases */}
+      {/* CTA Leads */}
       <ProsfinSectionWrapper>
-        <div>
-          <H2 className="mb-8">Câu chuyện khách hàng</H2>
-          <div className="grid gap-4 md:gap-6 md:grid-cols-2">
-            {miniCases.map((caseItem) => (
-              <div
-                key={caseItem.id}
-                className="rounded-lg border bg-card p-4 shadow-sm md:p-6"
-              >
-                <Text as="p" variant="muted" className="mb-2 font-medium">
-                  Tình huống
-                </Text>
-                <Text as="p" variant="body" className="mb-4">
-                  {caseItem.situation}
-                </Text>
-                <Text as="p" variant="muted" className="mb-2 font-medium">
-                  Kết quả
-                </Text>
-                <Text as="p" variant="body" className="mb-4">
-                  {caseItem.result}
-                </Text>
-                <Link
-                  href={`/case-studies/${caseItem.slug}`}
-                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-                  aria-label={`Xem chi tiết case study: ${caseItem.slug}`}
-                >
-                  Xem chi tiết →
-                </Link>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <ProsfinSecondaryButton href="/case-studies">
-              Xem thêm câu chuyện khách hàng
-            </ProsfinSecondaryButton>
-          </div>
-        </div>
-      </ProsfinSectionWrapper>
-
-      {/* FAQ */}
-      <ProsfinSectionWrapper background="muted">
-        <div>
-          <H2 className="mb-8">Câu hỏi thường gặp về dịch vụ</H2>
-          <div className="space-y-4">
-            {faqs.map((faq) => (
-              <div
-                key={faq.id}
-                className="rounded-lg border bg-card p-4 shadow-sm md:p-6"
-              >
-                <Text as="p" variant="large" className="mb-2">
-                  {faq.question}
-                </Text>
-                <Text as="p" variant="muted" className="leading-relaxed">
-                  {faq.answer}
-                </Text>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <ProsfinSecondaryButton href="/faq">
-              Xem thêm câu hỏi thường gặp
-            </ProsfinSecondaryButton>
-          </div>
-        </div>
+        <ServiceCta />
       </ProsfinSectionWrapper>
     </>
   );

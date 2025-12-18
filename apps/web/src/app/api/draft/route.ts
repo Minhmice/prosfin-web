@@ -24,7 +24,8 @@ export async function GET(request: Request) {
   }
 
   // Enable draft mode
-  draftMode().enable();
+  const draft = await draftMode();
+  draft.enable();
 
   // Redirect to the post page
   redirect(`/${bucket}/${slug}`);

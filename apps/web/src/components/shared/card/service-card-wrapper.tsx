@@ -27,6 +27,10 @@ export interface ProsfinServiceCardWrapperProps {
    */
   icon?: React.ReactNode;
   /**
+   * Optional cover image URL
+   */
+  coverImage?: string;
+  /**
    * Optional ideal client description
    */
   idealClient?: string;
@@ -58,6 +62,7 @@ export function ProsfinServiceCardWrapper({
   description,
   benefits,
   icon,
+  coverImage,
   idealClient,
   cta,
   className,
@@ -78,6 +83,15 @@ export function ProsfinServiceCardWrapper({
         className
       )}
     >
+      {coverImage && (
+        <div className="relative h-48 w-full overflow-hidden rounded-t-lg">
+          <img
+            src={coverImage}
+            alt={title}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      )}
       <CardHeader className="p-4 md:p-6">
         {icon && <div className="mb-3">{icon}</div>}
         <CardTitle className="text-base leading-tight md:text-xl">{title}</CardTitle>

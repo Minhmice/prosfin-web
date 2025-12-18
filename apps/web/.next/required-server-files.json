@@ -99,7 +99,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/Users/chuthanhhuong/Desktop/prosfin-web",
+    "outputFileTracingRoot": "C:\\Users\\minhmice\\Documents\\project\\prosfin-web",
     "cacheComponents": false,
     "cacheLife": {
       "default": {
@@ -290,28 +290,28 @@
     "configFileName": "next.config.ts",
     "reactCompiler": true,
     "turbopack": {
-      "root": "/Users/chuthanhhuong/Desktop/prosfin-web"
+      "root": "C:\\Users\\minhmice\\Documents\\project\\prosfin-web"
     },
     "distDirRoot": ".next"
   },
-  "appDir": "/Users/chuthanhhuong/Desktop/prosfin-web/apps/web",
-  "relativeAppDir": "apps/web",
+  "appDir": "C:\\Users\\minhmice\\Documents\\project\\prosfin-web\\apps\\web",
+  "relativeAppDir": "apps\\web",
   "files": [
-    ".next/routes-manifest.json",
-    ".next/server/pages-manifest.json",
-    ".next/build-manifest.json",
-    ".next/prerender-manifest.json",
-    ".next/server/functions-config-manifest.json",
-    ".next/server/middleware-manifest.json",
-    ".next/server/middleware-build-manifest.js",
-    ".next/server/app-paths-manifest.json",
-    ".next/app-path-routes-manifest.json",
-    ".next/server/server-reference-manifest.js",
-    ".next/server/server-reference-manifest.json",
-    ".next/BUILD_ID",
-    ".next/server/next-font-manifest.js",
-    ".next/server/next-font-manifest.json",
-    ".next/required-server-files.json"
+    ".next\\routes-manifest.json",
+    ".next\\server\\pages-manifest.json",
+    ".next\\build-manifest.json",
+    ".next\\prerender-manifest.json",
+    ".next\\server\\functions-config-manifest.json",
+    ".next\\server\\middleware-manifest.json",
+    ".next\\server\\middleware-build-manifest.js",
+    ".next\\server\\app-paths-manifest.json",
+    ".next\\app-path-routes-manifest.json",
+    ".next\\server\\server-reference-manifest.js",
+    ".next\\server\\server-reference-manifest.json",
+    ".next\\BUILD_ID",
+    ".next\\server\\next-font-manifest.js",
+    ".next\\server\\next-font-manifest.json",
+    ".next\\required-server-files.json"
   ],
   "ignore": []
 }

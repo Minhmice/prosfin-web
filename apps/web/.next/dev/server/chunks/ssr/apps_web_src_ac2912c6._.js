@@ -920,7 +920,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$lib$2f
 ;
 ;
 ;
-function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealClient, cta, className, variant = "default" }) {
+function ProsfinServiceCardWrapper({ title, description, benefits, icon, coverImage, idealClient, cta, className, variant = "default" }) {
     const variantClasses = {
         default: "border-border shadow-sm",
         bordered: "border-2 border-border shadow-none",
@@ -929,6 +929,22 @@ function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealCl
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Card"], {
         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cn"])("flex h-full flex-col transition-all duration-200 ease-out", "hover:-translate-y-1 hover:shadow-lg hover:border-primary/50", variantClasses[variant], className),
         children: [
+            coverImage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "relative h-48 w-full overflow-hidden rounded-t-lg",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                    src: coverImage,
+                    alt: title,
+                    className: "h-full w-full object-cover"
+                }, void 0, false, {
+                    fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
+                    lineNumber: 88,
+                    columnNumber: 11
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
+                lineNumber: 87,
+                columnNumber: 9
+            }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["CardHeader"], {
                 className: "p-4 md:p-6",
                 children: [
@@ -937,7 +953,7 @@ function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealCl
                         children: icon
                     }, void 0, false, {
                         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                        lineNumber: 82,
+                        lineNumber: 96,
                         columnNumber: 18
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -945,7 +961,7 @@ function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealCl
                         children: title
                     }, void 0, false, {
                         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                        lineNumber: 83,
+                        lineNumber: 97,
                         columnNumber: 9
                     }, this),
                     description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -953,13 +969,13 @@ function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealCl
                         children: description
                     }, void 0, false, {
                         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                        lineNumber: 85,
+                        lineNumber: 99,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                lineNumber: 81,
+                lineNumber: 95,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -975,7 +991,7 @@ function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealCl
                                         children: "•"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                                        lineNumber: 96,
+                                        lineNumber: 110,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -983,18 +999,18 @@ function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealCl
                                         children: benefit
                                     }, void 0, false, {
                                         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                                        lineNumber: 97,
+                                        lineNumber: 111,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, index, true, {
                                 fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                                lineNumber: 95,
+                                lineNumber: 109,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                        lineNumber: 93,
+                        lineNumber: 107,
                         columnNumber: 11
                     }, this),
                     idealClient && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1005,20 +1021,20 @@ function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealCl
                                 children: "Phù hợp: "
                             }, void 0, false, {
                                 fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                                lineNumber: 108,
+                                lineNumber: 122,
                                 columnNumber: 13
                             }, this),
                             idealClient
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                        lineNumber: 107,
+                        lineNumber: 121,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                lineNumber: 90,
+                lineNumber: 104,
                 columnNumber: 7
             }, this),
             cta && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["CardFooter"], {
@@ -1026,13 +1042,13 @@ function ProsfinServiceCardWrapper({ title, description, benefits, icon, idealCl
                 children: cta
             }, void 0, false, {
                 fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-                lineNumber: 115,
+                lineNumber: 129,
                 columnNumber: 15
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/apps/web/src/components/shared/card/service-card-wrapper.tsx",
-        lineNumber: 73,
+        lineNumber: 78,
         columnNumber: 5
     }, this);
 }

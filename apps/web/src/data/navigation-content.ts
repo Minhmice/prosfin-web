@@ -14,7 +14,7 @@ export interface NavigationItem {
 export const navigationItems: NavigationItem[] = [
   {
     label: "Dịch vụ",
-    href: "/#services",
+    href: "/services",
     description: "Tư vấn tài chính, kế toán thuế, kiểm soát nội bộ và CFO đồng hành cho doanh nghiệp SME, startup và hộ kinh doanh.",
   },
   {
