@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/minhmice/Documents/projects/prosfin-web/apps/admin/src/app/%28app%29/layout.tsx"],"sourcesContent":["export default function AppLayout({\r\n  children,\r\n  drawer,\r\n}: {\r\n  children: React.ReactNode;\r\n  drawer: React.ReactNode;\r\n}) {\r\n  return (\r\n    <>\r\n      {children}\r\n      {drawer}\r\n    </>\r\n  );\r\n}\r\n\r\n"],"names":[],"mappings":";;;;;;AAAe,SAAS,UAAU,EAChC,QAAQ,EACR,MAAM,EAIP;IACC,qBACE;;YACG;YACA;;;AAGP"}}]
-}

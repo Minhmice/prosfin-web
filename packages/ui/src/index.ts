@@ -27,14 +27,3 @@ export * from "./components/ui/toggle-group";
 export * from "./components/ui/tooltip";
 export * from "./components/ui/sidebar";
 export * from "./components/ui/avatar";
-
-// Admin-specific components
-export * from "./components/admin/admin-page-shell";
-export * from "./components/admin/admin-toolbar";
-export * from "./components/admin/admin-section-card";
-export * from "./components/admin/admin-empty-state";
-export * from "./components/admin/admin-skeleton";
-export * from "./components/admin/admin-error-state";
-
-// Theme tokens (CSS file) - import directly in CSS files using @import "@prosfin/ui/tokens/theme.css"
-

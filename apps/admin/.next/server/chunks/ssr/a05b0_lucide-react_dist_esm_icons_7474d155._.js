@@ -1,3 +1,0 @@
-module.exports=[12741,a=>{"use strict";let b=(0,a.i(28761).default)("circle-check",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]]);a.s(["CheckCircle2",()=>b],12741)},15810,a=>{"use strict";let b=(0,a.i(28761).default)("columns-2",[["rect",{width:"18",height:"18",x:"3",y:"3",rx:"2",key:"afitv7"}],["path",{d:"M12 3v18",key:"108xh3"}]]);a.s(["Columns",()=>b],15810)}];
-
-//# sourceMappingURL=a05b0_lucide-react_dist_esm_icons_7474d155._.js.map
