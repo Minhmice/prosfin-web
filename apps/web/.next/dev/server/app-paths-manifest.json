@@ -1,8 +1,8 @@
 {
   "/(marketing)/about/page": "app/(marketing)/about/page.js",
-  "/(marketing)/case-studies/[slug]/page": "app/(marketing)/case-studies/[slug]/page.js",
   "/(marketing)/case-studies/page": "app/(marketing)/case-studies/page.js",
-  "/(marketing)/faq/page": "app/(marketing)/faq/page.js",
+  "/(marketing)/process/page": "app/(marketing)/process/page.js",
+  "/(marketing)/services/[slug]/page": "app/(marketing)/services/[slug]/page.js",
   "/(marketing)/services/page": "app/(marketing)/services/page.js",
   "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js"

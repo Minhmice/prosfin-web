@@ -56,6 +56,7 @@
   --shadow-2xl: 0 30px 60px -15px hsla(220 28% 12% / 0.25);
   --tracking-normal: -0.025em;
   --spacing: 0.25rem;
+  --ui-scale: 1.3;
 }
 
 .dark {
@@ -152,6 +153,9 @@
 }
 
 @layer base {
+  html {
+    font-size: calc(1rem * var(--ui-scale));
+  }
   * {
     @apply border-border outline-ring/50;
   }
