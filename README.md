@@ -1,10 +1,13 @@
 # ProsFIN Web
 
-Website marketing cho ProsFIN - dịch vụ tư vấn tài chính doanh nghiệp chuẩn Big4. Xây dựng bằng Next.js App Router với TypeScript, Tailwind CSS và shadcn/ui.
+Monorepo cho ProsFIN - dịch vụ tư vấn tài chính doanh nghiệp chuẩn Big4. Bao gồm website marketing và admin dashboard, xây dựng bằng Next.js App Router với TypeScript, Tailwind CSS và shadcn/ui.
 
 ## 📋 Tổng quan
 
-ProsFIN Web là website marketing B2B cung cấp thông tin về dịch vụ tư vấn tài chính cho doanh nghiệp, bao gồm:
+ProsFIN Web là monorepo chứa 2 ứng dụng chính:
+
+### 1. Marketing Website (`apps/web`)
+Website marketing B2B cung cấp thông tin về dịch vụ tư vấn tài chính cho doanh nghiệp:
 - Landing page với các section giới thiệu dịch vụ, quy trình, case studies
 - Trang dịch vụ chi tiết
 - Trang quy trình làm việc
@@ -12,6 +15,16 @@ ProsFIN Web là website marketing B2B cung cấp thông tin về dịch vụ tư
 - Trang FAQ
 - Trang liên hệ với form
 - Flow onboarding cho khách hàng mới
+
+### 2. Admin Dashboard (`apps/admin`) ⭐ Phase 1 Complete
+Hệ thống quản trị nội bộ với đầy đủ features:
+- **Dashboard** - KPI cards, interactive charts, recent activity, quick actions
+- **Leads Management** - DataTable với detail panel, actions, bulk operations
+- **Clients Management** - Quản lý clients với related leads tracking
+- **Content Management** - Quản lý posts với status workflow
+- **DataTable Kit** - Reusable table component với sorting, filtering, pagination, column visibility, row selection, bulk actions
+
+👉 **Xem chi tiết**: [apps/admin/README.md](./apps/admin/README.md)
 
 ## 🛠 Tech Stack
 
@@ -58,13 +71,23 @@ ProsFIN Web là website marketing B2B cung cấp thông tin về dịch vụ tư
 npm install
 ```
 
-### Chạy development server
+### Chạy development servers
 
+#### Marketing Website
 ```bash
-npm run dev
+npm run dev --workspace=apps/web
+# Hoặc
+cd apps/web && npm run dev
 ```
-
 Mở trình duyệt tại `http://localhost:3000`
+
+#### Admin Dashboard
+```bash
+npm run dev --workspace=apps/admin
+# Hoặc
+cd apps/admin && npm run dev
+```
+Mở trình duyệt tại `http://localhost:3001`
 
 ### Build production
 
@@ -86,10 +109,24 @@ npm run lint
 
 > **Lưu ý**: Hiện tại project không có file `.env*` và không sử dụng `process.env` trong `src/` (trừ `NEXT_PUBLIC_SITE_URL` trong layout).
 
-## 📁 Cấu trúc thư mục
+## 📁 Cấu trúc Monorepo
 
 ```
-src/
+prosfin-web/
+├── apps/
+│   ├── web/              # Marketing website
+│   │   └── src/          # (Xem cấu trúc chi tiết bên dưới)
+│   └── admin/            # Admin dashboard ⭐
+│       └── src/          # (Xem apps/admin/README.md)
+├── packages/             # Shared packages (nếu có)
+├── package.json          # Root package.json
+└── pnpm-workspace.yaml   # Workspace configuration
+```
+
+### Marketing Website Structure
+
+```
+apps/web/src/
 ├── app/                          # Next.js App Router
 │   ├── (marketing)/              # Route group cho marketing pages
 │   │   ├── about/                # Trang về ProsFIN
@@ -369,34 +406,67 @@ Hiện tại chỉ cần:
 
 ## 🗺 Roadmap
 
-### Phase 1 & 2 ✅ (Hoàn thành)
+### Marketing Website
+
+#### Phase 1 & 2 ✅ (Hoàn thành)
 - Foundation & Design System
 - Landing v2 với Content Adapter Layer
 - Wrapper components system
 - Attribution tracking
 - SEO baseline
 
-### Phase 3 (Planned)
+#### Phase 3 (Planned)
 - Connect content adapter to API/DB
 - Connect lead forms to API endpoint
 - Store attribution in Leads DB
 - Analytics tracking
 - A/B testing infrastructure
 
-### Future Features (Xem `later_feature.md`)
+#### Future Features (Xem `later_feature.md`)
 - Financial Health Self-Check tool
 - Interactive Dashboard Preview
 - Resources/Insights Hub
 - Who-We-Help segmentation page
 - Enhanced animations & scrollytelling
 
+### Admin Dashboard
+
+#### Phase 1 ✅ (Hoàn thành)
+- Shell ổn định (sidebar/topbar/breadcrumb/user menu/mobile offcanvas)
+- DataTable kit reusable 100% với đầy đủ features
+- Leads/Clients/Content pages với detail panels
+- Dashboard production-grade với charts
+- Hardening (loading/error/not-found theo Next.js conventions)
+
+#### Phase 2 (Planned)
+- Authentication & Authorization
+- User management
+- Settings page implementation
+- Advanced filters & search
+- Export functionality
+- Audit logs
+
+#### Phase 3 (Planned)
+- API integration
+- Real-time updates
+- Advanced analytics
+- Custom dashboards
+- Workflow automation
+
 ## 📚 Resources
 
+### Documentation
 - [Next.js Documentation](https://nextjs.org/docs)
 - [shadcn/ui Documentation](https://ui.shadcn.com)
 - [Tailwind CSS v4](https://tailwindcss.com)
+- [TanStack Table](https://tanstack.com/table) (Admin)
+- [Sonner (Toast)](https://sonner.emilkowal.ski) (Admin)
+- [Recharts](https://recharts.org) (Admin)
+
+### Libraries
 - [Framer Motion](https://www.framer.com/motion/)
 - [React Hook Form](https://react-hook-form.com)
+- [Radix UI](https://www.radix-ui.com)
 
 ## 📄 License
 
@@ -404,4 +474,19 @@ Private project - ProsFIN
 
 ---
 
-**Lưu ý**: Đây là website marketing, các form hiện đang ở mode demo (log/alert) và chưa nối backend/API. Sẽ được implement trong Phase 3.
+## 📝 Notes
+
+### Marketing Website
+- Các form hiện đang ở mode demo (log/alert) và chưa nối backend/API
+- Sẽ được implement trong Phase 3
+
+### Admin Dashboard
+- Hiện tại sử dụng mock data từ `apps/admin/src/data/*.ts`
+- Actions đều mock với setTimeout simulation
+- Sẵn sàng cho API integration trong Phase 3
+- DataTable kit đã support server-ready pagination
+
+---
+
+**Version**: 2.0.0
+**Last Updated**: 2024

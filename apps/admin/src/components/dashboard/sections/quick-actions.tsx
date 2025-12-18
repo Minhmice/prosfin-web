@@ -1,27 +1,23 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { IconPlus, IconFileText, IconDownload } from "@tabler/icons-react"
-
+import { IconPlus, IconFileText, IconBuilding } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { notifyInfo } from "@/lib/notify"
 
 export function QuickActions() {
-  const router = useRouter()
-
   const handleNewLead = () => {
-    router.push("/leads")
-    notifyInfo("Navigating to Leads", "You can create a new lead there")
+    // Will be handled by context in Phase 1.5
+    console.log("New Lead")
+  }
+
+  const handleNewClient = () => {
+    // Will be handled by context in Phase 1.5
+    console.log("New Client")
   }
 
   const handleCreatePost = () => {
-    router.push("/content")
-    notifyInfo("Navigating to Content", "You can create a new post there")
-  }
-
-  const handleExportLeads = () => {
-    notifyInfo("Export Leads", "This feature will be available soon")
+    // Phase 2
+    console.log("Create Post")
   }
 
   return (
@@ -43,18 +39,18 @@ export function QuickActions() {
           <Button
             variant="outline"
             className="w-full justify-start"
-            onClick={handleCreatePost}
+            onClick={handleNewClient}
           >
-            <IconFileText className="mr-2 size-4" />
-            Create Post
+            <IconBuilding className="mr-2 size-4" />
+            New Client
           </Button>
           <Button
             variant="outline"
             className="w-full justify-start"
-            onClick={handleExportLeads}
+            onClick={handleCreatePost}
           >
-            <IconDownload className="mr-2 size-4" />
-            Export Leads
+            <IconFileText className="mr-2 size-4" />
+            Create Post
           </Button>
         </div>
       </CardContent>

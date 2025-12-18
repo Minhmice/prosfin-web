@@ -45,6 +45,8 @@ export function DataTable<TData>({
   enableFiltering = true,
   onRowAction,
   onBulkAction,
+  rowActions,
+  bulkActions: customBulkActions,
 }: DataTableProps<TData>) {
   const pathname = usePathname()
   const [rowSelection, setRowSelection] = React.useState({})
@@ -105,19 +107,24 @@ export function DataTable<TData>({
         {
           id: "actions",
           header: () => <div className="text-right">Actions</div>,
-          cell: ({ row }: { row: any }) => (
-            <div className="flex justify-end">
-              <RowActions
-                row={row.original}
-                actions={[
+          cell: ({ row }: { row: any }) => {
+            const actions = rowActions
+              ? rowActions(row.original)
+              : [
                   { label: "View details", action: "view" },
                   { label: "Edit", action: "edit" },
                   { label: "Archive", action: "archive", variant: "destructive" as const },
-                ]}
-                onAction={onRowAction}
-              />
-            </div>
-          ),
+                ]
+            return (
+              <div className="flex justify-end">
+                <RowActions
+                  row={row.original}
+                  actions={actions}
+                  onAction={onRowAction}
+                />
+              </div>
+            )
+          },
           enableSorting: false,
           enableHiding: false,
         },
@@ -134,7 +141,7 @@ export function DataTable<TData>({
   }
 
   const bulkActions = onBulkAction
-    ? [
+    ? customBulkActions || [
         { label: "Archive", action: "archive", variant: "destructive" as const },
       ]
     : []

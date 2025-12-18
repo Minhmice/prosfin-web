@@ -12,6 +12,16 @@ export interface DataTableProps<TData> {
   enableFiltering?: boolean
   onRowAction?: (action: string, row: TData) => void
   onBulkAction?: (action: string, rows: TData[]) => void
+  rowActions?: (row: TData) => Array<{
+    label: string
+    action: string
+    variant?: "default" | "destructive"
+  }>
+  bulkActions?: Array<{
+    label: string
+    action: string
+    variant?: "default" | "destructive"
+  }>
 }
 
 export interface TableToolbarProps<TData> {

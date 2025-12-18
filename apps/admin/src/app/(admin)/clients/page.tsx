@@ -4,11 +4,17 @@ import * as React from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "@/components/table"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
+import { PageHeader } from "@/components/shared/page-header"
+import { PageBody } from "@/components/shared/page-body"
 import { mockClients } from "@/data/clients"
 import type { Client } from "@/types"
 import { ClientDetailPanel } from "@/components/clients/client-detail-panel"
+import { ClientFormSheet } from "@/features/crm/clients/client-form-sheet"
 import { archiveClient, bulkArchiveClients } from "@/lib/actions/clients"
 import { notifyInfo } from "@/lib/notify"
+import { crmProvider } from "@/features/crm/data/provider"
 
 const columns: ColumnDef<Client>[] = [
   {
@@ -36,7 +42,7 @@ const columns: ColumnDef<Client>[] = [
     },
   },
   {
-    accessorKey: "owner",
+    accessorKey: "ownerName",
     header: "Owner",
   },
   {
@@ -52,6 +58,18 @@ const columns: ColumnDef<Client>[] = [
 export default function ClientsPage() {
   const [selectedClient, setSelectedClient] = React.useState<Client | null>(null)
   const [isDetailOpen, setIsDetailOpen] = React.useState(false)
+  const [isFormOpen, setIsFormOpen] = React.useState(false)
+  const [editingClient, setEditingClient] = React.useState<Client | null>(null)
+  const [clients, setClients] = React.useState<Client[]>(mockClients as Client[])
+
+  const refreshClients = React.useCallback(async () => {
+    const result = await crmProvider.listClients({ page: 1, pageSize: 100 })
+    setClients(result.data)
+  }, [])
+
+  React.useEffect(() => {
+    refreshClients()
+  }, [refreshClients])
 
   const handleRowAction = async (action: string, row: Client) => {
     switch (action) {
@@ -60,10 +78,12 @@ export default function ClientsPage() {
         setIsDetailOpen(true)
         break
       case "edit":
-        notifyInfo("Edit Client", `Editing ${row.name}`)
+        setEditingClient(row)
+        setIsFormOpen(true)
         break
       case "archive":
         await archiveClient(row.id)
+        await refreshClients()
         break
       default:
         break
@@ -74,21 +94,33 @@ export default function ClientsPage() {
     switch (action) {
       case "archive":
         await bulkArchiveClients(rows.map((r) => r.id))
+        await refreshClients()
         break
       default:
         break
     }
   }
 
+  const handleNewClient = () => {
+    setEditingClient(null)
+    setIsFormOpen(true)
+  }
+
   return (
     <>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Clients</h1>
-          <p className="text-muted-foreground">Manage your clients</p>
-        </div>
+      <PageHeader
+        title="Clients"
+        subtitle="Manage your clients"
+        actions={
+          <Button onClick={handleNewClient}>
+            <Plus className="mr-2 size-4" />
+            New Client
+          </Button>
+        }
+      />
+      <PageBody>
         <DataTable
-          data={mockClients}
+          data={clients}
           columns={columns}
           enableRowSelection
           enableColumnVisibility
@@ -97,11 +129,20 @@ export default function ClientsPage() {
           onRowAction={handleRowAction}
           onBulkAction={handleBulkAction}
         />
-      </div>
+      </PageBody>
       <ClientDetailPanel
         client={selectedClient}
         open={isDetailOpen}
         onOpenChange={setIsDetailOpen}
+      />
+      <ClientFormSheet
+        open={isFormOpen}
+        onOpenChange={(open) => {
+          setIsFormOpen(open)
+          if (!open) setEditingClient(null)
+        }}
+        client={editingClient}
+        onSuccess={refreshClients}
       />
     </>
   )

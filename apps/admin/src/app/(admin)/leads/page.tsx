@@ -4,17 +4,19 @@ import * as React from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "@/components/table"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
+import { PageHeader } from "@/components/shared/page-header"
+import { PageBody } from "@/components/shared/page-body"
 import { mockLeads } from "@/data/leads"
 import type { Lead } from "@/types"
 import { LeadDetailPanel } from "@/components/leads/lead-detail-panel"
+import { LeadFormSheet } from "@/features/crm/leads/lead-form-sheet"
 import {
-  markContacted,
-  setLeadStatus,
-  convertToClient,
   archiveLead,
   bulkArchiveLeads,
 } from "@/lib/actions/leads"
-import { notifyInfo } from "@/lib/notify"
+import { crmProvider } from "@/features/crm/data/provider"
 
 const columns: ColumnDef<Lead>[] = [
   {
@@ -34,17 +36,13 @@ const columns: ColumnDef<Lead>[] = [
     header: "Phone",
   },
   {
-    accessorKey: "interest",
-    header: "Interest",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "stage",
+    header: "Stage",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string
+      const stage = row.getValue("stage") as string
       return (
         <Badge variant="outline">
-          {status}
+          {stage}
         </Badge>
       )
     },
@@ -62,8 +60,8 @@ const columns: ColumnDef<Lead>[] = [
     },
   },
   {
-    accessorKey: "utmCampaign",
-    header: "UTM Campaign",
+    accessorKey: "score",
+    header: "Score",
   },
   {
     accessorKey: "createdAt",
@@ -78,6 +76,18 @@ const columns: ColumnDef<Lead>[] = [
 export default function LeadsPage() {
   const [selectedLead, setSelectedLead] = React.useState<Lead | null>(null)
   const [isDetailOpen, setIsDetailOpen] = React.useState(false)
+  const [isFormOpen, setIsFormOpen] = React.useState(false)
+  const [editingLead, setEditingLead] = React.useState<Lead | null>(null)
+  const [leads, setLeads] = React.useState<Lead[]>(mockLeads as Lead[])
+
+  const refreshLeads = React.useCallback(async () => {
+    const result = await crmProvider.listLeads({ page: 1, pageSize: 100 })
+    setLeads(result.data)
+  }, [])
+
+  React.useEffect(() => {
+    refreshLeads()
+  }, [refreshLeads])
 
   const handleRowAction = async (action: string, row: Lead) => {
     switch (action) {
@@ -86,10 +96,12 @@ export default function LeadsPage() {
         setIsDetailOpen(true)
         break
       case "edit":
-        notifyInfo("Edit Lead", `Editing ${row.name}`)
+        setEditingLead(row)
+        setIsFormOpen(true)
         break
       case "archive":
         await archiveLead(row.id)
+        await refreshLeads()
         break
       default:
         break
@@ -100,21 +112,33 @@ export default function LeadsPage() {
     switch (action) {
       case "archive":
         await bulkArchiveLeads(rows.map((r) => r.id))
+        await refreshLeads()
         break
       default:
         break
     }
   }
 
+  const handleNewLead = () => {
+    setEditingLead(null)
+    setIsFormOpen(true)
+  }
+
   return (
     <>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Leads</h1>
-          <p className="text-muted-foreground">Manage your leads</p>
-        </div>
+      <PageHeader
+        title="Leads"
+        subtitle="Manage your leads"
+        actions={
+          <Button onClick={handleNewLead}>
+            <Plus className="mr-2 size-4" />
+            New Lead
+          </Button>
+        }
+      />
+      <PageBody>
         <DataTable
-          data={mockLeads}
+          data={leads}
           columns={columns}
           enableRowSelection
           enableColumnVisibility
@@ -123,11 +147,20 @@ export default function LeadsPage() {
           onRowAction={handleRowAction}
           onBulkAction={handleBulkAction}
         />
-      </div>
+      </PageBody>
       <LeadDetailPanel
         lead={selectedLead}
         open={isDetailOpen}
         onOpenChange={setIsDetailOpen}
+      />
+      <LeadFormSheet
+        open={isFormOpen}
+        onOpenChange={(open) => {
+          setIsFormOpen(open)
+          if (!open) setEditingLead(null)
+        }}
+        lead={editingLead}
+        onSuccess={refreshLeads}
       />
     </>
   )

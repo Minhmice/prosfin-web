@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [00:00:02.597] Server  LOG      ✓ Ready in 1992ms
 [00:00:09.608] Server  LOG      ○ Compiling / ...
 [00:00:17.206] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
@@ -10450,3 +10451,10 @@ See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host
 [07:33:41.537] Browser ERROR   uncaughtError: Error: An unexpected Turbopack error occurred. Please see the output of `next dev` for more details.
 [07:35:11.261] Server  LOG      ✓ Compiled in 279ms
 [07:35:11.901] Browser ERROR   uncaughtError: Error: An unexpected Turbopack error occurred. Please see the output of `next dev` for more details.
+=======
+[00:00:01.306] Server  LOG      ✓ Ready in 986ms
+[00:00:09.218] Server  LOG      ○ Compiling / ...
+[00:00:10.923] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:11.217] Browser WARN    Image with src "http://localhost:3000/brand/logo_rectangle.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:00:11.480] Server  ERROR    ⨯ "The requested resource isn't a valid image for" "/images/hero-dashboard-mockup.png" "received" null
+>>>>>>> 1345abab7132947d0a77a7c82b11955fefd07229
