@@ -86,7 +86,7 @@ model Client {
   lastContactedAt DateTime?
   
   tags           ClientTag[]
-  activityEvents ActivityEvent[]
+  activityEvents ActivityEvent[] @relation("ActivityEventClient")
   
   @@index([status])
   @@index([createdAt])
@@ -120,7 +120,7 @@ model Lead {
   
   attribution    LeadAttribution?
   tags           LeadTag[]
-  activityEvents ActivityEvent[]
+  activityEvents ActivityEvent[] @relation("ActivityEventLead")
   
   @@index([status])
   @@index([source])
@@ -178,8 +178,8 @@ model ActivityEvent {
   metadata   Json?
   createdAt  DateTime @default(now())
   
-  client Client? @relation(fields: [entityId], references: [id], onDelete: Cascade)
-  lead   Lead?   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  client Client? @relation("ActivityEventClient", fields: [entityId], references: [id], onDelete: Cascade, map: "ActivityEvent_client_fkey")
+  lead   Lead?   @relation("ActivityEventLead", fields: [entityId], references: [id], onDelete: Cascade, map: "ActivityEvent_lead_fkey")
 }
 
 // Content

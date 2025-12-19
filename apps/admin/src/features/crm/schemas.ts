@@ -46,7 +46,22 @@ export const leadSchema = z.object({
   nextActionAt: z.date().optional(),
 })
 
+export const leadListQuerySchema = z.object({
+  q: z.string().optional(),
+  stage: z.enum(["new", "qualified", "proposal", "won", "lost"]).optional(),
+  source: z.enum(["web", "referral", "event", "other"]).optional(),
+  owner: z.string().optional(),
+  scoreMin: z.coerce.number().int().min(0).max(100).optional(),
+  scoreMax: z.coerce.number().int().min(0).max(100).optional(),
+  dateFrom: z.string().optional(), // ISO date string
+  dateTo: z.string().optional(), // ISO date string
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(100).default(20),
+  sort: z.string().optional(), // format: "-updatedAt" or "name.asc"
+})
+
 export type LeadFormData = z.infer<typeof leadSchema>
+export type LeadListQuery = z.infer<typeof leadListQuerySchema>
 
 export const convertLeadSchema = clientSchema.extend({
   // Additional fields when converting lead to client

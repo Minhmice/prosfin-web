@@ -27,6 +27,10 @@ export interface DataTableProps<TData> {
     action: string
     variant?: "default" | "destructive"
   }>
+  getRowId?: (row: TData) => string
+  highlightedRowId?: string | null
+  initialPage?: number
+  initialPageSize?: number
 }
 
 export interface TableToolbarProps<TData> {

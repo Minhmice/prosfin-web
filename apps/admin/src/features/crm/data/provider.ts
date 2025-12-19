@@ -15,7 +15,7 @@ export interface PaginatedResponse<T> {
   }
 }
 
-import type { Client360 } from "../types"
+import type { Client360, LeadSourceSeries } from "../types"
 
 export interface CRMProvider {
   // Clients
@@ -33,6 +33,7 @@ export interface CRMProvider {
   updateLead(id: string, data: UpdateLeadInput): Promise<Lead>
   deleteLead(id: string): Promise<void>
   convertLead(id: string): Promise<{ client: Client }>
+  getLeadSourceSeries(params: { range: "7d" | "30d" }): Promise<LeadSourceSeries>
 }
 
 // Export singleton instance

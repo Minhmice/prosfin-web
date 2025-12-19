@@ -1,4 +1,4 @@
-import type { Lead } from "@/types"
+import type { Lead } from "@/features/crm/types"
 
 const names = [
   "John Doe", "Jane Smith", "Michael Johnson", "Emily Davis", "David Wilson",
@@ -23,30 +23,37 @@ const companies = [
   "Rise Systems", "Climb Tech", "Soar Solutions", "Sky High Corp", "Cloud Nine",
 ]
 
-const interests = [
-  "Financial Planning", "Tax Services", "Accounting", "Business Consulting", "Investment Advice",
-  "Wealth Management", "Bookkeeping", "Audit Services", "Payroll", "Budget Planning",
+const owners = [
+  { id: "user-1", name: "John Manager" },
+  { id: "user-2", name: "Jane Director" },
+  { id: "user-3", name: "Mike Lead" },
+  { id: "user-4", name: "Sarah Admin" },
+  undefined,
 ]
 
-const sources: Lead["source"][] = ["website", "referral", "social", "other"]
-const statuses: Lead["status"][] = ["new", "contacted", "qualified", "converted", "archived"]
+const stages: Lead["stage"][] = ["new", "qualified", "proposal", "won", "lost"]
+const sources: Lead["source"][] = ["web", "referral", "event", "other"]
+
+// Fixed dates để data không thay đổi
+const baseDate = new Date("2024-01-01T00:00:00Z")
+const daysAgo = (days: number) => new Date(baseDate.getTime() - days * 24 * 60 * 60 * 1000)
+const daysFromNow = (days: number) => new Date(baseDate.getTime() + days * 24 * 60 * 60 * 1000)
 
 function generateLeads(count: number): Lead[] {
   const leads: Lead[] = []
-  const now = new Date()
 
   for (let i = 0; i < count; i++) {
     const name = names[i % names.length]
     const company = companies[i % companies.length]
     const email = `${name.toLowerCase().replace(/\s+/g, ".")}@${company.toLowerCase().replace(/\s+/g, "")}.com`
-    const phone = `+1-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`
-    const interest = interests[i % interests.length]
-    const status = statuses[Math.floor(Math.random() * statuses.length)]
-    const source = sources[Math.floor(Math.random() * sources.length)]
-    const utmCampaign = Math.random() > 0.5 ? `campaign-${Math.floor(Math.random() * 10) + 1}` : undefined
-    
-    const createdAt = new Date(now.getTime() - Math.random() * 90 * 24 * 60 * 60 * 1000)
-    const updatedAt = new Date(createdAt.getTime() + Math.random() * 30 * 24 * 60 * 60 * 1000)
+    const phone = i % 2 === 0 ? `+84${900000000 + i}` : undefined
+    const stage = stages[i % stages.length]
+    const source = sources[i % sources.length]
+    const owner = owners[i % owners.length]
+    const score = (i % 100) // 0-99
+    const createdAt = daysAgo(90 - (i % 90))
+    const updatedAt = daysAgo(90 - (i % 90) - (i % 30))
+    const nextActionAt = i % 3 === 0 ? daysFromNow(7 - (i % 7)) : undefined
 
     leads.push({
       id: `lead-${i + 1}`,
@@ -54,10 +61,12 @@ function generateLeads(count: number): Lead[] {
       company,
       email,
       phone,
-      interest,
-      status,
+      stage,
       source,
-      utmCampaign,
+      score,
+      ownerId: owner?.id,
+      ownerName: owner?.name,
+      nextActionAt,
       createdAt,
       updatedAt,
     })
@@ -66,4 +75,5 @@ function generateLeads(count: number): Lead[] {
   return leads
 }
 
-export const mockLeads = generateLeads(75)
+// Generate once và export constant để data không thay đổi
+export const mockLeads: Lead[] = generateLeads(75)

@@ -101,7 +101,7 @@ export function LeadFormSheet({
       <SheetContent>
         <SheetHeader>
           <SheetTitle>{lead ? "Edit Lead" : "New Lead"}</SheetTitle>
-          <SheetDescription>
+          <SheetDescription aria-describedby={undefined}>
             {lead ? "Update lead information" : "Create a new lead record"}
           </SheetDescription>
         </SheetHeader>

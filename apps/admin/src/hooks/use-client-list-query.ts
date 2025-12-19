@@ -7,6 +7,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useCallback, useMemo } from "react"
 import { clientListQuerySchema } from "@/features/crm/schemas"
 import { useDebouncedCallback } from "use-debounce"
+import { parseQuery, stringifyQuery } from "@/features/crm/shared/query"
 
 export interface ClientListQuery {
   q?: string
@@ -28,36 +29,27 @@ export function useClientListQuery() {
     return searchParams.toString()
   }, [searchParams])
   
-  // Parse query from URL
+  // Parse query from URL using shared utility
   const query = useMemo(() => {
-    const params = Object.fromEntries(searchParams.entries())
-    const parsed = clientListQuerySchema.parse(params)
-    // Normalize tags array to ensure stable reference
-    if (parsed.tags && Array.isArray(parsed.tags)) {
-      parsed.tags = [...parsed.tags].sort()
-    }
+    const parsed = parseQuery(searchParams, clientListQuerySchema)
     return parsed
-  }, [queryString])
+  }, [queryString, searchParams])
 
-  // Update query in URL
+  // Update query in URL using shared utility
   const updateQuery = useCallback(
     (updates: Partial<ClientListQuery>) => {
       const newQuery = { ...query, ...updates }
-      const params = new URLSearchParams()
-
-      // Only add non-default values
-      if (newQuery.q) params.set("q", newQuery.q)
-      if (newQuery.status) params.set("status", newQuery.status)
-      if (newQuery.owner) params.set("owner", newQuery.owner)
-      if (newQuery.tags && newQuery.tags.length > 0) {
-        newQuery.tags.forEach((tag) => params.append("tags", tag))
+      
+      // Check if query actually changed by comparing stringified versions
+      const currentParams = stringifyQuery(query, { page: 1, pageSize: 20, sort: undefined })
+      const newParams = stringifyQuery(newQuery, { page: 1, pageSize: 20, sort: undefined })
+      const currentQueryString = currentParams.toString()
+      const newQueryString = newParams.toString()
+      
+      // Only update URL if query actually changed
+      if (currentQueryString !== newQueryString) {
+        router.replace(`${pathname}${newQueryString ? `?${newQueryString}` : ""}`, { scroll: false })
       }
-      if (newQuery.page > 1) params.set("page", newQuery.page.toString())
-      if (newQuery.pageSize !== 20) params.set("pageSize", newQuery.pageSize.toString())
-      if (newQuery.sort) params.set("sort", newQuery.sort)
-
-      const queryString = params.toString()
-      router.replace(`${pathname}${queryString ? `?${queryString}` : ""}`, { scroll: false })
     },
     [query, router, pathname]
   )

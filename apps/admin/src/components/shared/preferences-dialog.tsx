@@ -1,38 +1,38 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useTheme } from "next-themes"
+import * as React from "react";
+import { useTheme } from "next-themes";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
-import { ThemePicker } from "./theme-picker"
-import { useThemeAccent } from "./theme-provider"
-import { defaultTheme } from "@/lib/themes"
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { ThemePicker } from "./theme-picker";
+import { useThemeAccent } from "./theme-provider";
+import { defaultTheme } from "@/lib/themes";
 
 interface PreferencesDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export function PreferencesDialog({
   open,
   onOpenChange,
 }: PreferencesDialogProps) {
-  const { theme, setTheme } = useTheme()
-  const { accent, setAccentTheme } = useThemeAccent()
+  const { theme, setTheme } = useTheme();
+  const { accent, setAccentTheme } = useThemeAccent();
 
   const handleReset = () => {
-    setTheme("system")
-    setAccentTheme(defaultTheme.id)
-  }
+    setTheme("system");
+    setAccentTheme(defaultTheme.id);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -81,5 +81,5 @@ export function PreferencesDialog({
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

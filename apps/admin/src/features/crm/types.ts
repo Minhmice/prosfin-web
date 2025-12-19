@@ -82,3 +82,10 @@ export interface Lead {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface LeadSourceSeries {
+  points: Array<{
+    date: string
+    [source: string]: number | string
+  }>
+}

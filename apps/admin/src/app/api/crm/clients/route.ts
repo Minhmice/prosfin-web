@@ -5,7 +5,7 @@
  */
 
 import { NextRequest } from "next/server"
-import { getServerSession } from "next-auth"
+import { getServerSession } from "@/lib/auth"
 import { authOptions } from "@/lib/auth"
 import { requireRole, unauthorizedResponse } from "@/lib/rbac"
 import { successResponse, errorResponse } from "@/lib/api-response"
@@ -16,7 +16,7 @@ import { createClientSchema, clientFilterSchema } from "@prosfin/shared/schemas"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
     if (!session) {
       return unauthorizedResponse()
     }
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
     if (!session) {
       return unauthorizedResponse()
     }

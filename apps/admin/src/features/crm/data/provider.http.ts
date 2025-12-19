@@ -5,7 +5,7 @@
 
 import type { CRMProvider, PaginatedResponse } from "./provider"
 import type { Client, Lead, ClientFilterInput, LeadFilterInput, CreateClientInput, UpdateClientInput, CreateLeadInput, UpdateLeadInput } from "@prosfin/shared"
-import type { Client360 } from "../types"
+import type { Client360, LeadSourceSeries } from "../types"
 
 function buildQueryString(params: Record<string, any>): string {
   const searchParams = new URLSearchParams()
@@ -45,25 +45,12 @@ export class HTTPCRMProvider implements CRMProvider {
   // Clients
   async listClients(params: ClientFilterInput): Promise<PaginatedResponse<Client>> {
     const query = buildQueryString(params)
-    const url = `${this.baseUrl}/clients?${query}`
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'provider.http.ts:47',message:'HTTP fetch start',data:{url,params},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{})
-    // #endregion
-    const response = await fetch(url)
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'provider.http.ts:50',message:'HTTP response received',data:{status:response.status,statusText:response.statusText,ok:response.ok,url:response.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{})
-    // #endregion
+    const response = await fetch(`${this.baseUrl}/clients?${query}`)
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: response.statusText }))
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'provider.http.ts:53',message:'HTTP error',data:{status:response.status,error},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{})
-      // #endregion
       throw new Error(error.error || `HTTP ${response.status}`)
     }
     const result = await response.json()
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'provider.http.ts:58',message:'HTTP success',data:{dataCount:result.data?.length,total:result.meta?.total},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{})
-    // #endregion
     return {
       data: result.data,
       meta: result.meta || {},
@@ -142,6 +129,11 @@ export class HTTPCRMProvider implements CRMProvider {
       method: "POST",
     })
     return result
+  }
+
+  async getLeadSourceSeries(params: { range: "7d" | "30d" }): Promise<LeadSourceSeries> {
+    const query = buildQueryString(params)
+    return fetchAPI<LeadSourceSeries>(`${this.baseUrl}/leads/sources/series?${query}`)
   }
 }
 

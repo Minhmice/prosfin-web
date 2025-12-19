@@ -8,6 +8,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { db } from "@prosfin/db"
 import bcrypt from "bcryptjs"
+import { cookies } from "next/headers"
+import { decode } from "next-auth/jwt"
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as any,
@@ -75,5 +77,46 @@ export const authOptions: NextAuthOptions = {
       return session
     },
   },
+}
+
+/**
+ * Get server session (compatible with next-auth v5)
+ * Use this in API routes and server components
+ * 
+ * Note: In next-auth v5, we need to manually decode the session token
+ */
+export async function getServerSession() {
+  const cookieStore = await cookies()
+  const sessionToken = cookieStore.get("next-auth.session-token")?.value || 
+                       cookieStore.get("__Secure-next-auth.session-token")?.value
+
+  if (!sessionToken) {
+    return null
+  }
+
+  try {
+    const decoded = await decode({
+      token: sessionToken,
+      secret: process.env.NEXTAUTH_SECRET || "your-secret-key",
+    })
+
+    if (!decoded) {
+      return null
+    }
+
+    // Reconstruct session from token
+    return {
+      user: {
+        id: decoded.id as string,
+        email: decoded.email as string,
+        name: decoded.name as string,
+        roles: (decoded.roles as string[]) || [],
+      },
+      expires: decoded.exp ? new Date(decoded.exp * 1000).toISOString() : undefined,
+    }
+  } catch (error) {
+    console.error("Failed to decode session token:", error)
+    return null
+  }
 }
 

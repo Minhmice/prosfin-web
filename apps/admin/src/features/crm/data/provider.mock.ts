@@ -5,9 +5,12 @@
 
 import type { CRMProvider, PaginatedResponse } from "./provider"
 import type { Client, Lead, ClientFilterInput, LeadFilterInput, CreateClientInput, UpdateClientInput, CreateLeadInput, UpdateLeadInput } from "@prosfin/shared"
-import type { Client360, Note, Task, File } from "../types"
+import type { Client360, Note, Task, File, LeadSourceSeries } from "../types"
 import { mockClients } from "@/data/clients"
 import { mockLeads } from "@/data/leads"
+
+// Base date for consistent mock data
+const baseDate = new Date("2024-12-01T00:00:00Z")
 
 // Mock stores - deep clone để tránh mutation
 function deepClone<T>(obj: T): T {
@@ -206,15 +209,97 @@ export class MockCRMProvider implements CRMProvider {
     }
   }
 
-  // Leads (stub implementations)
+  // Leads
   async listLeads(params: LeadFilterInput): Promise<PaginatedResponse<Lead>> {
+    let filtered = [...leadsStore]
+
+    // Search filter
+    if (params.q) {
+      const q = params.q.toLowerCase()
+      filtered = filtered.filter(
+        (l) =>
+          l.name.toLowerCase().includes(q) ||
+          l.company.toLowerCase().includes(q) ||
+          l.email.toLowerCase().includes(q)
+      )
+    }
+
+    // Stage filter - use stage field directly
+    // Note: LeadFilterInput might have 'status' field for backward compatibility
+    const stage = (params as any).stage || params.status
+    if (stage) {
+      filtered = filtered.filter((l) => l.stage === stage)
+    }
+
+    // Source filter
+    if (params.source) {
+      filtered = filtered.filter((l) => l.source === params.source)
+    }
+
+    // Owner filter
+    if (params.ownerId) {
+      filtered = filtered.filter((l) => l.ownerId === params.ownerId)
+    }
+
+    // Score range filter
+    const scoreMin = (params as any).scoreMin
+    const scoreMax = (params as any).scoreMax
+    if (scoreMin !== undefined || scoreMax !== undefined) {
+      filtered = filtered.filter((l) => {
+        if (scoreMin !== undefined && l.score < scoreMin) return false
+        if (scoreMax !== undefined && l.score > scoreMax) return false
+        return true
+      })
+    }
+
+    // Date range filter (createdAt or updatedAt)
+    const dateFrom = (params as any).dateFrom
+    const dateTo = (params as any).dateTo
+    if (dateFrom || dateTo) {
+      filtered = filtered.filter((l) => {
+        // Filter by createdAt (can be changed to updatedAt if needed)
+        const leadDate = new Date(l.createdAt).getTime()
+        if (dateFrom) {
+          const from = new Date(dateFrom).setHours(0, 0, 0, 0)
+          if (leadDate < from) return false
+        }
+        if (dateTo) {
+          const to = new Date(dateTo).setHours(23, 59, 59, 999)
+          if (leadDate > to) return false
+        }
+        return true
+      })
+    }
+
+    // Sort
+    if (params.sort) {
+      const [field, direction] = params.sort.startsWith("-")
+        ? [params.sort.slice(1), "desc"]
+        : [params.sort, "asc"]
+      filtered.sort((a, b) => {
+        const aVal = (a as any)[field]
+        const bVal = (b as any)[field]
+        if (direction === "asc") {
+          return aVal > bVal ? 1 : aVal < bVal ? -1 : 0
+        }
+        return aVal < bVal ? 1 : aVal > bVal ? -1 : 0
+      })
+    }
+
+    // Pagination
+    const page = params.page || 1
+    const pageSize = params.pageSize || 20
+    const start = (page - 1) * pageSize
+    const end = start + pageSize
+    const paginated = filtered.slice(start, end)
+
     return {
-      data: leadsStore.slice(0, params.pageSize || 20),
+      data: paginated,
       meta: {
-        page: params.page || 1,
-        pageSize: params.pageSize || 20,
-        total: leadsStore.length,
-        totalPages: Math.ceil(leadsStore.length / (params.pageSize || 20)),
+        page,
+        pageSize,
+        total: filtered.length,
+        totalPages: Math.ceil(filtered.length / pageSize),
       },
     }
   }
@@ -232,11 +317,12 @@ export class MockCRMProvider implements CRMProvider {
       company: data.company,
       email: data.email,
       phone: data.phone,
-      stage: "new",
+      stage: (data as any).stage || "new",
       source: data.source || "web",
-      score: 0,
+      score: (data as any).score || 0,
       ownerId: data.ownerId,
       ownerName: data.ownerId ? "Owner Name" : undefined,
+      nextActionAt: (data as any).nextActionAt,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -271,7 +357,32 @@ export class MockCRMProvider implements CRMProvider {
       status: "active",
       ownerId: lead.ownerId,
     })
+    // Update lead stage to "won" after conversion
+    await this.updateLead(id, { stage: "won" } as any)
     return { client }
+  }
+
+  async getLeadSourceSeries(params: { range: "7d" | "30d" }): Promise<LeadSourceSeries> {
+    const days = params.range === "7d" ? 7 : 30
+    const points: LeadSourceSeries["points"] = []
+    // Extended sources list (more than 4 to test "Other" grouping)
+    const allSources = ["web", "referral", "event", "facebook", "tiktok", "linkedin", "twitter", "other"]
+    
+    // Generate mock data for last N days
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(baseDate.getTime() - i * 24 * 60 * 60 * 1000)
+      const dateStr = date.toISOString().split("T")[0]
+      
+      const point: any = { date: dateStr }
+      allSources.forEach((source) => {
+        // Generate consistent mock counts based on date and source
+        const seed = dateStr.charCodeAt(0) + source.charCodeAt(0)
+        point[source] = (seed % 20) + (i % 5)
+      })
+      points.push(point)
+    }
+    
+    return { points }
   }
 }
 

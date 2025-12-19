@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from "next/server"
-import { getServerSession } from "next-auth"
+import { getServerSession } from "@/lib/auth"
 import { authOptions } from "@/lib/auth"
 import { requireRole, unauthorizedResponse } from "@/lib/rbac"
 import { successResponse, errorResponse, notFoundResponse } from "@/lib/api-response"
@@ -21,7 +21,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
     if (!session) {
       return unauthorizedResponse()
     }

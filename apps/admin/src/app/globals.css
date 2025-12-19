@@ -157,6 +157,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(210, 100%, 50%);
   --brand-gradient: linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(210, 80%, 60%) 100%);
+  --chart-1: hsl(210, 100%, 50%);
+  --chart-2: hsl(210, 100%, 60%);
+  --chart-3: hsl(210, 80%, 40%);
+  --chart-4: hsl(210, 60%, 30%);
 }
 
 :root[data-accent="forest"] {
@@ -164,6 +168,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(142, 76%, 36%);
   --brand-gradient: linear-gradient(135deg, hsl(142, 76%, 36%) 0%, hsl(142, 70%, 45%) 100%);
+  --chart-1: hsl(142, 76%, 36%);
+  --chart-2: hsl(142, 76%, 46%);
+  --chart-3: hsl(142, 70%, 26%);
+  --chart-4: hsl(142, 60%, 20%);
 }
 
 :root[data-accent="sunset"] {
@@ -171,6 +179,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(25, 95%, 53%);
   --brand-gradient: linear-gradient(135deg, hsl(25, 95%, 53%) 0%, hsl(15, 90%, 60%) 100%);
+  --chart-1: hsl(25, 95%, 53%);
+  --chart-2: hsl(25, 95%, 63%);
+  --chart-3: hsl(25, 85%, 43%);
+  --chart-4: hsl(25, 75%, 33%);
 }
 
 :root[data-accent="purple"] {
@@ -178,6 +190,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(262, 83%, 58%);
   --brand-gradient: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(262, 75%, 65%) 100%);
+  --chart-1: hsl(262, 83%, 58%);
+  --chart-2: hsl(262, 83%, 68%);
+  --chart-3: hsl(262, 75%, 48%);
+  --chart-4: hsl(262, 65%, 38%);
 }
 
 :root[data-accent="pink"] {
@@ -185,6 +201,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(330, 81%, 60%);
   --brand-gradient: linear-gradient(135deg, hsl(330, 81%, 60%) 0%, hsl(330, 75%, 68%) 100%);
+  --chart-1: hsl(330, 81%, 60%);
+  --chart-2: hsl(330, 81%, 70%);
+  --chart-3: hsl(330, 75%, 50%);
+  --chart-4: hsl(330, 65%, 40%);
 }
 
 :root[data-accent="amber"] {
@@ -192,6 +212,10 @@
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(43, 96%, 56%);
   --brand-gradient: linear-gradient(135deg, hsl(43, 96%, 56%) 0%, hsl(38, 92%, 63%) 100%);
+  --chart-1: hsl(43, 96%, 56%);
+  --chart-2: hsl(43, 96%, 66%);
+  --chart-3: hsl(43, 90%, 46%);
+  --chart-4: hsl(43, 80%, 36%);
 }
 
 :root[data-accent="emerald"] {
@@ -199,6 +223,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(160, 84%, 39%);
   --brand-gradient: linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(160, 78%, 48%) 100%);
+  --chart-1: hsl(160, 84%, 39%);
+  --chart-2: hsl(160, 84%, 49%);
+  --chart-3: hsl(160, 78%, 29%);
+  --chart-4: hsl(160, 70%, 22%);
 }
 
 :root[data-accent="rose"] {
@@ -206,6 +234,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(0, 72%, 51%);
   --brand-gradient: linear-gradient(135deg, hsl(0, 72%, 51%) 0%, hsl(0, 65%, 58%) 100%);
+  --chart-1: hsl(0, 72%, 51%);
+  --chart-2: hsl(0, 72%, 61%);
+  --chart-3: hsl(0, 65%, 41%);
+  --chart-4: hsl(0, 55%, 31%);
 }
 
 :root[data-accent="indigo"] {
@@ -213,6 +245,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(239, 84%, 67%);
   --brand-gradient: linear-gradient(135deg, hsl(239, 84%, 67%) 0%, hsl(239, 78%, 74%) 100%);
+  --chart-1: hsl(239, 84%, 67%);
+  --chart-2: hsl(239, 84%, 77%);
+  --chart-3: hsl(239, 78%, 57%);
+  --chart-4: hsl(239, 70%, 47%);
 }
 
 :root[data-accent="teal"] {
@@ -220,6 +256,10 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --ring: hsl(173, 80%, 40%);
   --brand-gradient: linear-gradient(135deg, hsl(173, 80%, 40%) 0%, hsl(173, 74%, 48%) 100%);
+  --chart-1: hsl(173, 80%, 40%);
+  --chart-2: hsl(173, 80%, 50%);
+  --chart-3: hsl(173, 74%, 30%);
+  --chart-4: hsl(173, 65%, 23%);
 }
 
 /* Dark mode accent overrides */
@@ -227,60 +267,100 @@
   --primary: hsl(210, 100%, 60%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(210, 100%, 60%);
+  --chart-1: hsl(210, 100%, 60%);
+  --chart-2: hsl(210, 100%, 70%);
+  --chart-3: hsl(210, 80%, 50%);
+  --chart-4: hsl(210, 60%, 40%);
 }
 
 .dark[data-accent="forest"] {
   --primary: hsl(142, 76%, 46%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(142, 76%, 46%);
+  --chart-1: hsl(142, 76%, 46%);
+  --chart-2: hsl(142, 76%, 56%);
+  --chart-3: hsl(142, 70%, 36%);
+  --chart-4: hsl(142, 60%, 28%);
 }
 
 .dark[data-accent="sunset"] {
   --primary: hsl(25, 95%, 63%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(25, 95%, 63%);
+  --chart-1: hsl(25, 95%, 63%);
+  --chart-2: hsl(25, 95%, 73%);
+  --chart-3: hsl(25, 85%, 53%);
+  --chart-4: hsl(25, 75%, 43%);
 }
 
 .dark[data-accent="purple"] {
   --primary: hsl(262, 83%, 68%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(262, 83%, 68%);
+  --chart-1: hsl(262, 83%, 68%);
+  --chart-2: hsl(262, 83%, 78%);
+  --chart-3: hsl(262, 75%, 58%);
+  --chart-4: hsl(262, 65%, 48%);
 }
 
 .dark[data-accent="pink"] {
   --primary: hsl(330, 81%, 70%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(330, 81%, 70%);
+  --chart-1: hsl(330, 81%, 70%);
+  --chart-2: hsl(330, 81%, 80%);
+  --chart-3: hsl(330, 75%, 60%);
+  --chart-4: hsl(330, 65%, 50%);
 }
 
 .dark[data-accent="amber"] {
   --primary: hsl(43, 96%, 66%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(43, 96%, 66%);
+  --chart-1: hsl(43, 96%, 66%);
+  --chart-2: hsl(43, 96%, 76%);
+  --chart-3: hsl(43, 90%, 56%);
+  --chart-4: hsl(43, 80%, 46%);
 }
 
 .dark[data-accent="emerald"] {
   --primary: hsl(160, 84%, 49%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(160, 84%, 49%);
+  --chart-1: hsl(160, 84%, 49%);
+  --chart-2: hsl(160, 84%, 59%);
+  --chart-3: hsl(160, 78%, 39%);
+  --chart-4: hsl(160, 70%, 32%);
 }
 
 .dark[data-accent="rose"] {
   --primary: hsl(0, 72%, 61%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(0, 72%, 61%);
+  --chart-1: hsl(0, 72%, 61%);
+  --chart-2: hsl(0, 72%, 71%);
+  --chart-3: hsl(0, 65%, 51%);
+  --chart-4: hsl(0, 55%, 41%);
 }
 
 .dark[data-accent="indigo"] {
   --primary: hsl(239, 84%, 77%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(239, 84%, 77%);
+  --chart-1: hsl(239, 84%, 77%);
+  --chart-2: hsl(239, 84%, 87%);
+  --chart-3: hsl(239, 78%, 67%);
+  --chart-4: hsl(239, 70%, 57%);
 }
 
 .dark[data-accent="teal"] {
   --primary: hsl(173, 80%, 50%);
   --primary-foreground: hsl(0, 0%, 0%);
   --ring: hsl(173, 80%, 50%);
+  --chart-1: hsl(173, 80%, 50%);
+  --chart-2: hsl(173, 80%, 60%);
+  --chart-3: hsl(173, 74%, 40%);
+  --chart-4: hsl(173, 65%, 33%);
 }
 
 @layer base {

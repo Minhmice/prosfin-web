@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { OwnerCombobox } from "./owner-combobox"
+import { TagsMultiSelect } from "./tags-multi-select"
 import type { ClientListQuery } from "@/hooks/use-client-list-query"
 
 interface ClientsTableToolbarProps {
@@ -46,7 +48,7 @@ export function ClientsTableToolbar({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         <Input
           placeholder="Search clients..."
           value={searchValue}
@@ -70,6 +72,14 @@ export function ClientsTableToolbar({
             <SelectItem value="archived">Archived</SelectItem>
           </SelectContent>
         </Select>
+        <OwnerCombobox
+          value={query.owner}
+          onValueChange={onOwnerChange}
+        />
+        <TagsMultiSelect
+          value={query.tags}
+          onValueChange={onTagsChange}
+        />
         {hasFilters && (
           <Button variant="ghost" onClick={onReset} size="sm">
             <X className="mr-2 size-4" />
@@ -113,15 +123,19 @@ export function ClientsTableToolbar({
             </Badge>
           )}
           {query.tags && query.tags.length > 0 && (
-            <Badge variant="secondary" className="gap-1">
-              Tags: {query.tags.length}
-              <button
-                onClick={() => onTagsChange([])}
-                className="ml-1 rounded-full hover:bg-secondary"
-              >
-                <X className="size-3" />
-              </button>
-            </Badge>
+            <>
+              {query.tags.map((tag) => (
+                <Badge key={tag} variant="secondary" className="gap-1">
+                  Tag: {tag}
+                  <button
+                    onClick={() => onTagsChange(query.tags?.filter((t) => t !== tag) || [])}
+                    className="ml-1 rounded-full hover:bg-secondary"
+                  >
+                    <X className="size-3" />
+                  </button>
+                </Badge>
+              ))}
+            </>
           )}
         </div>
       )}

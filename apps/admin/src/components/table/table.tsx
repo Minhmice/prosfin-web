@@ -52,6 +52,10 @@ export function DataTable<TData>({
   onBulkAction,
   rowActions,
   bulkActions: customBulkActions,
+  getRowId,
+  highlightedRowId,
+  initialPage = 1,
+  initialPageSize = 20,
 }: DataTableProps<TData>) {
   const pathname = usePathname()
   const [rowSelection, setRowSelection] = React.useState({})
@@ -63,9 +67,30 @@ export function DataTable<TData>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
+    pageIndex: initialPage - 1,
+    pageSize: initialPageSize,
   })
+  
+  // Sync pagination state with props when they change (for URL state sync)
+  // Use ref to track previous values to avoid unnecessary updates
+  const prevInitialPageRef = React.useRef(initialPage)
+  const prevInitialPageSizeRef = React.useRef(initialPageSize)
+  
+  React.useEffect(() => {
+    if (manualPagination) {
+      // Only update if values actually changed
+      if (prevInitialPageRef.current !== initialPage || prevInitialPageSizeRef.current !== initialPageSize) {
+        prevInitialPageRef.current = initialPage
+        prevInitialPageSizeRef.current = initialPageSize
+        // Mark that this is a sync from props, not a user action
+        isSyncingFromPropsRef.current = true
+        setPagination({
+          pageIndex: initialPage - 1,
+          pageSize: initialPageSize,
+        })
+      }
+    }
+  }, [initialPage, initialPageSize, manualPagination, pagination.pageIndex, pagination.pageSize])
 
   React.useEffect(() => {
     if (enableColumnVisibility && typeof window !== "undefined") {
@@ -151,10 +176,46 @@ export function DataTable<TData>({
       ]
     : []
 
-  // Handle pagination change
+  // Track previous pagination to detect changes
+  const prevPaginationRef = React.useRef<{ pageIndex: number; pageSize: number } | null>(null)
+  const isInitialMountRef = React.useRef(true)
+  const isSyncingFromPropsRef = React.useRef(false)
+  const pendingPaginationChangeRef = React.useRef<{ pageIndex: number; pageSize: number } | null>(null)
+  
+  // Wrap setPagination - don't call onPaginationChange during render
+  const handlePaginationChange = React.useCallback((updater: any) => {
+    setPagination((prev) => {
+      const newPagination = typeof updater === "function" ? updater(prev) : updater
+      // Store the change for useEffect to process (use prev state, not new state)
+      pendingPaginationChangeRef.current = { pageIndex: prev.pageIndex, pageSize: prev.pageSize }
+      // Mark that this is a user action (not sync from props)
+      isSyncingFromPropsRef.current = false
+      return newPagination
+    })
+  }, [])
+  
+  // Call onPaginationChange after render (in useEffect) to avoid setState during render error
   React.useEffect(() => {
-    if (onPaginationChange && manualPagination) {
-      onPaginationChange(pagination.pageIndex + 1, pagination.pageSize)
+    if (isSyncingFromPropsRef.current) {
+      // Reset flag after sync from props is processed
+      isSyncingFromPropsRef.current = false
+      prevPaginationRef.current = { pageIndex: pagination.pageIndex, pageSize: pagination.pageSize }
+      pendingPaginationChangeRef.current = null
+      return
+    }
+    
+    if (onPaginationChange && manualPagination && !isInitialMountRef.current) {
+      const pending = pendingPaginationChangeRef.current
+      // Check if pagination changed from the pending change
+      if (pending && (pending.pageIndex !== pagination.pageIndex || pending.pageSize !== pagination.pageSize)) {
+        onPaginationChange(pagination.pageIndex + 1, pagination.pageSize)
+        prevPaginationRef.current = { pageIndex: pagination.pageIndex, pageSize: pagination.pageSize }
+        pendingPaginationChangeRef.current = null
+      }
+    } else if (isInitialMountRef.current) {
+      // Mark as mounted after first render
+      isInitialMountRef.current = false
+      prevPaginationRef.current = { pageIndex: pagination.pageIndex, pageSize: pagination.pageSize }
     }
   }, [pagination, manualPagination, onPaginationChange])
 
@@ -187,6 +248,7 @@ export function DataTable<TData>({
   const table = useReactTable({
     data,
     columns: finalColumns,
+    getRowId: getRowId || ((row: TData) => (row as any).id || String(Math.random())),
     state: {
       sorting: enableSorting ? sorting : undefined,
       columnVisibility: enableColumnVisibility ? columnVisibility : undefined,
@@ -199,7 +261,7 @@ export function DataTable<TData>({
     onSortingChange: enableSorting ? setSorting : undefined,
     onColumnFiltersChange: enableFiltering ? setColumnFilters : undefined,
     onColumnVisibilityChange: enableColumnVisibility ? setColumnVisibility : undefined,
-    onPaginationChange: setPagination,
+    onPaginationChange: handlePaginationChange,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: enableFiltering && !manualFiltering ? getFilteredRowModel() : undefined,
     getPaginationRowModel: manualPagination ? undefined : getPaginationRowModel(),
@@ -240,18 +302,24 @@ export function DataTable<TData>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const rowId = row.id
+                const isHighlighted = highlightedRowId === rowId
+                return (
+                  <TableRow
+                    key={rowId}
+                    data-state={row.getIsSelected() && "selected"}
+                    data-row-id={rowId}
+                    className={isHighlighted ? "bg-primary/10 border-primary border-2" : ""}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+              })
             ) : (
               <TableEmpty colSpan={finalColumns.length} />
             )}

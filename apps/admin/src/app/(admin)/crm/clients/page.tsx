@@ -15,6 +15,8 @@ import { clientsTableColumns } from "@/features/crm/clients/clients-table-column
 import { ClientsTableToolbar } from "@/features/crm/clients/clients-table-toolbar"
 import { getClientsRowActions } from "@/features/crm/clients/clients-table-row-actions"
 import { clientsBulkActions } from "@/features/crm/clients/clients-bulk-actions"
+import { ClientsEmptyState } from "@/features/crm/clients/clients-empty-state"
+import { ShareLinkButton } from "@/features/crm/shared/share-link-button"
 import { toast } from "sonner"
 import { TableLoading } from "@/components/table/loading"
 
@@ -28,22 +30,22 @@ export default function ClientsPage() {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   const [sheetMode, setSheetMode] = React.useState<"create" | "view" | "edit">("create")
   const [selectedClient, setSelectedClient] = React.useState<Client | null>(null)
+  const [highlightedClientId, setHighlightedClientId] = React.useState<string | null>(null)
+  const tableRef = React.useRef<HTMLDivElement>(null)
 
   // Create stable query string directly from searchParams to avoid dependency on query object
   const queryString = React.useMemo(() => {
     return searchParams.toString()
   }, [searchParams])
 
+  // Read highlight from URL
+  const highlightId = React.useMemo(() => {
+    return searchParams.get("highlight") || null
+  }, [searchParams])
+
   const fetchClients = React.useCallback(async () => {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'clients/page.tsx:32',message:'fetchClients called',data:{queryString},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'B'})}).catch(()=>{})
-    // #endregion
     setIsLoading(true)
     try {
-      // Use query object directly since it's already parsed and stable from hook
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'clients/page.tsx:37',message:'Before API call',data:{params:{q:query.q,status:query.status,ownerId:query.owner,tags:query.tags,page:query.page,pageSize:query.pageSize,sort:query.sort}},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'C'})}).catch(()=>{})
-      // #endregion
       const result = await crmProvider.listClients({
         q: query.q,
         status: query.status,
@@ -53,30 +55,64 @@ export default function ClientsPage() {
         pageSize: query.pageSize,
         sort: query.sort,
       })
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'clients/page.tsx:63',message:'API call success',data:{dataCount:result.data.length,total:result.meta.total},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'C'})}).catch(()=>{})
-      // #endregion
       setClients(result.data)
       setPageCount(result.meta.totalPages)
       setRowCount(result.meta.total)
+
+      // Check if highlight ID is in current page
+      if (highlightId) {
+        const isInCurrentPage = result.data.some((c) => c.id === highlightId)
+        if (isInCurrentPage) {
+          // Highlight row after a short delay to ensure DOM is ready
+          setTimeout(() => {
+            setHighlightedClientId(highlightId)
+            scrollToHighlightedRow(highlightId)
+            // Auto-remove highlight after 5 seconds
+            setTimeout(() => {
+              setHighlightedClientId(null)
+            }, 5000)
+          }, 100)
+        } else {
+          // Client not in current page - need to find which page it's on
+          // For now, we'll just show a message or try to fetch the client
+          // In a real app, you'd need to search through all pages or have an API endpoint
+          // to find which page a client is on
+          handleHighlightNotInPage(highlightId)
+        }
+      }
     } catch (error: any) {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'clients/page.tsx:69',message:'API call error',data:{error:error.message,stack:error.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'C'})}).catch(()=>{})
-      // #endregion
       toast.error(error.message || "Failed to fetch clients")
     } finally {
       setIsLoading(false)
     }
-  }, [queryString])
+  }, [query, highlightId])
+
+  const scrollToHighlightedRow = React.useCallback((clientId: string) => {
+    if (!tableRef.current) return
+    const row = tableRef.current.querySelector(`[data-row-id="${clientId}"]`)
+    if (row) {
+      row.scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }, [])
+
+  const handleHighlightNotInPage = React.useCallback(async (clientId: string) => {
+    try {
+      // Fetch client to get its data
+      const client = await crmProvider.getClient(clientId)
+      // For simplicity, we'll just navigate to page 1 and let user search
+      // In a real app, you'd need to determine which page the client is on
+      // based on sorting/filtering
+      updateQuery({ page: 1, q: client.name })
+      toast.info(`Client found. Searching for "${client.name}"...`)
+    } catch (error: any) {
+      toast.error("Client not found")
+    }
+  }, [updateQuery])
 
   const prevQueryStringRef = React.useRef<string>("")
   const isMountedRef = React.useRef(false)
   
   React.useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'clients/page.tsx:80',message:'useEffect triggered',data:{prev:prevQueryStringRef.current,current:queryString,equal:prevQueryStringRef.current===queryString,isMounted:isMountedRef.current},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'D'})}).catch(()=>{})
-    // #endregion
-    
     // Skip first render
     if (!isMountedRef.current) {
       isMountedRef.current = true
@@ -87,9 +123,6 @@ export default function ClientsPage() {
     
     // Only fetch if query string actually changed
     if (prevQueryStringRef.current !== queryString) {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/22c7f50c-2177-46e7-80ae-e3c707e11773',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'clients/page.tsx:92',message:'Query string changed, fetching',data:{prev:prevQueryStringRef.current,current:queryString},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'D'})}).catch(()=>{})
-      // #endregion
       prevQueryStringRef.current = queryString
       fetchClients()
     }
@@ -98,25 +131,34 @@ export default function ClientsPage() {
 
   const handlePaginationChange = React.useCallback(
     (page: number, pageSize: number) => {
-      updateQuery({ page, pageSize })
+      // Only update if values actually changed
+      if (page !== query.page || pageSize !== query.pageSize) {
+        updateQuery({ page, pageSize })
+      }
     },
-    [updateQuery]
+    [updateQuery, query.page, query.pageSize]
   )
 
   const handleSortingChange = React.useCallback(
     (sort: { field: string; direction: "asc" | "desc" } | null) => {
       const sortString = sort ? `${sort.direction === "desc" ? "-" : ""}${sort.field}` : undefined
-      updateQuery({ sort: sortString, page: 1 })
+      // Only update if sort or page actually changed
+      if (sortString !== query.sort || query.page !== 1) {
+        updateQuery({ sort: sortString, page: 1 })
+      }
     },
-    [updateQuery]
+    [updateQuery, query.sort, query.page]
   )
 
   const handleFilterChange = React.useCallback(
     (filters: Record<string, any>) => {
       // Filters are handled individually via toolbar
-      updateQuery({ page: 1 })
+      // Only update if page is not already 1
+      if (query.page !== 1) {
+        updateQuery({ page: 1 })
+      }
     },
-    [updateQuery]
+    [updateQuery, query.page]
   )
 
   const handleRowAction = React.useCallback(
@@ -183,10 +225,13 @@ export default function ClientsPage() {
           title="Clients"
           subtitle="Manage your clients"
           actions={
-            <Button onClick={handleNewClient}>
-              <Plus className="mr-2 size-4" />
-              New Client
-            </Button>
+            <div className="flex items-center gap-2">
+              <ShareLinkButton />
+              <Button onClick={handleNewClient}>
+                <Plus className="mr-2 size-4" />
+                New Client
+              </Button>
+            </div>
           }
         />
         <PageBody>
@@ -218,10 +263,13 @@ export default function ClientsPage() {
         title="Clients"
         subtitle="Manage your clients"
         actions={
-          <Button onClick={handleNewClient}>
-            <Plus className="mr-2 size-4" />
-            New Client
-          </Button>
+          <div className="flex items-center gap-2">
+            <ShareLinkButton />
+            <Button onClick={handleNewClient}>
+              <Plus className="mr-2 size-4" />
+              New Client
+            </Button>
+          </div>
         }
       />
       <PageBody>
@@ -234,26 +282,36 @@ export default function ClientsPage() {
             onTagsChange={(tags) => updateQuery({ tags, page: 1 })}
             onReset={resetFilters}
           />
-          <DataTable
-            data={clients}
-            columns={clientsTableColumns}
-            manualPagination
-            manualSorting
-            manualFiltering
-            pageCount={pageCount}
-            rowCount={rowCount}
-            enableRowSelection
-            enableColumnVisibility
-            enableSorting
-            enableFiltering
-            onPaginationChange={handlePaginationChange}
-            onSortingChange={handleSortingChange}
-            onFilterChange={handleFilterChange}
-            onRowAction={handleRowAction}
-            onBulkAction={handleBulkAction}
-            rowActions={getClientsRowActions}
-            bulkActions={clientsBulkActions}
-          />
+          {!isLoading && clients.length === 0 && !query.q && !query.status && !query.owner && (!query.tags || query.tags.length === 0) ? (
+            <ClientsEmptyState onNewClient={handleNewClient} />
+          ) : (
+            <div ref={tableRef}>
+              <DataTable
+                data={clients}
+                columns={clientsTableColumns}
+                manualPagination
+                manualSorting
+                manualFiltering
+                pageCount={pageCount}
+                rowCount={rowCount}
+                enableRowSelection
+                enableColumnVisibility
+                enableSorting
+                enableFiltering
+                onPaginationChange={handlePaginationChange}
+                onSortingChange={handleSortingChange}
+                onFilterChange={handleFilterChange}
+                onRowAction={handleRowAction}
+                onBulkAction={handleBulkAction}
+                rowActions={getClientsRowActions}
+                bulkActions={clientsBulkActions}
+                getRowId={(row) => row.id}
+                highlightedRowId={highlightedClientId}
+                initialPage={query.page}
+                initialPageSize={query.pageSize}
+              />
+            </div>
+          )}
         </div>
       </PageBody>
       <ClientSheet

@@ -75,7 +75,7 @@ function CoverMediaPicker() {
               </Button>
             </div>
             <FormControl>
-              <input type="hidden" {...field} />
+              <input type="hidden" {...field} value={field.value || ""} />
             </FormControl>
           </FormItem>
         )}
