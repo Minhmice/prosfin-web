@@ -20,6 +20,9 @@ import { Badge } from "@/components/ui/badge"
 import { OwnerCombobox } from "./owner-combobox"
 import { TagsMultiSelect } from "./tags-multi-select"
 import type { ClientListQuery } from "@/hooks/use-client-list-query"
+import { ColumnsMenu } from "@/components/table/columns-menu"
+import type { Table as TanStackTable } from "@tanstack/react-table"
+import type { Client } from "../types"
 
 interface ClientsTableToolbarProps {
   query: ClientListQuery
@@ -28,6 +31,7 @@ interface ClientsTableToolbarProps {
   onOwnerChange: (owner: string | undefined) => void
   onTagsChange: (tags: string[]) => void
   onReset: () => void
+  table?: TanStackTable<Client>
 }
 
 export function ClientsTableToolbar({
@@ -37,6 +41,7 @@ export function ClientsTableToolbar({
   onOwnerChange,
   onTagsChange,
   onReset,
+  table,
 }: ClientsTableToolbarProps) {
   const [searchValue, setSearchValue] = React.useState(query.q || "")
 
@@ -86,6 +91,7 @@ export function ClientsTableToolbar({
             Reset
           </Button>
         )}
+        {table && <ColumnsMenu table={table} />}
       </div>
       {hasFilters && (
         <div className="flex flex-wrap gap-2">

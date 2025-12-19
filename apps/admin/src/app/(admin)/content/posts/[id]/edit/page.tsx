@@ -12,7 +12,9 @@ interface EditPostPageProps {
 }
 
 export default function EditPostPage({ params }: EditPostPageProps) {
-  const { id } = use(params)
+  // Unwrap params immediately to prevent React serialization issues
+  const unwrappedParams = use(params)
+  const { id } = unwrappedParams
   const [post, setPost] = React.useState<Post | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
 

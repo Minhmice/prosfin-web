@@ -26,6 +26,9 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import type { LeadListQuery } from "@/hooks/use-lead-list-query"
+import { ColumnsMenu } from "@/components/table/columns-menu"
+import type { Table as TanStackTable } from "@tanstack/react-table"
+import type { Lead } from "@/features/crm/types"
 
 interface LeadsTableToolbarProps {
   query: LeadListQuery
@@ -36,6 +39,7 @@ interface LeadsTableToolbarProps {
   onScoreRangeChange: (min: number | undefined, max: number | undefined) => void
   onDateRangeChange: (from: string | undefined, to: string | undefined) => void
   onReset: () => void
+  table?: TanStackTable<Lead>
 }
 
 export function LeadsTableToolbar({
@@ -47,6 +51,7 @@ export function LeadsTableToolbar({
   onScoreRangeChange,
   onDateRangeChange,
   onReset,
+  table,
 }: LeadsTableToolbarProps) {
   const [searchValue, setSearchValue] = React.useState(query.q || "")
   const [scoreMin, setScoreMin] = React.useState(query.scoreMin?.toString() || "")
@@ -184,6 +189,7 @@ export function LeadsTableToolbar({
             Reset
           </Button>
         )}
+        {table && <ColumnsMenu table={table} />}
       </div>
       {hasFilters && (
         <div className="flex flex-wrap gap-2">

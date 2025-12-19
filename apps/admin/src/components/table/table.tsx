@@ -45,6 +45,7 @@ export function DataTable<TData>({
   enableColumnVisibility = true,
   enableSorting = true,
   enableFiltering = true,
+  showDefaultToolbar = true,
   onPaginationChange,
   onSortingChange,
   onFilterChange,
@@ -56,6 +57,7 @@ export function DataTable<TData>({
   highlightedRowId,
   initialPage = 1,
   initialPageSize = 20,
+  onTableReady,
 }: DataTableProps<TData>) {
   const pathname = usePathname()
   const [rowSelection, setRowSelection] = React.useState({})
@@ -274,9 +276,15 @@ export function DataTable<TData>({
     pageCount: manualPagination ? pageCount : undefined,
   })
 
+  React.useEffect(() => {
+    if (onTableReady) {
+      onTableReady(table)
+    }
+  }, [table, onTableReady])
+
   return (
     <div className="space-y-4">
-      {enableFiltering && <TableToolbar table={table} {...toolbarProps} />}
+      {enableFiltering && showDefaultToolbar && <TableToolbar table={table} {...toolbarProps} />}
       {enableRowSelection && (
         <BulkBar table={table} actions={bulkActions} onAction={onBulkAction} />
       )}

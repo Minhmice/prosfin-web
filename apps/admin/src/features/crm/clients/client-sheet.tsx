@@ -125,7 +125,7 @@ export function ClientSheet({
           </div>
         ) : (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6 space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6 space-y-4 p-4">
               <ClientFormFields form={form} />
               <div className="flex justify-end gap-2 pt-4">
                 <Button

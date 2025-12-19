@@ -29,7 +29,7 @@ interface LeadFormFieldsProps {
 
 export function LeadFormFields({ form }: LeadFormFieldsProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-4">
       <FormField
         control={form.control}
         name="name"

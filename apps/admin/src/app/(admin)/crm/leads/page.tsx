@@ -26,6 +26,7 @@ import { exportLeadsToCSV } from "@/features/crm/leads/export-csv"
 import { ShareLinkButton } from "@/features/crm/shared/share-link-button"
 import { toast } from "sonner"
 import { TableLoading } from "@/components/table/loading"
+import type { Table as TanStackTable } from "@tanstack/react-table"
 
 export default function LeadsPage() {
   const { query, updateQuery, updateSearch, resetFilters } = useLeadListQuery()
@@ -42,6 +43,7 @@ export default function LeadsPage() {
   const [selectedLeads, setSelectedLeads] = React.useState<Lead[]>([])
   const [sheetMode, setSheetMode] = React.useState<"create" | "edit">("create")
   const [selectedLead, setSelectedLead] = React.useState<Lead | null>(null)
+  const [tableInstance, setTableInstance] = React.useState<TanStackTable<Lead> | null>(null)
   const { convertLead } = useConvertLead()
 
   // Create stable query string directly from searchParams to avoid dependency on query object
@@ -330,6 +332,7 @@ export default function LeadsPage() {
             onScoreRangeChange={(min, max) => updateQuery({ scoreMin: min, scoreMax: max, page: 1 })}
             onDateRangeChange={(from, to) => updateQuery({ dateFrom: from, dateTo: to, page: 1 })}
             onReset={resetFilters}
+            table={tableInstance || undefined}
           />
           {leads.length === 0 && !isLoading ? (
             <LeadsEmptyState onNewLead={handleNewLead} />
@@ -355,6 +358,8 @@ export default function LeadsPage() {
               bulkActions={leadsBulkActions}
               initialPage={query.page}
               initialPageSize={query.pageSize}
+              onTableReady={setTableInstance}
+              showDefaultToolbar={false}
             />
           )}
         </div>

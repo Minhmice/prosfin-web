@@ -363,6 +363,19 @@
   --chart-4: hsl(173, 65%, 33%);
 }
 
+/* Fix Next.js portal positioning */
+nextjs-portal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+nextjs-portal > * {
+  pointer-events: auto;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

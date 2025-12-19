@@ -19,6 +19,7 @@ import { ClientsEmptyState } from "@/features/crm/clients/clients-empty-state"
 import { ShareLinkButton } from "@/features/crm/shared/share-link-button"
 import { toast } from "sonner"
 import { TableLoading } from "@/components/table/loading"
+import type { Table as TanStackTable } from "@tanstack/react-table"
 
 export default function ClientsPage() {
   const { query, updateQuery, updateSearch, resetFilters } = useClientListQuery()
@@ -31,6 +32,7 @@ export default function ClientsPage() {
   const [sheetMode, setSheetMode] = React.useState<"create" | "view" | "edit">("create")
   const [selectedClient, setSelectedClient] = React.useState<Client | null>(null)
   const [highlightedClientId, setHighlightedClientId] = React.useState<string | null>(null)
+  const [tableInstance, setTableInstance] = React.useState<TanStackTable<Client> | null>(null)
   const tableRef = React.useRef<HTMLDivElement>(null)
 
   // Create stable query string directly from searchParams to avoid dependency on query object
@@ -281,6 +283,7 @@ export default function ClientsPage() {
             onOwnerChange={(owner) => updateQuery({ owner, page: 1 })}
             onTagsChange={(tags) => updateQuery({ tags, page: 1 })}
             onReset={resetFilters}
+            table={tableInstance || undefined}
           />
           {!isLoading && clients.length === 0 && !query.q && !query.status && !query.owner && (!query.tags || query.tags.length === 0) ? (
             <ClientsEmptyState onNewClient={handleNewClient} />
@@ -298,6 +301,7 @@ export default function ClientsPage() {
                 enableColumnVisibility
                 enableSorting
                 enableFiltering
+                showDefaultToolbar={false}
                 onPaginationChange={handlePaginationChange}
                 onSortingChange={handleSortingChange}
                 onFilterChange={handleFilterChange}
@@ -309,6 +313,7 @@ export default function ClientsPage() {
                 highlightedRowId={highlightedClientId}
                 initialPage={query.page}
                 initialPageSize={query.pageSize}
+                onTableReady={setTableInstance}
               />
             </div>
           )}

@@ -73,8 +73,7 @@ export function PostsTablePage({
           loadPosts()
           break
         case "schedule":
-          // Will open schedule dialog in Phase 2.3
-          toast.info("Schedule dialog coming soon")
+          router.push(`/content/schedules?postId=${row.id}&action=create`)
           break
         case "unschedule":
           await contentProvider.unschedulePost(row.id)

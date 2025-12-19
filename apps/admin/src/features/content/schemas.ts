@@ -27,7 +27,13 @@ export type MediaUploadFormData = z.infer<typeof mediaUploadSchema>
 
 export const scheduleSchema = z.object({
   postId: z.string().min(1, "Post ID is required"),
-  scheduledAt: z.date(),
+  channels: z.array(z.string()).min(1, "At least one channel is required"),
+  action: z.enum(["publish", "unpublish", "reminder"]),
+  runAt: z.date().refine((date) => date > new Date(), {
+    message: "Run date must be in the future",
+  }),
+  timezone: z.string().default("Asia/Bangkok"),
+  notes: z.string().optional(),
 })
 
 export type ScheduleFormData = z.infer<typeof scheduleSchema>

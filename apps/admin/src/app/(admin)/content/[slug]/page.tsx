@@ -1,12 +1,16 @@
+import { use } from "react"
+
 export default function ContentDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = use(params)
+  
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Content: {params.slug}</h1>
+        <h1 className="text-3xl font-bold">Content: {slug}</h1>
         <p className="text-muted-foreground">Content detail page</p>
       </div>
       <div className="rounded-lg border p-8 text-center">

@@ -44,14 +44,28 @@ for (let i = 1; i <= 20; i++) {
   })
 }
 
-// Mock schedules
+// Mock schedules - convert to new format
 const schedules: ScheduleItem[] = posts
   .filter((p) => p.status === "scheduled" && p.scheduledAt)
   .map((p) => ({
     id: `schedule-${p.id}`,
     postId: p.id,
-    scheduledAt: p.scheduledAt!,
-    status: "queued" as ScheduleStatus,
+    channels: p.channels && p.channels.length > 0 ? p.channels : ["facebook"],
+    action: "publish" as const,
+    runAt: p.scheduledAt!,
+    timezone: "Asia/Bangkok",
+    status: "pending" as const,
+    attempts: 0,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    createdBy: "admin",
+    payloadSnapshot: {
+      title: p.title,
+      slug: p.slug,
+    },
+    // Legacy fields
+    scheduledAt: p.scheduledAt,
+    channel: p.channels?.[0] || "facebook",
   }))
 
 // Mock comments
@@ -87,7 +101,7 @@ const tags: Tag[] = [
   { id: "tag-4", name: "tips", slug: "tips", postCount: 12 },
 ]
 
-type ScheduleStatus = "queued" | "sent" | "cancelled"
+import type { ScheduleStatus, ScheduleAction } from "../types"
 
 interface ListPostsParams {
   q?: string
@@ -108,9 +122,17 @@ interface ListMediaParams {
 }
 
 interface ListSchedulesParams {
-  dateFrom?: Date
-  dateTo?: Date
+  view?: "calendar" | "list"
+  range?: "week" | "month" | "custom"
+  from?: Date
+  to?: Date
+  channel?: string
+  status?: ScheduleStatus
+  postId?: string
   q?: string
+  sort?: string
+  page?: number
+  pageSize?: number
 }
 
 interface ListCommentsParams {
@@ -341,20 +363,89 @@ export const contentProvider = {
   },
 
   // Schedules
-  async listSchedules(params: ListSchedulesParams): Promise<ScheduleItem[]> {
-    const { dateFrom, dateTo, q } = params
+  async listSchedules(params: ListSchedulesParams): Promise<ListResult<ScheduleItem>> {
+    const {
+      view,
+      range,
+      from,
+      to,
+      channel,
+      status,
+      postId,
+      q,
+      sort,
+      page = 1,
+      pageSize = 20,
+    } = params
 
-    return schedules.filter((schedule) => {
-      if (dateFrom && schedule.scheduledAt < dateFrom) return false
-      if (dateTo && schedule.scheduledAt > dateTo) return false
-      if (q) {
-        const post = posts.find((p) => p.id === schedule.postId)
-        if (!post || !post.title.toLowerCase().includes(q.toLowerCase())) {
-          return false
+    const sortConfig = parseSort(sort)
+    const dateFrom = from || (range === "week" ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : undefined)
+    const dateTo = to || (range === "week" ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : undefined)
+
+    let filtered = filterAndSort(
+      schedules,
+      (schedule) => {
+        const runAt = schedule.runAt || schedule.scheduledAt
+        if (!runAt) return false
+        
+        if (dateFrom && runAt < dateFrom) return false
+        if (dateTo && runAt > dateTo) return false
+        if (channel && !schedule.channels.includes(channel)) return false
+        if (status && schedule.status !== status) return false
+        if (postId && schedule.postId !== postId) return false
+        if (q) {
+          const post = posts.find((p) => p.id === schedule.postId)
+          if (!post || !post.title.toLowerCase().includes(q.toLowerCase())) {
+            return false
+          }
         }
-      }
-      return true
-    })
+        return true
+      },
+      sortConfig
+    )
+
+    const total = filtered.length
+    const start = (page - 1) * pageSize
+    const end = start + pageSize
+    const data = filtered.slice(start, end)
+
+    return { data, total, page, pageSize }
+  },
+
+  async createSchedule(input: Omit<ScheduleItem, "id" | "createdAt" | "updatedAt" | "attempts">): Promise<ScheduleItem> {
+    const post = posts.find((p) => p.id === input.postId)
+    if (!post) throw new Error("Post not found")
+
+    const schedule: ScheduleItem = {
+      ...input,
+      id: `schedule-${Date.now()}`,
+      attempts: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      payloadSnapshot: {
+        title: post.title,
+        slug: post.slug,
+      },
+    }
+    schedules.push(schedule)
+    return schedule
+  },
+
+  async updateSchedule(id: string, patch: Partial<ScheduleItem>): Promise<ScheduleItem> {
+    const index = schedules.findIndex((s) => s.id === id)
+    if (index === -1) throw new Error("Schedule not found")
+    
+    const post = posts.find((p) => p.id === schedules[index].postId)
+    schedules[index] = {
+      ...schedules[index],
+      ...patch,
+      updatedAt: new Date(),
+      payloadSnapshot: post ? {
+        title: post.title,
+        slug: post.slug,
+      } : schedules[index].payloadSnapshot,
+    }
+    return schedules[index]
   },
 
   async reschedule(postId: string, newDatetime: Date): Promise<ScheduleItem> {
@@ -371,17 +462,85 @@ export const contentProvider = {
     return schedule
   },
 
-  async cancelSchedule(postId: string): Promise<void> {
-    const index = schedules.findIndex((s) => s.postId === postId)
+  async cancelSchedule(id: string): Promise<void> {
+    const index = schedules.findIndex((s) => s.id === id)
     if (index === -1) throw new Error("Schedule not found")
-    schedules.splice(index, 1)
     
-    const post = posts.find((p) => p.id === postId)
+    const schedule = schedules[index]
+    schedule.status = "canceled"
+    schedule.updatedAt = new Date()
+    
+    const post = posts.find((p) => p.id === schedule.postId)
     if (post) {
       post.status = "draft"
       post.scheduledAt = undefined
       post.updatedAt = new Date()
     }
+  },
+
+  async exportSchedules(params: ListSchedulesParams, selection?: string[]): Promise<string> {
+    const result = await this.listSchedules({ ...params, page: 1, pageSize: 1000 })
+    let data = result.data
+    
+    if (selection && selection.length > 0) {
+      data = data.filter((s) => selection.includes(s.id))
+    }
+
+    // CSV header
+    const headers = ["Run At", "Channels", "Action", "Post Title", "Status", "Attempts", "Created"]
+    const rows = data.map((schedule) => {
+      const post = posts.find((p) => p.id === schedule.postId)
+      const runAt = schedule.runAt || schedule.scheduledAt
+      return [
+        runAt ? runAt.toISOString() : "",
+        schedule.channels.join(", "),
+        schedule.action,
+        post?.title || schedule.payloadSnapshot?.title || "",
+        schedule.status,
+        schedule.attempts.toString(),
+        schedule.createdAt.toISOString(),
+      ]
+    })
+
+    // Simple CSV generation
+    const csv = [
+      headers.join(","),
+      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
+    ].join("\n")
+
+    return csv
+  },
+
+  async getScheduleCounts(params?: { from?: Date; to?: Date; channel?: string }): Promise<{
+    pending: number
+    running: number
+    done: number
+    failed: number
+    canceled: number
+  }> {
+    const { from, to, channel } = params || {}
+    const filtered = schedules.filter((schedule) => {
+      const runAt = schedule.runAt || schedule.scheduledAt
+      if (from && runAt && runAt < from) return false
+      if (to && runAt && runAt > to) return false
+      if (channel && !schedule.channels.includes(channel)) return false
+      return true
+    })
+
+    return {
+      pending: filtered.filter((s) => s.status === "pending").length,
+      running: filtered.filter((s) => s.status === "running").length,
+      done: filtered.filter((s) => s.status === "done").length,
+      failed: filtered.filter((s) => s.status === "failed").length,
+      canceled: filtered.filter((s) => s.status === "canceled").length,
+    }
+  },
+
+  async findDueSchedules(now: Date): Promise<ScheduleItem[]> {
+    return schedules.filter((schedule) => {
+      const runAt = schedule.runAt || schedule.scheduledAt
+      return schedule.status === "pending" && runAt && runAt <= now
+    })
   },
 
   async publishNow(postId: string): Promise<Post> {

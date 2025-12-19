@@ -12,6 +12,7 @@ export interface DataTableProps<TData> {
   enableColumnVisibility?: boolean
   enableSorting?: boolean
   enableFiltering?: boolean
+  showDefaultToolbar?: boolean
   onPaginationChange?: (page: number, pageSize: number) => void
   onSortingChange?: (sort: { field: string; direction: "asc" | "desc" } | null) => void
   onFilterChange?: (filters: Record<string, any>) => void
@@ -31,6 +32,7 @@ export interface DataTableProps<TData> {
   highlightedRowId?: string | null
   initialPage?: number
   initialPageSize?: number
+  onTableReady?: (table: TanStackTable<TData>) => void
 }
 
 export interface TableToolbarProps<TData> {
