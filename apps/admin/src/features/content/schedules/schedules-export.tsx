@@ -3,9 +3,9 @@
  * Export schedules to CSV format
  */
 
-import { contentProvider } from "../../data/provider"
-import type { ScheduleItem } from "../../types"
-import type { ListSchedulesParams } from "../../data/provider"
+import { contentProvider } from "../data/provider"
+import type { ScheduleItem } from "../types"
+import type { ListSchedulesParams } from "../data/provider"
 
 export async function exportSchedulesToCSV(
   params: ListSchedulesParams,

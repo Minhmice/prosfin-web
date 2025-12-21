@@ -4,18 +4,42 @@ import * as React from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import type { Comment } from "../../types"
+import type { Comment } from "../types"
+import { format } from "date-fns"
 
 export function createCommentColumns(): ColumnDef<Comment>[] {
   return [
     {
-      accessorKey: "content",
-      header: "Comment",
+      accessorKey: "author",
+      header: "Author",
       cell: ({ row }) => {
-        const content = row.getValue("content") as string
-        const excerpt = content.length > 100
-          ? `${content.substring(0, 100)}...`
-          : content
+        const comment = row.original
+        const author = comment.author || { name: comment.authorName || "Unknown" }
+        return (
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium">{author.name}</p>
+              {author.source && (
+                <Badge variant="secondary" className="text-xs">
+                  {author.source}
+                </Badge>
+              )}
+            </div>
+            {author.email && (
+              <p className="text-xs text-muted-foreground">{author.email}</p>
+            )}
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: "body",
+      header: "Snippet",
+      cell: ({ row }) => {
+        const body = row.original.body || row.original.content || ""
+        const excerpt = body.length > 100
+          ? `${body.substring(0, 100)}...`
+          : body
         return (
           <div className="max-w-md">
             <p className="text-sm">{excerpt}</p>
@@ -24,32 +48,22 @@ export function createCommentColumns(): ColumnDef<Comment>[] {
       },
     },
     {
-      accessorKey: "postId",
+      id: "post",
       header: "Post",
       cell: ({ row }) => {
-        const postId = row.getValue("postId") as string
+        const comment = row.original
+        // In real app, fetch post title
         return (
-          <Link
-            href={`/content/posts/${postId}/edit`}
-            className="text-sm text-primary hover:underline"
-          >
-            View Post
-          </Link>
-        )
-      },
-    },
-    {
-      accessorKey: "authorName",
-      header: "Author",
-      cell: ({ row }) => {
-        const authorName = row.getValue("authorName") as string
-        const authorEmail = row.original.authorEmail
-        return (
-          <div>
-            <p className="text-sm font-medium">{authorName}</p>
-            {authorEmail && (
-              <p className="text-xs text-muted-foreground">{authorEmail}</p>
-            )}
+          <div className="space-y-1">
+            <Link
+              href={`/content/posts/${comment.postId}/edit`}
+              className="text-sm text-primary hover:underline"
+            >
+              Post {comment.postId}
+            </Link>
+            <Badge variant="outline" className="text-xs">
+              {comment.channel}
+            </Badge>
           </div>
         )
       },
@@ -62,8 +76,11 @@ export function createCommentColumns(): ColumnDef<Comment>[] {
         const variant = {
           pending: "outline",
           approved: "default",
+          rejected: "destructive",
           spam: "destructive",
-          trashed: "secondary",
+          trash: "secondary",
+          open: "outline",
+          resolved: "default",
         }[status as keyof typeof variant] || "outline"
 
         return <Badge variant={variant}>{status}</Badge>
@@ -74,11 +91,7 @@ export function createCommentColumns(): ColumnDef<Comment>[] {
       header: "Created",
       cell: ({ row }) => {
         const date = row.getValue("createdAt") as Date
-        return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
+        return format(new Date(date), "MMM d, yyyy")
       },
     },
   ]

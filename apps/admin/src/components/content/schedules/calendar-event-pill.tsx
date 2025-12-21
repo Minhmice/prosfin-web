@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import type { ScheduleItem } from "@/features/content/types"
@@ -30,15 +32,42 @@ export function CalendarEventPill({
   schedule,
   onClick,
 }: CalendarEventPillProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: schedule.id,
+    data: {
+      type: "schedule",
+      scheduleId: schedule.id,
+      schedule,
+    },
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
   const primaryChannel = schedule.channels[0] || "facebook"
   const channelColor = channelColors[primaryChannel] || "bg-gray-500"
   const statusColor = statusColors[schedule.status] || ""
 
   return (
     <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
       className={cn(
-        "flex items-center gap-1 px-2 py-1 rounded text-xs cursor-pointer hover:opacity-80 transition-opacity border-l-2",
-        statusColor
+        "flex items-center gap-1 px-2 py-1 rounded text-xs cursor-grab active:cursor-grabbing hover:opacity-80 transition-opacity border-l-2",
+        statusColor,
+        isDragging && "opacity-50"
       )}
       onClick={onClick}
     >

@@ -30,9 +30,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { PostCombobox } from "./post-combobox"
 import { DateTimePicker } from "@/components/shared/date-time-picker"
-import { scheduleSchema, type ScheduleFormData } from "../../schemas"
-import { contentProvider } from "../../data/provider"
-import type { ScheduleItem } from "../../types"
+import { scheduleSchema, type ScheduleFormData } from "../schemas"
+import { contentProvider } from "../data/provider"
+import type { ScheduleItem } from "../types"
 import { toast } from "sonner"
 
 interface ScheduleFormSheetProps {

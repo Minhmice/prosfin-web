@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { ScheduleStatus } from "../../types"
+import type { ScheduleStatus } from "../types"
 
 interface ScheduleFiltersProps {
   searchQuery: string

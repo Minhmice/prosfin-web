@@ -10,6 +10,9 @@ import type {
   Comment,
   Category,
   Tag,
+  CommentChannel,
+  PublicCommentStatus,
+  InternalCommentStatus,
 } from "../types"
 import { mockPosts as basePosts } from "@/data/posts"
 import { parseSort, type SortConfig } from "@/lib/url-state"
@@ -30,6 +33,8 @@ const posts: Post[] = basePosts.map((p) => ({
 // Mock media assets
 const mediaAssets: MediaAsset[] = []
 for (let i = 1; i <= 20; i++) {
+  const isImage = i % 3 !== 0 && i % 2 !== 0
+  const usedInPosts = i % 4 === 0 ? [] : [`post-${i % 5 + 1}`]
   mediaAssets.push({
     id: `media-${i}`,
     type: i % 3 === 0 ? "video" : i % 2 === 0 ? "file" : "image",
@@ -37,8 +42,18 @@ for (let i = 1; i <= 20; i++) {
     size: Math.floor(Math.random() * 5000000) + 100000,
     mime: i % 3 === 0 ? "video/mp4" : i % 2 === 0 ? "application/pdf" : "image/jpeg",
     url: `/media/media-${i}.${i % 3 === 0 ? "mp4" : i % 2 === 0 ? "pdf" : "jpg"}`,
-    width: i % 2 === 0 ? 1920 : undefined,
-    height: i % 2 === 0 ? 1080 : undefined,
+    width: isImage ? 1920 : undefined,
+    height: isImage ? 1080 : undefined,
+    altText: isImage ? `Image ${i} description` : undefined,
+    title: `Media File ${i}`,
+    tags: i % 3 === 0 ? ["video"] : i % 2 === 0 ? ["document"] : ["photo", "image"],
+    license: i % 5 === 0 ? "CC BY 4.0" : undefined,
+    source: i % 7 === 0 ? "Unsplash" : undefined,
+    usedInPosts,
+    storage: {
+      kind: "local",
+      path: `uploads/media/media-${i}.${i % 3 === 0 ? "mp4" : i % 2 === 0 ? "pdf" : "jpg"}`,
+    },
     createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
     createdBy: "admin",
   })
@@ -73,15 +88,62 @@ const comments: Comment[] = []
 posts.slice(0, 15).forEach((post) => {
   const commentCount = Math.floor(Math.random() * 5) + 1
   for (let i = 0; i < commentCount; i++) {
-    comments.push({
+    const channel: CommentChannel = i % 3 === 0 ? "internal" : "public"
+    const publicStatuses: PublicCommentStatus[] = ["pending", "approved", "rejected", "spam", "trash"]
+    const internalStatuses: InternalCommentStatus[] = ["open", "resolved"]
+    
+    const status = channel === "public" 
+      ? publicStatuses[i % publicStatuses.length]
+      : internalStatuses[i % internalStatuses.length]
+    
+    const comment: Comment = {
       id: `comment-${post.id}-${i}`,
       postId: post.id,
-      authorName: `User ${i + 1}`,
-      authorEmail: `user${i + 1}@example.com`,
-      content: `This is a comment on "${post.title}"`,
+      channel,
+      status,
+      author: {
+        name: channel === "internal" ? `Team Member ${i + 1}` : `User ${i + 1}`,
+        email: channel === "public" ? `user${i + 1}@example.com` : undefined,
+        userId: channel === "internal" ? `user-${i + 1}` : undefined,
+        source: channel === "public" ? (["facebook", "tiktok", "linkedin", "web"][i % 4] as string) : undefined,
+      },
+      body: channel === "internal" 
+        ? `Internal review note for "${post.title}"`
+        : `This is a comment on "${post.title}"`,
       createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000),
-      status: i % 4 === 0 ? "pending" : i % 4 === 1 ? "approved" : i % 4 === 2 ? "spam" : "trashed",
-    })
+      updatedAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000),
+      // Legacy fields
+      authorName: channel === "internal" ? `Team Member ${i + 1}` : `User ${i + 1}`,
+      authorEmail: channel === "public" ? `user${i + 1}@example.com` : undefined,
+      content: channel === "internal" 
+        ? `Internal review note for "${post.title}"`
+        : `This is a comment on "${post.title}"`,
+    }
+    
+    // Add some replies (1 level only)
+    if (i % 2 === 0 && channel === "public") {
+      const replyCount = Math.floor(Math.random() * 3) + 1
+      const replies: Comment[] = []
+      for (let j = 0; j < replyCount; j++) {
+        replies.push({
+          id: `comment-${post.id}-${i}-reply-${j}`,
+          postId: post.id,
+          channel: "public",
+          parentId: comment.id,
+          status: "approved",
+          author: {
+            name: `Admin Reply ${j + 1}`,
+            email: "admin@example.com",
+          },
+          body: `Reply ${j + 1} to the comment`,
+          createdAt: new Date(comment.createdAt.getTime() + (j + 1) * 3600000),
+          updatedAt: new Date(comment.createdAt.getTime() + (j + 1) * 3600000),
+        })
+      }
+      comment.replies = replies
+    }
+    
+    comments.push(comment)
   }
 })
 
@@ -116,9 +178,15 @@ interface ListPostsParams {
 
 interface ListMediaParams {
   q?: string
-  type?: string
+  type?: "image" | "video" | "file"
+  tag?: string
+  used?: boolean // true = used in posts, false = unused
+  from?: Date
+  to?: Date
+  sort?: string
   page?: number
   pageSize?: number
+  view?: "grid" | "list"
 }
 
 interface ListSchedulesParams {
@@ -138,9 +206,15 @@ interface ListSchedulesParams {
 interface ListCommentsParams {
   q?: string
   postId?: string
+  channel?: "public" | "internal"
   status?: string
+  source?: string // facebook, tiktok, linkedin, web
+  from?: Date
+  to?: Date
+  sort?: string
   page?: number
   pageSize?: number
+  thread?: string // commentId to highlight
 }
 
 export interface ListResult<T> {
@@ -317,15 +391,46 @@ export const contentProvider = {
 
   // Media
   async listMedia(params: ListMediaParams): Promise<ListResult<MediaAsset>> {
-    const { q, type, page = 1, pageSize = 20 } = params
+    const { q, type, tag, used, from, to, sort, page = 1, pageSize = 20 } = params
 
     let filtered = mediaAssets.filter((media) => {
-      if (q && !media.name.toLowerCase().includes(q.toLowerCase())) {
+      if (q && !media.name.toLowerCase().includes(q.toLowerCase()) && 
+          !media.title?.toLowerCase().includes(q.toLowerCase()) &&
+          !media.altText?.toLowerCase().includes(q.toLowerCase())) {
         return false
       }
       if (type && media.type !== type) return false
+      if (tag && !media.tags.includes(tag)) return false
+      if (used !== undefined) {
+        const isUsed = media.usedInPosts.length > 0
+        if (used && !isUsed) return false
+        if (!used && isUsed) return false
+      }
+      if (from && media.createdAt < from) return false
+      if (to && media.createdAt > to) return false
       return true
     })
+
+    // Sort
+    if (sort) {
+      const [field, direction] = sort.split(":")
+      filtered.sort((a, b) => {
+        let aVal: any = a[field as keyof MediaAsset]
+        let bVal: any = b[field as keyof MediaAsset]
+        if (field === "createdAt" || field === "size") {
+          aVal = aVal || 0
+          bVal = bVal || 0
+        } else {
+          aVal = String(aVal || "").toLowerCase()
+          bVal = String(bVal || "").toLowerCase()
+        }
+        const result = aVal < bVal ? -1 : aVal > bVal ? 1 : 0
+        return direction === "desc" ? -result : result
+      })
+    } else {
+      // Default sort by createdAt desc
+      filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    }
 
     const total = filtered.length
     const start = (page - 1) * pageSize
@@ -354,6 +459,13 @@ export const contentProvider = {
       mediaAssets.push(media)
     }
     return newMedia
+  },
+
+  async updateMedia(id: string, patch: Partial<MediaAsset>): Promise<MediaAsset> {
+    const index = mediaAssets.findIndex((m) => m.id === id)
+    if (index === -1) throw new Error("Media not found")
+    mediaAssets[index] = { ...mediaAssets[index], ...patch }
+    return mediaAssets[index]
   },
 
   async deleteMedia(id: string): Promise<void> {
@@ -562,17 +674,48 @@ export const contentProvider = {
 
   // Comments
   async listComments(params: ListCommentsParams): Promise<ListResult<Comment>> {
-    const { q, postId, status, page = 1, pageSize = 10 } = params
+    const { q, postId, channel, status, source, from, to, sort, page = 1, pageSize = 20 } = params
 
     let filtered = comments.filter((comment) => {
-      if (q && !comment.content.toLowerCase().includes(q.toLowerCase()) &&
-          !comment.authorName.toLowerCase().includes(q.toLowerCase())) {
+      // Only root comments (no parentId) in list view
+      if (comment.parentId) return false
+      
+      const body = comment.body || comment.content || ""
+      const authorName = comment.author?.name || comment.authorName || ""
+      
+      if (q && !body.toLowerCase().includes(q.toLowerCase()) &&
+          !authorName.toLowerCase().includes(q.toLowerCase())) {
         return false
       }
       if (postId && comment.postId !== postId) return false
+      if (channel && comment.channel !== channel) return false
       if (status && comment.status !== status) return false
+      if (source && comment.author?.source !== source) return false
+      if (from && comment.createdAt < from) return false
+      if (to && comment.createdAt > to) return false
       return true
     })
+
+    // Sort
+    if (sort) {
+      const [field, direction] = sort.split(":")
+      filtered.sort((a, b) => {
+        let aVal: any = a[field as keyof Comment]
+        let bVal: any = b[field as keyof Comment]
+        if (field === "createdAt" || field === "updatedAt") {
+          aVal = aVal?.getTime() || 0
+          bVal = bVal?.getTime() || 0
+        } else {
+          aVal = String(aVal || "").toLowerCase()
+          bVal = String(bVal || "").toLowerCase()
+        }
+        const result = aVal < bVal ? -1 : aVal > bVal ? 1 : 0
+        return direction === "desc" ? -result : result
+      })
+    } else {
+      // Default sort by createdAt desc
+      filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    }
 
     const total = filtered.length
     const start = (page - 1) * pageSize
@@ -580,6 +723,82 @@ export const contentProvider = {
     const data = filtered.slice(start, end)
 
     return { data, total, page, pageSize }
+  },
+
+  async getThread(commentId: string): Promise<{ root: Comment; replies: Comment[] } | null> {
+    const root = comments.find((c) => c.id === commentId && !c.parentId)
+    if (!root) return null
+
+    const replies = comments.filter((c) => c.parentId === commentId)
+    return { root, replies }
+  },
+
+  async updateStatus(ids: string[], status: CommentStatus, reason?: string): Promise<void> {
+    ids.forEach((id) => {
+      const comment = comments.find((c) => c.id === id)
+      if (comment) {
+        comment.status = status
+        comment.updatedAt = new Date()
+        if (reason) {
+          comment.moderation = {
+            ...comment.moderation,
+            reason,
+            reviewedAt: new Date(),
+            reviewedBy: "admin", // In real app, get from session
+          }
+        }
+      }
+    })
+  },
+
+  async reply(commentId: string, body: string, channel: CommentChannel): Promise<Comment> {
+    const parent = comments.find((c) => c.id === commentId)
+    if (!parent) throw new Error("Comment not found")
+
+    const reply: Comment = {
+      id: `comment-${commentId}-reply-${Date.now()}`,
+      postId: parent.postId,
+      channel,
+      parentId: commentId,
+      status: channel === "public" ? "approved" : "open",
+      author: {
+        name: channel === "internal" ? "Admin" : "Admin Reply",
+        userId: channel === "internal" ? "admin" : undefined,
+        email: channel === "public" ? "admin@example.com" : undefined,
+      },
+      body,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+
+    comments.push(reply)
+    return reply
+  },
+
+  async exportComments(params: ListCommentsParams, selection?: string[]): Promise<string> {
+    // CSV export stub - in real app, use a CSV library
+    const result = await this.listComments({ ...params, page: 1, pageSize: 10000 })
+    const data = selection 
+      ? result.data.filter((c) => selection.includes(c.id))
+      : result.data
+
+    const headers = ["ID", "Post ID", "Channel", "Status", "Author", "Body", "Created At"]
+    const rows = data.map((c) => [
+      c.id,
+      c.postId,
+      c.channel,
+      c.status,
+      c.author?.name || c.authorName || "",
+      (c.body || c.content || "").replace(/"/g, '""'),
+      c.createdAt.toISOString(),
+    ])
+
+    const csv = [
+      headers.join(","),
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+    ].join("\n")
+
+    return csv
   },
 
   async moderateComment(id: string, action: "approve" | "reject" | "spam" | "restore"): Promise<Comment> {

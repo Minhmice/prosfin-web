@@ -22,12 +22,12 @@ import {
 } from "@/components/ui/select"
 import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { DateTimePicker } from "@/components/shared/date-time-picker"
-import { MediaPickerDialog } from "@/components/content/media-picker-dialog"
+import { MediaPickerDialog } from "@/components/content/media/media-picker-dialog"
 import { CategorySelect } from "@/components/content/taxonomy/category-select"
 import { TagsCombobox } from "@/components/content/taxonomy/tags-combobox"
-import { contentProvider } from "../../data/provider"
-import type { PostFormData } from "../../schemas"
-import type { MediaAsset } from "../../types"
+import { contentProvider } from "../data/provider"
+import type { PostFormData } from "../schemas"
+import type { MediaAsset } from "../types"
 
 function CoverMediaPicker() {
   const form = useFormContext<PostFormData>()
@@ -72,6 +72,54 @@ function CoverMediaPicker() {
               >
                 <Image className="mr-2 size-4" />
                 Choose Cover Image
+              </Button>
+            </div>
+            <FormControl>
+              <input type="hidden" {...field} value={field.value || ""} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      <MediaPickerDialog
+        open={isPickerOpen}
+        onOpenChange={setIsPickerOpen}
+        onSelect={handleSelect}
+      />
+    </div>
+  )
+}
+
+function HeroMediaPicker() {
+  const form = useFormContext<PostFormData>()
+  const [isPickerOpen, setIsPickerOpen] = React.useState(false)
+  const heroMediaId = form.watch("heroMediaId")
+
+  const handleSelect = (media: MediaAsset) => {
+    form.setValue("heroMediaId", media.id)
+  }
+
+  return (
+    <div className="space-y-2">
+      <FormField
+        control={form.control}
+        name="heroMediaId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Hero Media</FormLabel>
+            <div className="space-y-2">
+              {heroMediaId && (
+                <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
+                  <Image className="size-8 text-muted-foreground" />
+                </div>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() => setIsPickerOpen(true)}
+              >
+                <Image className="mr-2 size-4" />
+                Choose Hero Image
               </Button>
             </div>
             <FormControl>
@@ -166,11 +214,13 @@ export function PostEditorSidebar() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Cover Image</CardTitle>
-          <CardDescription>Set featured image</CardDescription>
+          <CardTitle>Media</CardTitle>
+          <CardDescription>Cover and hero images</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <CoverMediaPicker />
+          <Separator />
+          <HeroMediaPicker />
         </CardContent>
       </Card>
     </div>

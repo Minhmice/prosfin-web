@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { UploadZone } from "./upload-zone"
+import { MediaMetadataSheet } from "./media-metadata-sheet"
 import { contentProvider } from "@/features/content/data/provider"
 import type { MediaAsset } from "@/features/content/types"
 import { emitActivity } from "@/lib/activity-events"
@@ -35,8 +36,26 @@ export function MediaUploadDialog({
 }: MediaUploadDialogProps) {
   const [uploads, setUploads] = React.useState<UploadProgress[]>([])
   const [isUploading, setIsUploading] = React.useState(false)
+  const [uploadedMedia, setUploadedMedia] = React.useState<MediaAsset | null>(null)
+  const [isMetadataSheetOpen, setIsMetadataSheetOpen] = React.useState(false)
 
   const handleFilesSelected = async (files: File[]) => {
+    // Validate files
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    const allowedMimes = ["image/", "video/", "application/pdf"]
+    
+    const invalidFiles = files.filter((file) => {
+      if (file.size > maxSize) return true
+      return !allowedMimes.some((mime) => file.type.startsWith(mime))
+    })
+
+    if (invalidFiles.length > 0) {
+      toast.error(
+        `Some files are invalid. Max size: 10MB. Allowed: images, videos, PDFs.`
+      )
+      return
+    }
+
     setIsUploading(true)
     const newUploads: UploadProgress[] = files.map((file) => ({
       file,
@@ -67,11 +86,20 @@ export function MediaUploadDialog({
         emitActivity.mediaUploaded(media.id, media.name, "admin")
       })
       toast.success(`${uploaded.length} file(s) uploaded`)
+      
+      // Open metadata sheet for first uploaded file
+      if (uploaded.length > 0) {
+        setUploadedMedia(uploaded[0])
+        setIsMetadataSheetOpen(true)
+      }
+      
       onUploadComplete?.(uploaded)
       setTimeout(() => {
         setUploads([])
         setIsUploading(false)
-        onOpenChange(false)
+        if (uploaded.length === 0 || uploaded.length > 1) {
+          onOpenChange(false)
+        }
       }, 1000)
     } catch (error) {
       setUploads((prev) =>
@@ -115,6 +143,22 @@ export function MediaUploadDialog({
           )}
         </div>
       </DialogContent>
+      <MediaMetadataSheet
+        open={isMetadataSheetOpen}
+        onOpenChange={(open) => {
+          setIsMetadataSheetOpen(open)
+          if (!open) {
+            setUploadedMedia(null)
+            onOpenChange(false)
+          }
+        }}
+        media={uploadedMedia}
+        onSave={() => {
+          setIsMetadataSheetOpen(false)
+          setUploadedMedia(null)
+          onOpenChange(false)
+        }}
+      />
     </Dialog>
   )
 }

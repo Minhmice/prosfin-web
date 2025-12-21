@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { contentProvider } from "../../data/provider"
-import type { Post } from "../../types"
+import { contentProvider } from "../data/provider"
+import type { Post } from "../types"
 
 interface PostComboboxProps {
   value?: string

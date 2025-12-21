@@ -1,6 +1,6 @@
 "use client"
 
-import type { ScheduleItem } from "../../types"
+import type { ScheduleItem } from "../types"
 
 export function getScheduleRowActions(schedule: ScheduleItem): Array<{
   label: string

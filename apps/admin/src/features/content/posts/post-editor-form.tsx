@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { PostEditorContent } from "./post-editor-content"
-import type { PostFormData } from "../../schemas"
+import type { PostFormData } from "../schemas"
 
 function slugify(text: string): string {
   return text

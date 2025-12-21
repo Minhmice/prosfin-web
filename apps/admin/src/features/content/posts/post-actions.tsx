@@ -1,6 +1,6 @@
 "use client"
 
-import type { Post } from "../../types"
+import type { Post } from "../types"
 
 export function getPostRowActions(post: Post): Array<{
   label: string

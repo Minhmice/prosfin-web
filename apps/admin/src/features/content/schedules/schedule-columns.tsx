@@ -5,7 +5,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
 import { Calendar, MoreVertical } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import type { ScheduleItem } from "../../types"
+import type { ScheduleItem } from "../types"
 import { format } from "date-fns"
 
 export function createScheduleColumns(): ColumnDef<ScheduleItem>[] {

@@ -53,10 +53,15 @@ export interface MediaAsset {
   width?: number
   height?: number
   altText?: string
+  title?: string
   tags: string[]
   license?: string
   source?: string
   usedInPosts: string[] // postIds
+  storage?: {
+    kind: "local" | "s3"
+    path: string
+  }
   createdAt: Date
   createdBy: string
 }
@@ -88,20 +93,47 @@ export interface ScheduleItem {
   utmLink?: string
 }
 
-export type CommentStatus = "pending" | "approved" | "hidden" | "spam"
+export type CommentChannel = "public" | "internal"
+export type PublicCommentStatus = "pending" | "approved" | "rejected" | "spam" | "trash"
+export type InternalCommentStatus = "open" | "resolved"
+export type CommentStatus = PublicCommentStatus | InternalCommentStatus
+
+export interface CommentAuthor {
+  name: string
+  email?: string
+  userId?: string // for internal comments
+  source?: string // facebook, tiktok, linkedin, web (for public)
+}
+
+export interface CommentModeration {
+  reviewedBy?: string
+  reviewedAt?: Date
+  reason?: string
+}
+
+export interface CommentMetadata {
+  ipHash?: string
+  userAgent?: string
+  sentiment?: string
+}
 
 export interface Comment {
   id: string
   postId: string
-  channel: string // facebook, tiktok, linkedin
-  authorName: string
-  authorEmail?: string
-  content: string
+  channel: CommentChannel // "public" | "internal"
+  parentId?: string // Only 1 level: parentId always points to root comment
   status: CommentStatus
-  assignee?: string
-  replies?: Comment[] // thread support
-  parentId?: string // for replies
+  author: CommentAuthor
+  body: string
   createdAt: Date
+  updatedAt: Date
+  moderation?: CommentModeration
+  metadata?: CommentMetadata
+  // Legacy fields for backward compatibility
+  authorName?: string
+  authorEmail?: string
+  content?: string
+  replies?: Comment[] // thread support (1 level only)
 }
 
 export interface Category {
