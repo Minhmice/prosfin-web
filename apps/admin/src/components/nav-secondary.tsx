@@ -41,7 +41,12 @@ export function NavSecondary({
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
-            const isActive = pathname === item.url || pathname?.startsWith(item.url + "/")
+            // For exact routes like /content, only match exact pathname
+            // For routes with children like /content/posts, match startsWith
+            const isExactRoute = item.url === "/content"
+            const isActive = isExactRoute 
+              ? pathname === item.url
+              : pathname === item.url || pathname?.startsWith(item.url + "/")
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>

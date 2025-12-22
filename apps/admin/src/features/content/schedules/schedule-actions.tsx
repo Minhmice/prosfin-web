@@ -1,6 +1,6 @@
 "use client"
 
-import type { ScheduleItem } from "../types"
+import type { ScheduleItem } from "@/features/content/types"
 
 export function getScheduleRowActions(schedule: ScheduleItem): Array<{
   label: string
@@ -12,16 +12,11 @@ export function getScheduleRowActions(schedule: ScheduleItem): Array<{
     action: string
     variant?: "default" | "destructive"
   }> = [
-    { label: "Edit", action: "edit" },
     { label: "Open Post", action: "openPost" },
   ]
 
-  if (schedule.status === "pending") {
+  if (schedule.status === "queued") {
     actions.push({ label: "Cancel", action: "cancel", variant: "destructive" })
-  }
-
-  if (schedule.status === "failed") {
-    actions.push({ label: "Retry", action: "retry" })
   }
 
   return actions
@@ -34,6 +29,5 @@ export function getScheduleBulkActions(): Array<{
 }> {
   return [
     { label: "Cancel Selected", action: "bulkCancel", variant: "destructive" },
-    { label: "Export", action: "bulkExport" },
   ]
 }

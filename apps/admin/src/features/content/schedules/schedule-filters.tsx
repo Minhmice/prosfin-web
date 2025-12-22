@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { ScheduleStatus } from "../types"
+import type { ScheduleStatus } from "@/features/content/types"
 
 interface ScheduleFiltersProps {
   searchQuery: string
@@ -56,11 +56,9 @@ export function ScheduleFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Status</SelectItem>
-          <SelectItem value="pending">Pending</SelectItem>
-          <SelectItem value="running">Running</SelectItem>
-          <SelectItem value="done">Done</SelectItem>
-          <SelectItem value="failed">Failed</SelectItem>
-          <SelectItem value="canceled">Canceled</SelectItem>
+          <SelectItem value="queued">Queued</SelectItem>
+          <SelectItem value="sent">Sent</SelectItem>
+          <SelectItem value="cancelled">Cancelled</SelectItem>
         </SelectContent>
       </Select>
       <Select

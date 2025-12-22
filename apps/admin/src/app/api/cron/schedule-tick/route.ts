@@ -38,9 +38,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Find due schedules
+    // Find due schedules (stub - would need findDueSchedules method)
     const now = new Date()
-    const dueSchedules = await contentProvider.findDueSchedules(now)
+    const allSchedules = await contentProvider.listSchedules({
+      dateFrom: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+      dateTo: now,
+    })
+
+    const dueSchedules = allSchedules.filter((schedule) => {
+      return schedule.status === "queued" && 
+             schedule.scheduledAt && 
+             schedule.scheduledAt <= now
+    })
 
     // Stub: Enqueue schedules (in Phase runtime, this would enqueue to BullMQ/Redis)
     const processed: string[] = []
@@ -52,13 +61,6 @@ export async function POST(request: NextRequest) {
       
       // For now, just log
       console.log(`[CRON] Enqueueing schedule ${schedule.id} for post ${schedule.postId}`)
-      
-      // Update status to running (mock)
-      await contentProvider.updateSchedule(schedule.id, {
-        status: "running",
-        attempts: schedule.attempts + 1,
-      })
-      
       processed.push(schedule.id)
     }
 

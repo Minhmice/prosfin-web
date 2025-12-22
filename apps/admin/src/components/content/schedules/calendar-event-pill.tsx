@@ -1,8 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import type { ScheduleItem } from "@/features/content/types"
@@ -26,60 +24,31 @@ const statusColors: Record<string, string> = {
   done: "border-green-500",
   failed: "border-red-500",
   canceled: "border-gray-400",
+  queued: "border-blue-400",
+  sent: "border-green-400",
+  cancelled: "border-gray-400",
 }
 
 export function CalendarEventPill({
   schedule,
   onClick,
 }: CalendarEventPillProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: schedule.id,
-    data: {
-      type: "schedule",
-      scheduleId: schedule.id,
-      schedule,
-    },
-  })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  }
-
-  const primaryChannel = schedule.channels[0] || "facebook"
+  const primaryChannel = schedule.channel || "facebook"
   const channelColor = channelColors[primaryChannel] || "bg-gray-500"
   const statusColor = statusColors[schedule.status] || ""
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
       className={cn(
-        "flex items-center gap-1 px-2 py-1 rounded text-xs cursor-grab active:cursor-grabbing hover:opacity-80 transition-opacity border-l-2",
-        statusColor,
-        isDragging && "opacity-50"
+        "flex items-center gap-1 px-2 py-1 rounded text-xs cursor-pointer hover:opacity-80 transition-opacity border-l-2",
+        statusColor
       )}
       onClick={onClick}
     >
       <div className={cn("size-2 rounded-full", channelColor)} />
       <span className="truncate flex-1">
-        {schedule.payloadSnapshot?.title || `Post ${schedule.postId}`}
+        Schedule {schedule.id}
       </span>
-      {schedule.channels.length > 1 && (
-        <Badge variant="secondary" className="text-xs px-1">
-          +{schedule.channels.length - 1}
-        </Badge>
-      )}
     </div>
   )
 }

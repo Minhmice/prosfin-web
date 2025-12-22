@@ -115,3 +115,4 @@ export async function copyShareLink(
     document.body.removeChild(textArea)
   }
 }
+
