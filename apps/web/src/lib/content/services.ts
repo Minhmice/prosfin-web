@@ -5,9 +5,21 @@
  */
 
 import { SERVICES } from "@/content/services";
-import { PEOPLE } from "@/content/people";
-import { POSTS } from "@/content/posts";
-import type { Service, Person, Post } from "@/types/content";
+import type { Service } from "@/types/content";
+
+// Re-export from other content helpers
+export {
+  getAllPosts,
+  getPostsByService,
+  getPostsByTags,
+  getPostsByIds,
+} from "./posts";
+
+export {
+  getAllPeople,
+  getPeopleByService,
+  getPeopleByIds,
+} from "./people";
 
 /**
  * Get service by slug
@@ -18,7 +30,11 @@ export function getServiceBySlug(slug: string): Service | undefined {
 
 /**
  * Get related services (excluding current)
- * Ưu tiên services cùng category
+ * Priority:
+ * 1. Explicit relatedServiceSlugs
+ * 2. Same category
+ * 3. Tag intersection
+ * 4. Fallback: random services
  */
 export function getRelatedServices(
   currentSlug: string,
@@ -29,16 +45,60 @@ export function getRelatedServices(
     return SERVICES.filter((s) => s.slug !== currentSlug).slice(0, count);
   }
 
-  // Ưu tiên cùng category
-  const sameCategory = SERVICES.filter(
-    (s) => s.slug !== currentSlug && s.category === currentService.category
-  );
-  const differentCategory = SERVICES.filter(
-    (s) => s.slug !== currentSlug && s.category !== currentService.category
+  const currentTags = currentService.tags || [];
+  const allOtherServices = SERVICES.filter((s) => s.slug !== currentSlug);
+
+  // Priority 1: Explicit relatedServiceSlugs
+  const explicitLinks: Service[] = [];
+  if (currentService.relatedServiceSlugs && currentService.relatedServiceSlugs.length > 0) {
+    explicitLinks.push(
+      ...currentService.relatedServiceSlugs
+        .map((slug) => getServiceBySlug(slug))
+        .filter((s): s is Service => s !== undefined)
+    );
+  }
+
+  // Priority 2: Same category
+  const sameCategory = allOtherServices.filter(
+    (s) => {
+      // Skip if already in explicitLinks
+      if (explicitLinks.some((explicit) => explicit.slug === s.slug)) {
+        return false;
+      }
+      return s.category === currentService.category;
+    }
   );
 
-  // Kết hợp: cùng category trước, sau đó khác category
-  return [...sameCategory, ...differentCategory].slice(0, count);
+  // Priority 3: Tag intersection
+  const tagMatch = allOtherServices.filter((s) => {
+    // Skip if already in explicitLinks or sameCategory
+    if (
+      explicitLinks.some((explicit) => explicit.slug === s.slug) ||
+      sameCategory.some((same) => same.slug === s.slug)
+    ) {
+      return false;
+    }
+    const sTags = s.tags || [];
+    return sTags.some((tag) => currentTags.includes(tag));
+  });
+
+  // Priority 4: Fallback - remaining services
+  const fallback = allOtherServices.filter(
+    (s) =>
+      !explicitLinks.some((explicit) => explicit.slug === s.slug) &&
+      !sameCategory.some((same) => same.slug === s.slug) &&
+      !tagMatch.some((tag) => tag.slug === s.slug)
+  );
+
+  // Combine all priorities
+  const combined = [
+    ...explicitLinks,
+    ...sameCategory,
+    ...tagMatch,
+    ...fallback,
+  ];
+
+  return combined.slice(0, count);
 }
 
 /**
@@ -54,48 +114,9 @@ export function getServicesByCategory(
 }
 
 /**
- * Get posts by tags
- */
-export function getPostsByTags(tags: string[]): Post[] {
-  if (tags.length === 0) return [];
-  
-  return POSTS.filter((post) =>
-    tags.some((tag) => post.tags.includes(tag))
-  );
-}
-
-/**
- * Get people by IDs
- */
-export function getPeopleByIds(ids: string[]): Person[] {
-  return PEOPLE.filter((p) => ids.includes(p.id));
-}
-
-/**
- * Get posts by IDs
- */
-export function getPostsByIds(ids: string[]): Post[] {
-  return POSTS.filter((p) => ids.includes(p.id));
-}
-
-/**
  * Get all services
  */
 export function getAllServices(): Service[] {
   return SERVICES;
-}
-
-/**
- * Get all people
- */
-export function getAllPeople(): Person[] {
-  return PEOPLE;
-}
-
-/**
- * Get all posts
- */
-export function getAllPosts(): Post[] {
-  return POSTS;
 }
 

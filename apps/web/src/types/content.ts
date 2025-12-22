@@ -84,6 +84,7 @@ export interface Service extends BaseContent {
   category?: string; // Phân loại dịch vụ (để filter See More)
   bodySections?: ServiceSection[]; // Tách riêng sections cho body (nếu cần)
   relatedPostTags?: string[]; // Tags để filter posts (bổ sung cho relatedPostIds)
+  relatedServiceSlugs?: string[]; // Explicit cross-service links (ưu tiên hơn category)
   cta?: CtaConfig; // CTA config cho service
 }
 
@@ -230,6 +231,8 @@ export interface Person {
   bioLong?: string; // Bio dài (cho tooltip/hovercard)
   focusAreas?: string[]; // Lĩnh vực chuyên sâu
   bestFor?: string[]; // Phù hợp cho (vd: "SME", "Startup", "M&A")
+  serviceSlugs?: string[]; // Services mà person này hỗ trợ (bidirectional link)
+  priority?: number; // Priority để sort (số cao hơn = ưu tiên hơn)
 }
 
 /**

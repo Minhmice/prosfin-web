@@ -3,9 +3,12 @@ import type { Metadata } from "next";
 import {
   getServiceBySlug,
   getRelatedServices,
+  getAllServices,
+  getPostsByService,
+  getPeopleByService,
+  // Fallback for backward compatibility
   getPeopleByIds,
   getPostsByIds,
-  getAllServices,
   getPostsByTags,
 } from "@/lib/content/services";
 import { ProsfinSectionWrapper } from "@/components/shared";
@@ -45,16 +48,24 @@ export async function generateMetadata({
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
+  const canonicalUrl = `${baseUrl}/services/${slug}`;
   const title = `${service.title} | ProsFIN`;
   const description = service.excerpt || service.shortDescription;
+  const keywords = service.tags?.join(", ") || "";
 
   return {
     title,
     description,
-    keywords: service.tags?.join(", "),
+    keywords,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title,
       description,
+      url: canonicalUrl,
+      siteName: "ProsFIN",
       images: service.coverImage
         ? [
             {
@@ -64,7 +75,24 @@ export async function generateMetadata({
               alt: service.title,
             },
           ]
-        : undefined,
+        : [
+            {
+              url: `${baseUrl}/og-image.png`, // Fallback OG image
+              width: 1200,
+              height: 630,
+              alt: "ProsFIN",
+            },
+          ],
+      locale: "vi_VN",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: service.coverImage
+        ? [service.coverImage]
+        : [`${baseUrl}/og-image.png`],
     },
   };
 }
@@ -85,19 +113,27 @@ export default async function ServiceDetailPage({
   }
 
   // Get related data
-  // Combine posts from IDs and tags
-  const postsByIds = getPostsByIds(service.relatedPostIds || []);
-  const postsByTags = service.relatedPostTags
-    ? getPostsByTags(service.relatedPostTags)
-    : [];
-  // Merge and deduplicate
-  const allRelatedPosts = [...postsByIds, ...postsByTags];
-  const uniquePosts = Array.from(
-    new Map(allRelatedPosts.map((post) => [post.id, post])).values()
-  );
-  const relatedPosts = uniquePosts.slice(0, 6); // Limit to 6 posts
+  // Priority: use serviceSlugs relationship, fallback to IDs/tags for backward compatibility
+  const postsByService = getPostsByService(slug, 6);
+  
+  // Fallback: combine posts from IDs and tags if no serviceSlugs match
+  let relatedPosts = postsByService;
+  if (relatedPosts.length === 0) {
+    const postsByIds = getPostsByIds(service.relatedPostIds || []);
+    const postsByTags = service.relatedPostTags
+      ? getPostsByTags(service.relatedPostTags)
+      : [];
+    const allRelatedPosts = [...postsByIds, ...postsByTags];
+    relatedPosts = Array.from(
+      new Map(allRelatedPosts.map((post) => [post.id, post])).values()
+    ).slice(0, 6);
+  }
 
-  const relatedPeople = getPeopleByIds(service.peopleIds || []);
+  // Get people by service, fallback to IDs
+  let relatedPeople = getPeopleByService(slug, 6);
+  if (relatedPeople.length === 0 && service.peopleIds && service.peopleIds.length > 0) {
+    relatedPeople = getPeopleByIds(service.peopleIds);
+  }
   const allServices = getAllServices();
 
   // Build breadcrumb
