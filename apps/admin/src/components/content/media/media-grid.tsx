@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { MoreVertical, Copy, Trash2, Edit } from "lucide-react"
+import { MoreVertical, Copy, Trash2, Edit, Eye, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import type { MediaAsset } from "@/features/content/types"
+import { MediaPreviewDialog } from "./media-preview-dialog"
+import { MediaUsagePanel } from "./media-usage-panel"
 import { toast } from "sonner"
 
 interface MediaGridProps {
@@ -30,6 +32,9 @@ export function MediaGrid({
   onSelect,
   selectMode = false,
 }: MediaGridProps) {
+  const [previewMedia, setPreviewMedia] = React.useState<MediaAsset | null>(null)
+  const [usageMedia, setUsageMedia] = React.useState<MediaAsset | null>(null)
+
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(url)
     toast.success("URL copied to clipboard")
@@ -93,6 +98,14 @@ export function MediaGrid({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setPreviewMedia(item)}>
+                      <Eye className="mr-2 size-4" />
+                      Preview
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setUsageMedia(item)}>
+                      <ExternalLink className="mr-2 size-4" />
+                      View Usage
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleCopyUrl(item.url)}>
                       <Copy className="mr-2 size-4" />
                       Copy URL
@@ -115,6 +128,16 @@ export function MediaGrid({
           </CardContent>
         </Card>
       ))}
+      <MediaPreviewDialog
+        open={!!previewMedia}
+        onOpenChange={(open) => !open && setPreviewMedia(null)}
+        media={previewMedia}
+      />
+      <MediaUsagePanel
+        open={!!usageMedia}
+        onOpenChange={(open) => !open && setUsageMedia(null)}
+        media={usageMedia}
+      />
     </div>
   )
 }

@@ -11,6 +11,7 @@ import {
   getDefaultClassNames,
   type DayButton,
 } from "react-day-picker"
+import { format } from "date-fns"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -192,12 +193,17 @@ function CalendarDayButton({
     if (modifiers.focused) ref.current?.focus()
   }, [modifiers.focused])
 
+  // Format date consistently to avoid hydration mismatch
+  // Use date-fns format with fixed pattern to ensure server/client consistency
+  // Format: M/d/yyyy (e.g., "12/19/2025") - consistent across locales
+  const formattedDate = format(day.date, "M/d/yyyy")
+
   return (
     <Button
       ref={ref}
       variant="ghost"
       size="icon"
-      data-day={day.date.toLocaleDateString()}
+      data-day={formattedDate}
       data-selected-single={
         modifiers.selected &&
         !modifiers.range_start &&

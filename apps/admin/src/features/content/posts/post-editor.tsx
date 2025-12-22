@@ -13,14 +13,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 import {
-  Form,
   FormProvider,
 } from "@/components/ui/form"
 import { PostEditorForm } from "./post-editor-form"
 import { PostEditorSidebar } from "./post-editor-sidebar"
-import { postSchema, type PostFormData } from "../../schemas"
-import { contentProvider } from "../../data/provider"
-import type { Post } from "../../types"
+import { postSchema, type PostFormData } from "@/features/content/schemas"
+import { contentProvider } from "@/features/content/data/provider"
+import type { Post } from "@/features/content/types"
 import { emitActivity } from "@/lib/activity-events"
 import { toast } from "sonner"
 
@@ -41,7 +40,7 @@ export function PostEditor({ post }: PostEditorProps) {
       excerpt: post?.excerpt || "",
       content: post?.content || "",
       status: post?.status || "draft",
-      coverMediaId: post?.coverMediaId,
+      coverMediaId: post?.coverMediaId || undefined,
       category: post?.category,
       tags: post?.tags || [],
       scheduledAt: post?.scheduledAt,
@@ -146,56 +145,54 @@ export function PostEditor({ post }: PostEditorProps) {
 
   return (
     <FormProvider {...form}>
-      <Form>
-        <div className="flex flex-col gap-6 lg:flex-row">
-          <div className="flex-1 space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold">
-                  {post ? "Edit Post" : "New Post"}
-                </h1>
-                {lastSaved && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Last saved: {lastSaved.toLocaleTimeString()}
-                  </p>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => handleSave()}
-                  disabled={isSaving}
-                >
-                  {isSaving ? "Saving..." : "Save Draft"}
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button disabled={isSaving}>
-                      {post ? "Update" : "Publish"}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={handlePublish}>
-                      Publish Now
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleSchedule}>
-                      Schedule...
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleSave("draft")}>
-                      Save as Draft
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+      <div className="flex flex-col gap-6 lg:flex-row">
+        <div className="flex-1 space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">
+                {post ? "Edit Post" : "New Post"}
+              </h1>
+              {lastSaved && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  Last saved: {lastSaved.toLocaleTimeString()}
+                </p>
+              )}
             </div>
-            <Separator />
-            <PostEditorForm />
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => handleSave()}
+                disabled={isSaving}
+              >
+                {isSaving ? "Saving..." : "Save Draft"}
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button disabled={isSaving}>
+                    {post ? "Update" : "Publish"}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handlePublish}>
+                    Publish Now
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSchedule}>
+                    Schedule...
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleSave("draft")}>
+                    Save as Draft
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
-          <div className="w-full lg:w-80 space-y-4">
-            <PostEditorSidebar />
-          </div>
+          <Separator />
+          <PostEditorForm />
         </div>
-      </Form>
+        <div className="w-full lg:w-80 space-y-4">
+          <PostEditorSidebar />
+        </div>
+      </div>
     </FormProvider>
   )
 }

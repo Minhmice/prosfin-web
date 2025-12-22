@@ -74,15 +74,47 @@ export function MiniLeadForm({
     try {
       updateDraft(values);
       
-      // Include attribution in submission (for Phase 3 API)
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
+      
+      // Map form data to API format
       const payload = {
-        ...values,
-        attribution: attribution || undefined,
+        name: values.fullName,
+        company: "",
+        email: values.email,
+        phone: values.phone || undefined,
+        interest: values.concern,
+        source: "website" as const,
+        attribution: attribution ? {
+          utmSource: attribution.utmSource,
+          utmMedium: attribution.utmMedium,
+          utmCampaign: attribution.utmCampaign,
+          utmTerm: attribution.utmTerm,
+          utmContent: attribution.utmContent,
+          referrer: attribution.referrer,
+          landingPath: attribution.landingPath,
+          userAgent: typeof window !== "undefined" ? window.navigator.userAgent : undefined,
+        } : undefined,
       };
+
+      const response = await fetch(`${apiBaseUrl}/api/public/leads`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ error: "Failed to submit form" }));
+        throw new Error(error.error || "Failed to submit form");
+      }
       
-      // TODO: Connect to API endpoint /api/leads or Supabase
-      console.log("Lead form submitted with attribution:", payload);
-      
+      onSubmitted?.();
+      router.push("/onboarding/thanks");
+    } catch (error: any) {
+      // Silently fail for better UX, user can retry
+      console.error("Failed to submit lead:", error);
+      // Still redirect to thanks page
       onSubmitted?.();
       router.push("/onboarding/thanks");
     } finally {

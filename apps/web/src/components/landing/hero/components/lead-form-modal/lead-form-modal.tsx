@@ -45,15 +45,40 @@ export function HeroLeadFormModal({ open, onOpenChange }: HeroLeadFormModalProps
   const onSubmit = async (data: LeadFormValues) => {
     setIsSubmitting(true);
     try {
-      // Include attribution in submission (for Phase 3 API)
-      const payload = {
-        ...data,
-        attribution: attribution || undefined,
-      };
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
       
-      // TODO: Connect to API endpoint /api/leads or Supabase
-      console.log("Lead form submitted with attribution:", payload);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Map form data to API format
+      const payload = {
+        name: data.fullName,
+        company: data.companyName || "",
+        email: data.email,
+        phone: data.phone || undefined,
+        interest: data.concern || undefined,
+        source: "website" as const,
+        attribution: attribution ? {
+          utmSource: attribution.utmSource,
+          utmMedium: attribution.utmMedium,
+          utmCampaign: attribution.utmCampaign,
+          utmTerm: attribution.utmTerm,
+          utmContent: attribution.utmContent,
+          referrer: attribution.referrer,
+          landingPath: attribution.landingPath,
+          userAgent: typeof window !== "undefined" ? window.navigator.userAgent : undefined,
+        } : undefined,
+      };
+
+      const response = await fetch(`${apiBaseUrl}/api/public/leads`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ error: "Failed to submit form" }));
+        throw new Error(error.error || "Failed to submit form");
+      }
 
       toast.toast({
         description: formContent.leadForm.successMessage,
@@ -62,9 +87,9 @@ export function HeroLeadFormModal({ open, onOpenChange }: HeroLeadFormModalProps
 
       form.reset();
       onOpenChange(false);
-    } catch {
+    } catch (error: any) {
       toast.toast({
-        description: formContent.leadForm.errorMessage,
+        description: error.message || formContent.leadForm.errorMessage,
         variant: "error",
       });
     } finally {

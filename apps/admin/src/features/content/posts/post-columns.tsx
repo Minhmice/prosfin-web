@@ -3,10 +3,11 @@
 import * as React from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
-import { FileText, Calendar } from "lucide-react"
+import { FileText, Calendar, Image } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import type { Post } from "../../types"
+import { Button } from "@/components/ui/button"
+import type { Post } from "../types"
 
 export function createPostColumns(): ColumnDef<Post>[] {
   return [
@@ -48,6 +49,55 @@ export function createPostColumns(): ColumnDef<Post>[] {
         }[status as keyof typeof variant] || "outline"
 
         return <Badge variant={variant}>{status}</Badge>
+      },
+    },
+    {
+      accessorKey: "heroMediaId",
+      header: "Hero Media",
+      cell: ({ row }) => {
+        const heroMediaId = row.getValue("heroMediaId") as string | undefined
+        if (!heroMediaId) {
+          return (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 text-xs"
+              onClick={(e) => {
+                e.stopPropagation()
+                // Open media picker - would be handled by parent
+              }}
+            >
+              <Image className="mr-1 size-3" />
+              Attach
+            </Button>
+          )
+        }
+        return (
+          <div className="flex items-center gap-2">
+            <Image className="size-4 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Set</span>
+          </div>
+        )
+      },
+    },
+    {
+      id: "comments",
+      header: "Comments",
+      cell: ({ row }) => {
+        const post = row.original
+        // In real app, fetch comment counts
+        const totalCount = 0 // Would come from API
+        const pendingCount = 0 // Would come from API
+        return (
+          <div className="flex items-center gap-2">
+            <span className="text-sm">{totalCount}</span>
+            {pendingCount > 0 && (
+              <Badge variant="destructive" className="text-xs">
+                {pendingCount} pending
+              </Badge>
+            )}
+          </div>
+        )
       },
     },
     {

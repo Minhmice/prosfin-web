@@ -33,27 +33,30 @@ export function SchedulesQueue({ dateFilter }: SchedulesQueueProps) {
   React.useEffect(() => {
     const loadSchedules = async () => {
       const dateFrom = dateFilter
-        ? new Date(dateFilter.setHours(0, 0, 0, 0))
+        ? new Date(new Date(dateFilter).setHours(0, 0, 0, 0))
         : new Date()
       const dateTo = dateFilter
-        ? new Date(dateFilter.setHours(23, 59, 59, 999))
+        ? new Date(new Date(dateFilter).setHours(23, 59, 59, 999))
         : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 
-      const items = await contentProvider.listSchedules({
-        dateFrom,
-        dateTo,
+      const result = await contentProvider.listSchedules({
+        from: dateFrom,
+        to: dateTo,
+        page: 1,
+        pageSize: 1000,
       })
 
       // Load post details for each schedule
       const schedulesWithPosts = await Promise.all(
-        items.map(async (schedule) => {
+        result.data.map(async (schedule) => {
           const post = await contentProvider.getPost(schedule.postId)
-          return { ...schedule, post: post || undefined }
+          const runAt = schedule.runAt || schedule.scheduledAt
+          return { ...schedule, post: post || undefined, scheduledAt: runAt || new Date() }
         })
       )
 
       setSchedules(schedulesWithPosts.sort((a, b) =>
-        a.scheduledAt.getTime() - b.scheduledAt.getTime()
+        (a.scheduledAt?.getTime() || 0) - (b.scheduledAt?.getTime() || 0)
       ))
     }
 
@@ -65,11 +68,11 @@ export function SchedulesQueue({ dateFilter }: SchedulesQueueProps) {
     toast.info("Reschedule dialog coming soon")
   }
 
-  const handleCancel = async (postId: string) => {
+  const handleCancel = async (scheduleId: string) => {
     try {
-      await contentProvider.cancelSchedule(postId)
+      await contentProvider.cancelSchedule(scheduleId)
       toast.success("Schedule cancelled")
-      setSchedules((prev) => prev.filter((s) => s.postId !== postId))
+      setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
     } catch (error) {
       toast.error("Failed to cancel schedule")
     }
@@ -131,7 +134,7 @@ export function SchedulesQueue({ dateFilter }: SchedulesQueueProps) {
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Calendar className="size-4 text-muted-foreground" />
-                    <span>{formatDateTime(schedule.scheduledAt)}</span>
+                    <span>{schedule.scheduledAt ? formatDateTime(schedule.scheduledAt) : "-"}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -151,7 +154,7 @@ export function SchedulesQueue({ dateFilter }: SchedulesQueueProps) {
                       <DropdownMenuItem onClick={() => handlePublishNow(schedule.postId)}>
                         Publish Now
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleCancel(schedule.postId)}>
+                      <DropdownMenuItem onClick={() => handleCancel(schedule.id)}>
                         Cancel
                       </DropdownMenuItem>
                       {schedule.post && (

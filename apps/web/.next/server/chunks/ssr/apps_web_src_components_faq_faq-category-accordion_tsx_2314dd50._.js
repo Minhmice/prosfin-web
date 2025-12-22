@@ -1,3 +1,0 @@
-module.exports=[12329,a=>{"use strict";var b=a.i(87924),c=a.i(83188);function d({items:a}){return(0,b.jsx)(c.Accordion,{type:"single",collapsible:!0,children:a.map(a=>(0,b.jsxs)(c.AccordionItem,{value:a.id,className:"mb-2",children:[(0,b.jsx)(c.AccordionTrigger,{children:a.question}),(0,b.jsx)(c.AccordionContent,{children:a.answer})]},a.id))})}a.s(["FaqCategoryAccordion",()=>d])}];
-
-//# sourceMappingURL=apps_web_src_components_faq_faq-category-accordion_tsx_2314dd50._.js.map

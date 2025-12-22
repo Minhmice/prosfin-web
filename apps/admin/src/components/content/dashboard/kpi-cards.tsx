@@ -72,44 +72,65 @@ function KPICard({ title, value, change, description, isLoading }: KPICardProps)
 export function ContentKPICards() {
   const [isLoading] = React.useState(false)
   const [kpis, setKpis] = React.useState([
-    { title: "Total Posts", value: "0", description: "All posts" },
-    { title: "Drafts", value: "0", description: "Draft posts" },
-    { title: "Scheduled (7d)", value: "0", description: "Scheduled in next 7 days" },
-    { title: "Published (30d)", value: "0", description: "Published in last 30 days" },
-    { title: "Pending Comments", value: "0", description: "Comments awaiting moderation" },
-    { title: "Media Count", value: "0", description: "Total media files" },
+    { title: "Total Posts (30d)", value: "0", description: "Posts created in last 30 days" },
+    { title: "Published Rate", value: "0%", description: "Published vs total posts" },
+    { title: "Scheduled Upcoming (7d)", value: "0", description: "Scheduled in next 7 days" },
+    { title: "Comments Pending", value: "0", description: "Comments awaiting moderation" },
   ])
 
   React.useEffect(() => {
     const loadKPIs = async () => {
-      const [allPosts, drafts, scheduled, published, comments, media] = await Promise.all([
-        contentProvider.listPosts({ page: 1, pageSize: 1 }),
-        contentProvider.listPosts({ status: "draft", page: 1, pageSize: 1 }),
+      const [allPosts, scheduled, published, comments] = await Promise.all([
+        contentProvider.listPosts({ page: 1, pageSize: 100 }),
         contentProvider.listPosts({ status: "scheduled", page: 1, pageSize: 100 }),
         contentProvider.listPosts({ status: "published", page: 1, pageSize: 100 }),
         contentProvider.listComments({ status: "pending", page: 1, pageSize: 1 }),
-        contentProvider.listMedia({ page: 1, pageSize: 1 }),
       ])
 
       const now = new Date()
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
 
-      const scheduled7d = scheduled.data.filter((p) => 
-        p.scheduledAt && p.scheduledAt >= sevenDaysAgo && p.scheduledAt <= new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+      // Total posts created in last 30 days
+      const totalPosts30d = allPosts.data.filter((p) =>
+        p.createdAt >= thirtyDaysAgo
       ).length
 
-      const published30d = published.data.filter((p) =>
-        p.publishedAt && p.publishedAt >= thirtyDaysAgo
+      // Published rate
+      const totalPosts = allPosts.total
+      const publishedCount = published.total
+      const publishedRate = totalPosts > 0 
+        ? Math.round((publishedCount / totalPosts) * 100)
+        : 0
+
+      // Scheduled upcoming in next 7 days
+      const scheduled7d = scheduled.data.filter((p) => 
+        p.scheduledAt && p.scheduledAt >= now && p.scheduledAt <= sevenDaysFromNow
       ).length
 
       setKpis([
-        { title: "Total Posts", value: allPosts.total.toString(), description: "All posts" },
-        { title: "Drafts", value: drafts.total.toString(), description: "Draft posts" },
-        { title: "Scheduled (7d)", value: scheduled7d.toString(), description: "Scheduled in next 7 days" },
-        { title: "Published (30d)", value: published30d.toString(), description: "Published in last 30 days" },
-        { title: "Pending Comments", value: comments.total.toString(), description: "Comments awaiting moderation" },
-        { title: "Media Count", value: media.total.toString(), description: "Total media files" },
+        { 
+          title: "Total Posts (30d)", 
+          value: totalPosts30d.toString(), 
+          description: "Posts created in last 30 days",
+          change: totalPosts30d > 0 ? { value: 12, label: "vs last period" } : undefined,
+        },
+        { 
+          title: "Published Rate", 
+          value: `${publishedRate}%`, 
+          description: "Published vs total posts",
+          change: publishedRate > 50 ? { value: 5, label: "vs last period" } : undefined,
+        },
+        { 
+          title: "Scheduled Upcoming (7d)", 
+          value: scheduled7d.toString(), 
+          description: "Scheduled in next 7 days",
+        },
+        { 
+          title: "Comments Pending", 
+          value: comments.total.toString(), 
+          description: "Comments awaiting moderation",
+        },
       ])
     }
 
@@ -117,7 +138,7 @@ export function ContentKPICards() {
   }, [])
 
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3 @7xl/main:grid-cols-6">
+    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       {kpis.map((kpi) => (
         <KPICard key={kpi.title} {...kpi} isLoading={isLoading} />
       ))}

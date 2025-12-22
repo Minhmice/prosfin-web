@@ -8,8 +8,8 @@ import { PageHeader } from "@/components/shared/page-header"
 import { PageBody } from "@/components/shared/page-body"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import { contentProvider } from "../../data/provider"
-import type { Post } from "../../types"
+import { contentProvider } from "@/features/content/data/provider"
+import type { Post } from "@/features/content/types"
 import { createPostColumns } from "./post-columns"
 import { getPostRowActions, getPostBulkActions } from "./post-actions"
 import { toast } from "sonner"
@@ -73,8 +73,7 @@ export function PostsTablePage({
           loadPosts()
           break
         case "schedule":
-          // Will open schedule dialog in Phase 2.3
-          toast.info("Schedule dialog coming soon")
+          router.push(`/content/schedules?postId=${row.id}&action=create`)
           break
         case "unschedule":
           await contentProvider.unschedulePost(row.id)

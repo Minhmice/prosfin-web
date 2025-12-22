@@ -5,14 +5,16 @@
  * - ?q=... - search query
  * - ?status=... - filter by status
  * - ?owner=... - filter by owner
+ * - ?tags=... - filter by tags (multiple)
  * - ?page=...&pageSize=... - pagination
- * - ?sort=... - sorting (format: field:asc|desc)
+ * - ?sort=... - sorting (format: -field or field.asc)
  */
 
 export interface ListPageParams {
   q?: string
   status?: string
   owner?: string
+  tags?: string[]
   page?: number
   pageSize?: number
   sort?: string
@@ -51,11 +53,13 @@ export function serializeSort(sort: SortConfig | null): string | undefined {
 export function parseListParams(searchParams: URLSearchParams): ListPageParams {
   const page = searchParams.get("page")
   const pageSize = searchParams.get("pageSize")
+  const tags = searchParams.getAll("tags")
   
   return {
     q: searchParams.get("q") || undefined,
     status: searchParams.get("status") || undefined,
     owner: searchParams.get("owner") || undefined,
+    tags: tags.length > 0 ? tags : undefined,
     page: page ? parseInt(page, 10) : undefined,
     pageSize: pageSize ? parseInt(pageSize, 10) : undefined,
     sort: searchParams.get("sort") || undefined,
@@ -71,6 +75,9 @@ export function serializeListParams(params: ListPageParams): URLSearchParams {
   if (params.q) searchParams.set("q", params.q)
   if (params.status) searchParams.set("status", params.status)
   if (params.owner) searchParams.set("owner", params.owner)
+  if (params.tags && params.tags.length > 0) {
+    params.tags.forEach((tag) => searchParams.append("tags", tag))
+  }
   if (params.page) searchParams.set("page", params.page.toString())
   if (params.pageSize) searchParams.set("pageSize", params.pageSize.toString())
   if (params.sort) searchParams.set("sort", params.sort)

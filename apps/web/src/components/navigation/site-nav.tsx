@@ -83,7 +83,9 @@ export function SiteNav({
                 onClick={(e) => handleClick(item.href, e)}
                 className={cn(
                   "font-medium text-muted-foreground transition-colors hover:text-foreground",
-                  orientation === "horizontal" ? "text-sm" : "w-full py-3 text-base"
+                  orientation === "horizontal"
+                    ? "text-sm"
+                    : "w-full py-3 text-base"
                 )}
               >
                 {item.label}

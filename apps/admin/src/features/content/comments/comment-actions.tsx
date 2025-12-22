@@ -1,6 +1,6 @@
 "use client"
 
-import type { Comment } from "../../types"
+import type { Comment } from "../types"
 
 export function getCommentRowActions(comment: Comment): Array<{
   label: string
@@ -12,6 +12,8 @@ export function getCommentRowActions(comment: Comment): Array<{
     action: string
     variant?: "default" | "destructive"
   }> = []
+
+  actions.push({ label: "View Thread", action: "viewThread" })
 
   if (comment.status === "pending") {
     actions.push({ label: "Approve", action: "approve" })
