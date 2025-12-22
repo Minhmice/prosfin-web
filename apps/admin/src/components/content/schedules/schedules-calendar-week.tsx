@@ -36,11 +36,13 @@ export function SchedulesCalendarWeek({
       const dateTo = new Date(weekEnd)
       dateTo.setHours(23, 59, 59, 999)
 
-      const items = await contentProvider.listSchedules({
-        dateFrom,
-        dateTo,
+      const result = await contentProvider.listSchedules({
+        from: dateFrom,
+        to: dateTo,
+        page: 1,
+        pageSize: 1000,
       })
-      setSchedules(items)
+      setSchedules(result.data)
     }
 
     loadSchedules()

@@ -3,6 +3,7 @@
 import * as React from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/table"
 import { PageHeader } from "@/components/shared/page-header"
 import { PageBody } from "@/components/shared/page-body"
@@ -121,13 +122,6 @@ export function CommentsTablePage() {
       toast.error("Export failed")
     }
   }
-
-  // Default to pending status for public channel (moderation queue)
-  React.useEffect(() => {
-    if (query.channel === "public" && !query.status) {
-      updateQuery({ status: "pending" })
-    }
-  }, [query.channel])
 
   // Auto-open thread if thread param in URL
   React.useEffect(() => {
