@@ -13,25 +13,22 @@ export function getCommentRowActions(comment: Comment): Array<{
     variant?: "default" | "destructive"
   }> = []
 
-  actions.push({ label: "View Thread", action: "viewThread" })
+  actions.push({ label: "Reply", action: "reply" })
+  actions.push({ label: "Open Comments", action: "openComments" })
 
   if (comment.status === "pending") {
     actions.push({ label: "Approve", action: "approve" })
-    actions.push({ label: "Reject", action: "reject", variant: "destructive" })
+    actions.push({ label: "Hide", action: "hide" })
     actions.push({ label: "Mark as Spam", action: "spam" })
   }
 
   if (comment.status === "approved") {
-    actions.push({ label: "Reject", action: "reject", variant: "destructive" })
+    actions.push({ label: "Hide", action: "hide" })
     actions.push({ label: "Mark as Spam", action: "spam" })
   }
 
-  if (comment.status === "spam" || comment.status === "trashed") {
+  if (comment.status === "spam" || comment.status === "trash") {
     actions.push({ label: "Restore", action: "restore" })
-  }
-
-  if (comment.status !== "trashed") {
-    actions.push({ label: "Delete", action: "delete", variant: "destructive" })
   }
 
   return actions
@@ -44,8 +41,7 @@ export function getCommentBulkActions(): Array<{
 }> {
   return [
     { label: "Approve", action: "bulkApprove" },
-    { label: "Reject", action: "bulkReject", variant: "destructive" },
+    { label: "Hide", action: "bulkHide" },
     { label: "Mark as Spam", action: "bulkSpam" },
-    { label: "Delete", action: "bulkDelete", variant: "destructive" },
   ]
 }

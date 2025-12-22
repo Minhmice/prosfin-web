@@ -17,26 +17,26 @@ import { mockPosts, mockSchedules } from "@/data/content-mock"
 const performanceConfig = {
   facebook: {
     label: "Facebook",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
   tiktok: {
     label: "TikTok",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   },
   linkedin: {
     label: "LinkedIn",
-    color: "hsl(var(--chart-3))",
+    color: "var(--chart-3)",
   },
   twitter: {
     label: "Twitter",
-    color: "hsl(var(--chart-4))",
+    color: "var(--chart-4)",
   },
 } satisfies ChartConfig
 
 const postsConfig = {
   posts: {
     label: "Posts",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
 } satisfies ChartConfig
 
@@ -55,6 +55,7 @@ export function ChartsSection() {
 
   React.useEffect(() => {
     const loadChartData = () => {
+      try {
       // Performance by channel - aggregate posts by channel
       const channelCounts: Record<string, number> = {
         facebook: 0,
@@ -64,11 +65,14 @@ export function ChartsSection() {
       }
 
       mockPosts.forEach((post) => {
+        // Guard against null/undefined channels
+        if (post?.channels && Array.isArray(post.channels)) {
         post.channels.forEach((channel) => {
           if (channel in channelCounts) {
             channelCounts[channel as keyof typeof channelCounts]++
           }
         })
+        }
       })
 
       setPerformanceData([
@@ -91,7 +95,11 @@ export function ChartsSection() {
 
       const postsByDate = days.map((date) => {
         const count = mockPosts.filter((post) => {
-          const postDate = post.createdAt
+          const postDate = post?.createdAt
+          // Guard against null/undefined createdAt
+          if (!postDate || !(postDate instanceof Date)) {
+            return false
+          }
           return (
             postDate.getDate() === date.getDate() &&
             postDate.getMonth() === date.getMonth() &&
@@ -106,6 +114,9 @@ export function ChartsSection() {
       })
 
       setPostsData(postsByDate)
+      } catch (error: any) {
+        console.error('Error loading chart data:', error)
+      }
     }
 
     loadChartData()
@@ -118,20 +129,22 @@ export function ChartsSection() {
           <CardTitle>Performance by Channel</CardTitle>
           <CardDescription>Posts distribution across channels</CardDescription>
         </CardHeader>
-        <CardContent>
-          <ChartContainer config={performanceConfig} className="h-[250px]">
-            <BarChart data={performanceData}>
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="channel" tickLine={false} axisLine={false} />
-              <YAxis tickLine={false} axisLine={false} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend content={<ChartLegendContent />} />
-              <Bar dataKey="facebook" fill="var(--color-facebook)" />
-              <Bar dataKey="tiktok" fill="var(--color-tiktok)" />
-              <Bar dataKey="linkedin" fill="var(--color-linkedin)" />
-              <Bar dataKey="twitter" fill="var(--color-twitter)" />
-            </BarChart>
-          </ChartContainer>
+        <CardContent className="overflow-x-auto">
+          <div className="min-w-[300px]">
+            <ChartContainer config={performanceConfig} className="h-[250px] w-full">
+              <BarChart data={performanceData || []}>
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="channel" tickLine={false} axisLine={false} />
+                <YAxis tickLine={false} axisLine={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartLegend content={<ChartLegendContent />} />
+                <Bar dataKey="facebook" fill="var(--color-facebook)" />
+                <Bar dataKey="tiktok" fill="var(--color-tiktok)" />
+                <Bar dataKey="linkedin" fill="var(--color-linkedin)" />
+                <Bar dataKey="twitter" fill="var(--color-twitter)" />
+              </BarChart>
+            </ChartContainer>
+          </div>
         </CardContent>
       </Card>
 
@@ -140,58 +153,60 @@ export function ChartsSection() {
           <CardTitle>Posts Over Time</CardTitle>
           <CardDescription>Posts created in last 30 days</CardDescription>
         </CardHeader>
-        <CardContent>
-          <ChartContainer config={postsConfig} className="h-[250px]">
-            <AreaChart data={postsData}>
-              <defs>
-                <linearGradient id="fillPosts" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="5%"
-                    stopColor="var(--color-posts)"
-                    stopOpacity={0.8}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--color-posts)"
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => {
-                  const date = new Date(value)
-                  return date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })
-                }}
-              />
-              <YAxis tickLine={false} axisLine={false} />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    }}
-                  />
-                }
-              />
-              <Area
-                dataKey="posts"
-                type="natural"
-                fill="url(#fillPosts)"
-                stroke="var(--color-posts)"
-              />
-            </AreaChart>
-          </ChartContainer>
+        <CardContent className="overflow-x-auto">
+          <div className="min-w-[300px]">
+            <ChartContainer config={postsConfig} className="h-[250px] w-full">
+              <AreaChart data={postsData || []}>
+                <defs>
+                  <linearGradient id="fillPosts" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="var(--color-posts)"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="var(--color-posts)"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => {
+                    const date = new Date(value)
+                    return date.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })
+                  }}
+                />
+                <YAxis tickLine={false} axisLine={false} />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      labelFormatter={(value) => {
+                        return new Date(value).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      }}
+                    />
+                  }
+                />
+                <Area
+                  dataKey="posts"
+                  type="natural"
+                  fill="url(#fillPosts)"
+                  stroke="var(--color-posts)"
+                />
+              </AreaChart>
+            </ChartContainer>
+          </div>
         </CardContent>
       </Card>
     </div>

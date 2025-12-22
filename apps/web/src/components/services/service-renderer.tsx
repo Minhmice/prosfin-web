@@ -7,6 +7,10 @@ import { ExecutiveBriefLayout } from "./layouts/executive-brief-layout";
 import { JourneyRoadmapLayout } from "./layouts/journey-roadmap-layout";
 import { ToolkitModulesLayout } from "./layouts/toolkit-modules-layout";
 import { TransformationStoryLayout } from "./layouts/transformation-story-layout";
+import { NarrativeLayout } from "./layouts/narrative-layout";
+import { FrameworkLayout } from "./layouts/framework-layout";
+import { SplitPanelLayout } from "./layouts/split-panel-layout";
+import { TimelineLayout } from "./layouts/timeline-layout";
 
 interface ServiceRendererProps {
   service: Service;
@@ -55,6 +59,18 @@ export function ServiceRenderer({ service }: ServiceRendererProps) {
 
     case "transformation-story":
       return <TransformationStoryLayout service={service} />;
+
+    case "narrative":
+      return <NarrativeLayout service={service} />;
+
+    case "framework":
+      return <FrameworkLayout service={service} />;
+
+    case "split-panel":
+      return <SplitPanelLayout service={service} />;
+
+    case "timeline":
+      return <TimelineLayout service={service} />;
 
     default:
       // Generic layout cho các variant còn lại

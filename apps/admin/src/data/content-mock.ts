@@ -103,15 +103,21 @@ export const mockSchedules: ScheduleItem[] = mockPosts
     return post.channels.map((channel, idx) => ({
       id: `schedule-${post.id}-${channel}`,
       postId: post.id,
-      scheduledAt: new Date(
+      channels: [channel],
+      action: "publish" as ScheduleItem["action"],
+      runAt: new Date(
         post.scheduledAt!.getTime() + idx * 60 * 60 * 1000
       ), // Stagger by hour
-      status: "queued" as ScheduleItem["status"],
+      timezone: "Asia/Bangkok",
+      status: "pending" as ScheduleItem["status"],
+      attempts: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      // Legacy fields for backward compatibility
+      scheduledAt: new Date(
+        post.scheduledAt!.getTime() + idx * 60 * 60 * 1000
+      ),
       channel,
-      assignee: idx % 2 === 0 ? "admin" : undefined,
-      utmLink: post.utmPreset
-        ? `https://example.com?utm_source=${post.utmPreset.source}&utm_medium=${post.utmPreset.medium}&utm_campaign=${post.utmPreset.campaign}`
-        : undefined,
     }))
   })
 
@@ -124,8 +130,8 @@ export const mockComments: Comment[] = mockPosts
     
     return Array.from({ length: commentCount }, (_, i) => {
       const commentId = `comment-${post.id}-${i}`
-      const statuses: Comment["status"][] = ["pending", "approved", "hidden", "spam"]
-      const status = statuses[i % 4]
+      const statuses: Comment["status"][] = ["pending", "approved", "spam"]
+      const status = statuses[i % 3]
       
       // Some comments have replies
       const hasReplies = i % 3 === 0 && status === "approved"
@@ -133,27 +139,32 @@ export const mockComments: Comment[] = mockPosts
         ? Array.from({ length: Math.floor(Math.random() * 3) + 1 }, (_, j) => ({
             id: `${commentId}-reply-${j}`,
             postId: post.id,
-            channel: postChannels[0],
-            authorName: `Reply Author ${j + 1}`,
-            authorEmail: `reply${j + 1}@example.com`,
-            content: `This is a reply to the comment.`,
+            channel: "public" as Comment["channel"],
+            author: {
+              name: `Reply Author ${j + 1}`,
+              email: `reply${j + 1}@example.com`,
+            },
+            body: `This is a reply to the comment.`,
             status: "approved" as Comment["status"],
             parentId: commentId,
             createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+            updatedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
           }))
         : []
 
       return {
         id: commentId,
         postId: post.id,
-        channel: postChannels[i % postChannels.length],
-        authorName: `User ${i + 1}`,
-        authorEmail: `user${i + 1}@example.com`,
-        content: `This is a comment on "${post.title}". Great content!`,
+        channel: "public" as Comment["channel"],
+        author: {
+          name: `User ${i + 1}`,
+          email: `user${i + 1}@example.com`,
+        },
+        body: `This is a comment on "${post.title}". Great content!`,
         status,
-        assignee: status === "pending" && i % 2 === 0 ? "admin" : undefined,
-        replies: replies.length > 0 ? replies : undefined,
         createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000),
+        updatedAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000),
+        parentId: undefined,
       }
     })
   })

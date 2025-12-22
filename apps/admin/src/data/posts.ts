@@ -1,4 +1,4 @@
-import type { Post } from "@/types"
+import type { Post } from "@/features/content/types"
 
 const titles = [
   "Getting Started with Financial Planning",
@@ -74,6 +74,12 @@ function generatePosts(count: number): Post[] {
       status,
       updatedAt,
       publishedAt,
+      content: `# ${title}\n\nContent for ${title}...`,
+      channels: ["facebook"],
+      createdAt: updatedAt,
+      tags: [],
+      authorId: "author-1",
+      authorName: "Admin User",
     })
   }
 

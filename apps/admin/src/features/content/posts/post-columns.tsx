@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import type { Post } from "../types"
+import { mockComments } from "@/data/content-mock"
 
 export function createPostColumns(): ColumnDef<Post>[] {
   return [
@@ -41,12 +42,13 @@ export function createPostColumns(): ColumnDef<Post>[] {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string
-        const variant = {
+        const statusVariantMap = {
           draft: "outline",
           scheduled: "secondary",
           published: "default",
           archived: "outline",
-        }[status as keyof typeof variant] || "outline"
+        } as const
+        const variant = (statusVariantMap[status as keyof typeof statusVariantMap] || "outline") as "outline" | "secondary" | "default"
 
         return <Badge variant={variant}>{status}</Badge>
       },
@@ -81,13 +83,35 @@ export function createPostColumns(): ColumnDef<Post>[] {
       },
     },
     {
+      accessorKey: "channels",
+      header: "Channels",
+      cell: ({ row }) => {
+        const channels = row.getValue("channels") as string[]
+        if (!channels || channels.length === 0) return "-"
+        return (
+          <div className="flex items-center gap-1 flex-wrap">
+            {channels.slice(0, 2).map((channel) => (
+              <Badge key={channel} variant="outline" className="text-xs capitalize">
+                {channel}
+              </Badge>
+            ))}
+            {channels.length > 2 && (
+              <span className="text-xs text-muted-foreground">
+                +{channels.length - 2}
+              </span>
+            )}
+          </div>
+        )
+      },
+    },
+    {
       id: "comments",
       header: "Comments",
       cell: ({ row }) => {
         const post = row.original
-        // In real app, fetch comment counts
-        const totalCount = 0 // Would come from API
-        const pendingCount = 0 // Would come from API
+        const postComments = mockComments.filter((c) => c.postId === post.id)
+        const totalCount = postComments.length
+        const pendingCount = postComments.filter((c) => c.status === "pending").length
         return (
           <div className="flex items-center gap-2">
             <span className="text-sm">{totalCount}</span>
@@ -98,6 +122,15 @@ export function createPostColumns(): ColumnDef<Post>[] {
             )}
           </div>
         )
+      },
+    },
+    {
+      accessorKey: "campaign",
+      header: "Campaign",
+      cell: ({ row }) => {
+        const campaign = row.getValue("campaign") as string | undefined
+        if (!campaign) return "-"
+        return <Badge variant="secondary" className="text-xs">{campaign}</Badge>
       },
     },
     {
@@ -169,16 +202,26 @@ export function createPostColumns(): ColumnDef<Post>[] {
     },
     {
       accessorKey: "scheduledAt",
-      header: "Scheduled",
+      header: "Scheduled At",
       cell: ({ row }) => {
         const date = row.getValue("scheduledAt") as Date | undefined
         if (!date) return "-"
-        return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        })
+        return (
+          <div className="text-sm">
+            {date.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+            <br />
+            <span className="text-xs text-muted-foreground">
+              {date.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+          </div>
+        )
       },
     },
   ]

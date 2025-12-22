@@ -1,76 +1,84 @@
 "use client"
 
 import * as React from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MediaGrid } from "./media-grid"
 import { MediaListView } from "./media-list-view"
-import { MediaToolbar } from "./media-toolbar"
 import { MediaUploadDialog } from "./media-upload-dialog"
-import { contentProvider } from "@/features/content/data/provider"
+import { ShareLinkButton } from "@/components/shared/share-link-button"
+import { mockMedia } from "@/data/content-mock"
+import { parseContentParams, buildContentUrl } from "@/lib/url-state-content"
 import type { MediaAsset } from "@/features/content/types"
-import { useMediaListQuery } from "@/hooks/use-media-list-query"
 import { toast } from "sonner"
 
 export function MediaLibrary() {
-  const { query, updateQuery, updateSearch, resetFilters } = useMediaListQuery()
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [media, setMedia] = React.useState<MediaAsset[]>([])
   const [isUploadOpen, setIsUploadOpen] = React.useState(false)
-  const viewMode = query.view || "grid"
 
-  const loadMedia = React.useCallback(async () => {
-    try {
-      const from = query.from ? new Date(query.from) : undefined
-      const to = query.to ? new Date(query.to) : undefined
+  const params = React.useMemo(() => {
+    return parseContentParams(new URLSearchParams(searchParams))
+  }, [searchParams])
 
-      const result = await contentProvider.listMedia({
-        q: query.q,
-        type: query.type,
-        tag: query.tag,
-        used: query.used,
-        from,
-        to,
-        sort: query.sort,
-        page: query.page,
-        pageSize: query.pageSize,
-      })
-      setMedia(result.data)
-    } catch (error) {
-      toast.error("Failed to load media")
-    }
-  }, [query])
+  const viewMode = params.view || "grid"
 
   React.useEffect(() => {
-    loadMedia()
-  }, [loadMedia])
+    let filtered = [...mockMedia]
+
+    if (params.q) {
+      const query = params.q.toLowerCase()
+      filtered = filtered.filter(
+        (m) =>
+          m.name.toLowerCase().includes(query) ||
+          (m.altText && m.altText.toLowerCase().includes(query))
+      )
+    }
+
+    if (params.type) {
+      filtered = filtered.filter((m) => m.type === params.type)
+    }
+
+    if (params.tags && params.tags.length > 0) {
+      filtered = filtered.filter((m) =>
+        params.tags!.some((tag) => m.tags.includes(tag))
+      )
+    }
+
+    setMedia(filtered)
+  }, [params])
+
+  const handleViewChange = (view: string) => {
+    const newParams = { ...params, view }
+    const url = buildContentUrl("/content/media", newParams)
+    router.push(url)
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      await contentProvider.deleteMedia(id)
+      // In real app, call API
       toast.success("Media deleted")
-      loadMedia()
+      setMedia((prev) => prev.filter((m) => m.id !== id))
     } catch (error) {
       toast.error("Failed to delete media")
     }
   }
 
-  const handleUploadComplete = () => {
-    loadMedia()
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <MediaToolbar
-          query={query}
-          onQueryChange={updateQuery}
-          onSearchChange={updateSearch}
-          onResetFilters={resetFilters}
-          viewMode={viewMode}
-          onViewModeChange={(mode) => updateQuery({ view: mode })}
-        />
-        <Button onClick={() => setIsUploadOpen(true)}>
-          Upload Media
-        </Button>
+        <Tabs value={viewMode} onValueChange={handleViewChange}>
+          <TabsList>
+            <TabsTrigger value="grid">Grid</TabsTrigger>
+            <TabsTrigger value="list">List</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="flex items-center gap-2">
+          <ShareLinkButton path="/content/media" params={params} size="sm" />
+          <Button onClick={() => setIsUploadOpen(true)}>Upload Media</Button>
+        </div>
       </div>
 
       {viewMode === "grid" ? (
@@ -82,13 +90,16 @@ export function MediaLibrary() {
           <MediaGrid media={media} onDelete={handleDelete} />
         )
       ) : (
-        <MediaListView />
+        <MediaListView media={media} onDelete={handleDelete} />
       )}
 
       <MediaUploadDialog
         open={isUploadOpen}
         onOpenChange={setIsUploadOpen}
-        onUploadComplete={handleUploadComplete}
+        onUploadComplete={() => {
+          // Reload media
+          setMedia([...mockMedia])
+        }}
       />
     </div>
   )

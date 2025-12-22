@@ -18,8 +18,10 @@ export function getAllPosts(): Post[] {
 /**
  * Get posts by service slug
  * Priority:
- * 1. Posts with serviceSlugs matching the slug
- * 2. Posts with tags intersecting service tags
+ * 1. Service has relatedPostSlugs (Phase 5) - posts matching those slugs
+ * 2. Posts with serviceSlugs matching the slug
+ * 3. Posts with tags intersecting service tags
+ * 4. Service has relatedPostIds (backward compatibility)
  * Sorted by publishedAt desc
  */
 export function getPostsByService(slug: string, limit?: number): Post[] {
@@ -28,24 +30,63 @@ export function getPostsByService(slug: string, limit?: number): Post[] {
     return [];
   }
 
-  // Priority 1: Direct serviceSlugs match
-  const directMatch = POSTS.filter(
-    (post) => post.serviceSlugs && post.serviceSlugs.includes(slug)
-  );
+  // Priority 1: Service has relatedPostSlugs (Phase 5)
+  const relatedBySlugs: Post[] = [];
+  if (service.relatedPostSlugs && service.relatedPostSlugs.length > 0) {
+    relatedBySlugs.push(
+      ...POSTS.filter((post) => {
+        // Match by href (which contains slug) or by extracting slug from href
+        return service.relatedPostSlugs!.some((postSlug) => {
+          // href format: /insights/slug or /knowledge/slug or /resources/slug
+          return post.href.includes(`/${postSlug}`) || post.href.endsWith(postSlug);
+        });
+      })
+    );
+  }
 
-  // Priority 2: Tag intersection
+  // Priority 2: Direct serviceSlugs match
+  const directMatch = POSTS.filter((post) => {
+    // Skip if already in relatedBySlugs
+    if (relatedBySlugs.some((p) => p.id === post.id)) {
+      return false;
+    }
+    return post.serviceSlugs && post.serviceSlugs.includes(slug);
+  });
+
+  // Priority 3: Tag intersection
   const serviceTags = service.tags || [];
   const tagMatch = POSTS.filter((post) => {
-    // Skip if already in directMatch
-    if (directMatch.some((p) => p.id === post.id)) {
+    // Skip if already in relatedBySlugs or directMatch
+    if (
+      relatedBySlugs.some((p) => p.id === post.id) ||
+      directMatch.some((p) => p.id === post.id)
+    ) {
       return false;
     }
     // Check if post tags intersect with service tags
     return post.tags && post.tags.some((tag) => serviceTags.includes(tag));
   });
 
-  // Combine: direct matches first, then tag matches
-  const combined = [...directMatch, ...tagMatch];
+  // Priority 4: relatedPostIds (backward compatibility)
+  const relatedByIds: Post[] = [];
+  if (service.relatedPostIds && service.relatedPostIds.length > 0) {
+    relatedByIds.push(
+      ...POSTS.filter((post) => {
+        // Skip if already included
+        if (
+          relatedBySlugs.some((p) => p.id === post.id) ||
+          directMatch.some((p) => p.id === post.id) ||
+          tagMatch.some((p) => p.id === post.id)
+        ) {
+          return false;
+        }
+        return service.relatedPostIds!.includes(post.id);
+      })
+    );
+  }
+
+  // Combine: relatedBySlugs first, then directMatch, tagMatch, relatedByIds
+  const combined = [...relatedBySlugs, ...directMatch, ...tagMatch, ...relatedByIds];
 
   // Sort by date (newest first)
   const sorted = combined.sort((a, b) => {

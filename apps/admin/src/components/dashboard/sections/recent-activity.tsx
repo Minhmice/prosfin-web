@@ -54,7 +54,7 @@ function generateActivities(): Activity[] {
       type: "client",
       message: `Client ${client.name} status updated to ${client.status}`,
       timestamp: client.createdAt,
-      user: client.owner || "System",
+      user: client.ownerId || "System",
     })
   })
 

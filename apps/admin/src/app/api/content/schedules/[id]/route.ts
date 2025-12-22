@@ -17,9 +17,10 @@ const updateScheduleSchema = z.object({
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const session = await getServerSession()
     if (!session) {
       return unauthorizedResponse()
@@ -38,7 +39,7 @@ export async function PATCH(
       updateData.status = data.status
     }
 
-    const schedule = await contentProvider.updateSchedule(params.id, updateData)
+    const schedule = await contentProvider.updateSchedule(params.id, updateData as any)
 
     return successResponse(schedule)
   } catch (error: any) {

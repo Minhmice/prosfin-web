@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   getServiceBySlug,
-  getRelatedServices,
   getAllServices,
   getPostsByService,
   getPeopleByService,
@@ -18,6 +17,7 @@ import { RelatedPosts } from "@/components/services/related-posts";
 import { OurPeople } from "@/components/services/our-people";
 import { SeeMore } from "@/components/services/see-more";
 import { ServiceCta } from "@/components/services/service-cta";
+import { BigLeadCta } from "@/components/services/big-lead-cta";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -77,10 +77,10 @@ export async function generateMetadata({
           ]
         : [
             {
-              url: `${baseUrl}/og-image.png`, // Fallback OG image
+              url: `${baseUrl}/services/${slug}/opengraph-image`, // Dynamic OG image
               width: 1200,
               height: 630,
-              alt: "ProsFIN",
+              alt: service.title || "ProsFIN",
             },
           ],
       locale: "vi_VN",
@@ -92,7 +92,7 @@ export async function generateMetadata({
       description,
       images: service.coverImage
         ? [service.coverImage]
-        : [`${baseUrl}/og-image.png`],
+        : [`${baseUrl}/services/${slug}/opengraph-image`],
     },
   };
 }
@@ -131,8 +131,12 @@ export default async function ServiceDetailPage({
 
   // Get people by service, fallback to IDs
   let relatedPeople = getPeopleByService(slug, 6);
-  if (relatedPeople.length === 0 && service.peopleIds && service.peopleIds.length > 0) {
-    relatedPeople = getPeopleByIds(service.peopleIds);
+  // Phase 5: Try supportPeopleIds first, then fallback to peopleIds
+  if (relatedPeople.length === 0) {
+    const peopleIdsToUse = service.supportPeopleIds || service.peopleIds || [];
+    if (peopleIdsToUse.length > 0) {
+      relatedPeople = getPeopleByIds(peopleIdsToUse);
+    }
   }
   const allServices = getAllServices();
 
@@ -174,9 +178,9 @@ export default async function ServiceDetailPage({
         <SeeMore services={allServices} currentSlug={slug} />
       </ProsfinSectionWrapper>
 
-      {/* CTA Leads */}
-      <ProsfinSectionWrapper background="muted">
-        <ServiceCta cta={service.cta} />
+      {/* Big CTA Leads */}
+      <ProsfinSectionWrapper background="muted" padding="lg">
+        <BigLeadCta cta={service.cta} />
       </ProsfinSectionWrapper>
     </>
   );

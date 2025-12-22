@@ -42,7 +42,7 @@ export function NavMain({
   }
 
   const handleNewPost = () => {
-    toast.info("Create Post", "This feature will be available in Phase 2")
+    toast.info("This feature will be available in Phase 2")
     openNewPost()
   }
 

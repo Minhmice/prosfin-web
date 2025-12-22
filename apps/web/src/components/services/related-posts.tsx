@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 import type { Post } from "@/types/content";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProsfinSectionHeading } from "@/components/shared/section/section-heading-block";
-import { AppBadge } from "@/components/shared/wrappers/app-badge";
+import { ProsfinSecondaryButton } from "@/components/shared/button/secondary-button";
+import { FeaturedCard } from "./featured-card";
+import { PostCard } from "./post-card";
 
 interface RelatedPostsProps {
   posts: Post[];
@@ -16,7 +16,7 @@ interface RelatedPostsProps {
  * RelatedPosts - Display related posts section
  * 
  * Hiển thị các bài viết liên quan (Our Thinking).
- * Sort mới nhất, hiển thị readingTime nếu có.
+ * Sort mới nhất, bài đầu tiên dùng FeaturedCard (lớn hơn), các bài còn lại dùng PostCard.
  */
 export function RelatedPosts({ posts, title = "Our Thinking" }: RelatedPostsProps) {
   if (!posts || posts.length === 0) {
@@ -28,55 +28,28 @@ export function RelatedPosts({ posts, title = "Our Thinking" }: RelatedPostsProp
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
+  const [featuredPost, ...otherPosts] = sortedPosts;
+
   return (
     <div className="space-y-6">
       <ProsfinSectionHeading title={title} align="left" titleSize="lg" />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {sortedPosts.map((post) => (
-          <Card key={post.id} className="transition-all hover:shadow-md overflow-hidden">
-            {post.coverImage && (
-              <div className="relative h-48 w-full overflow-hidden">
-                <Image
-                  src={post.coverImage}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              </div>
-            )}
-            <CardHeader>
-              <div className="mb-2 flex flex-wrap gap-2">
-                {post.tags.slice(0, 2).map((tag) => (
-                  <AppBadge key={tag} variant="outline" className="text-xs">
-                    {tag}
-                  </AppBadge>
-                ))}
-              </div>
-              <CardTitle className="text-lg">
-                <Link
-                  href={post.href}
-                  className="hover:text-primary transition-colors"
-                >
-                  {post.title}
-                </Link>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-2 text-sm text-muted-foreground">{post.excerpt}</p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{post.date}</span>
-                {post.readingTime && (
-                  <>
-                    <span>•</span>
-                    <span>{post.readingTime} phút đọc</span>
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+        {/* Featured post - lớn hơn, chiếm 2 cột trên desktop */}
+        {featuredPost && <FeaturedCard post={featuredPost} />}
+
+        {/* Các posts còn lại */}
+        {otherPosts.map((post) => (
+          <PostCard key={post.id} post={post} />
         ))}
+      </div>
+
+      {/* CTA to view more posts */}
+      <div className="flex justify-center pt-4">
+        <ProsfinSecondaryButton href="/insights" className="gap-2">
+          Xem thêm bài viết
+          <ArrowRight className="h-4 w-4" />
+        </ProsfinSecondaryButton>
       </div>
     </div>
   );

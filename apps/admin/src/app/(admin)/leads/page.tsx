@@ -9,7 +9,7 @@ import { Plus } from "lucide-react"
 import { PageHeader } from "@/components/shared/page-header"
 import { PageBody } from "@/components/shared/page-body"
 import { mockLeads } from "@/data/leads"
-import type { Lead } from "@/types"
+import type { Lead } from "@/features/crm/types"
 import { LeadDetailPanel } from "@/components/leads/lead-detail-panel"
 import { LeadFormSheet } from "@/features/crm/leads/lead-form-sheet"
 import {
@@ -78,11 +78,11 @@ export default function LeadsPage() {
   const [isDetailOpen, setIsDetailOpen] = React.useState(false)
   const [isFormOpen, setIsFormOpen] = React.useState(false)
   const [editingLead, setEditingLead] = React.useState<Lead | null>(null)
-  const [leads, setLeads] = React.useState<Lead[]>(mockLeads as Lead[])
+  const [leads, setLeads] = React.useState<Lead[]>(mockLeads as unknown as Lead[])
 
   const refreshLeads = React.useCallback(async () => {
     const result = await crmProvider.listLeads({ page: 1, pageSize: 100 })
-    setLeads(result.data)
+    setLeads(result.data as unknown as Lead[])
   }, [])
 
   React.useEffect(() => {
@@ -149,7 +149,7 @@ export default function LeadsPage() {
         />
       </PageBody>
       <LeadDetailPanel
-        lead={selectedLead}
+        lead={selectedLead as any}
         open={isDetailOpen}
         onOpenChange={setIsDetailOpen}
       />

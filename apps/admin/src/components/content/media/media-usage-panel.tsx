@@ -13,6 +13,7 @@ import { DataTable } from "@/components/table"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { MediaAsset } from "@/features/content/types"
 import { contentProvider } from "@/features/content/data/provider"
+import { mockPosts } from "@/data/content-mock"
 import type { Post } from "@/features/content/types"
 import { format } from "date-fns"
 import { ExternalLink } from "lucide-react"
@@ -33,18 +34,11 @@ export function MediaUsagePanel({
   const [posts, setPosts] = React.useState<Post[]>([])
 
   React.useEffect(() => {
-    if (media && media.usedInPosts.length > 0) {
-      const loadPosts = async () => {
-        try {
-          const allPosts = await Promise.all(
-            media.usedInPosts.map((postId) => contentProvider.getPost(postId))
-          )
-          setPosts(allPosts.filter((p): p is Post => p !== null))
-        } catch (error) {
-          // Handle error
-        }
-      }
-      loadPosts()
+    if (media && media.usedInPosts && media.usedInPosts.length > 0) {
+      const posts = mockPosts.filter((p) => {
+        return media.usedInPosts.includes(p.id)
+      })
+      setPosts(posts)
     } else {
       setPosts([])
     }
@@ -100,11 +94,12 @@ export function MediaUsagePanel({
             </div>
           ) : (
             <DataTable
-              columns={columns}
               data={posts}
-              isLoading={false}
-              selectedRows={[]}
-              onSelectedRowsChange={() => {}}
+              columns={columns}
+              enableRowSelection={false}
+              enableColumnVisibility={false}
+              enableSorting={false}
+              enableFiltering={false}
             />
           )}
         </div>

@@ -8,8 +8,8 @@ import { CalendarEventPill } from "./calendar-event-pill"
 import { contentProvider } from "@/features/content/data/provider"
 import type { ScheduleItem } from "@/features/content/types"
 import { startOfWeek, endOfWeek, eachDayOfInterval, addWeeks, subWeeks, format, isSameDay } from "date-fns"
-import { useScheduleListQuery } from "@/hooks/use-schedule-list-query"
 import { useRouter } from "next/navigation"
+import { mockSchedules } from "@/data/content-mock"
 
 interface SchedulesCalendarWeekProps {
   onDateSelect?: (date: Date) => void
@@ -21,32 +21,24 @@ export function SchedulesCalendarWeek({
   onScheduleClick,
 }: SchedulesCalendarWeekProps) {
   const router = useRouter()
-  const { query, updateQuery } = useScheduleListQuery()
   const [schedules, setSchedules] = React.useState<ScheduleItem[]>([])
   const [currentWeek, setCurrentWeek] = React.useState(() => {
-    const from = query.from ? new Date(query.from) : new Date()
-    return startOfWeek(from, { weekStartsOn: 1 })
+    return startOfWeek(new Date(), { weekStartsOn: 1 })
   })
 
   React.useEffect(() => {
-    const loadSchedules = async () => {
-      const weekEnd = endOfWeek(currentWeek, { weekStartsOn: 1 })
-      const dateFrom = new Date(currentWeek)
-      dateFrom.setHours(0, 0, 0, 0)
-      const dateTo = new Date(weekEnd)
-      dateTo.setHours(23, 59, 59, 999)
+    const weekEnd = endOfWeek(currentWeek, { weekStartsOn: 1 })
+    const dateFrom = new Date(currentWeek)
+    dateFrom.setHours(0, 0, 0, 0)
+    const dateTo = new Date(weekEnd)
+    dateTo.setHours(23, 59, 59, 999)
 
-      const result = await contentProvider.listSchedules({
-        from: dateFrom,
-        to: dateTo,
-        page: 1,
-        pageSize: 1000,
-      })
-      setSchedules(result.data)
-    }
-
-    loadSchedules()
-  }, [currentWeek, query.channel, query.status])
+    const filtered = mockSchedules.filter((s) => {
+      const scheduleDate = s.scheduledAt
+      return scheduleDate && scheduleDate >= dateFrom && scheduleDate <= dateTo
+    })
+    setSchedules(filtered)
+  }, [currentWeek])
 
   const weekDays = eachDayOfInterval({
     start: currentWeek,
@@ -64,31 +56,16 @@ export function SchedulesCalendarWeek({
   const handlePreviousWeek = () => {
     const prevWeek = subWeeks(currentWeek, 1)
     setCurrentWeek(prevWeek)
-    const weekEnd = endOfWeek(prevWeek, { weekStartsOn: 1 })
-    updateQuery({
-      from: prevWeek.toISOString(),
-      to: weekEnd.toISOString(),
-    })
   }
 
   const handleNextWeek = () => {
     const nextWeek = addWeeks(currentWeek, 1)
     setCurrentWeek(nextWeek)
-    const weekEnd = endOfWeek(nextWeek, { weekStartsOn: 1 })
-    updateQuery({
-      from: nextWeek.toISOString(),
-      to: weekEnd.toISOString(),
-    })
   }
 
   const handleToday = () => {
     const today = startOfWeek(new Date(), { weekStartsOn: 1 })
     setCurrentWeek(today)
-    const weekEnd = endOfWeek(today, { weekStartsOn: 1 })
-    updateQuery({
-      from: today.toISOString(),
-      to: weekEnd.toISOString(),
-    })
   }
 
   const handleCreateSchedule = (date: Date) => {

@@ -14,6 +14,12 @@ export function buildShareUrl(
 ): string {
   const searchParams = new URLSearchParams()
   
+  // Guard against null/undefined params
+  if (!params || typeof params !== 'object') {
+    const queryString = searchParams.toString()
+    return queryString ? `${path}?${queryString}` : path
+  }
+  
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined || value === null) return
     

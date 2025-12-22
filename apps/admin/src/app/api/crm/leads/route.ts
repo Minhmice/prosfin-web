@@ -100,7 +100,6 @@ export async function POST(request: NextRequest) {
         status: data.status,
         source: data.source,
         ownerId: data.ownerId || session.user.id,
-        utmCampaign: data.utmCampaign,
       },
     })
 

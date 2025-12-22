@@ -1,32 +1,32 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import { FileText, Upload, Calendar } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { FileText, Upload, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 export function ContentQuickActions() {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleNewPost = () => {
-    router.push("/content/posts/new")
-  }
+    router.push("/content/posts/new");
+  };
 
   const handleUploadMedia = () => {
     // Will open media upload dialog in Phase 2.4
-    console.log("Upload Media")
-  }
+    console.log("Upload Media");
+  };
 
   const handleViewSchedules = () => {
-    router.push("/content/schedules")
-  }
+    router.push("/content/schedules");
+  };
 
   return (
     <Card>
@@ -63,5 +63,5 @@ export function ContentQuickActions() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

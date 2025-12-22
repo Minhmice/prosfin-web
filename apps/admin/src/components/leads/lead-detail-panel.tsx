@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 import { Textarea } from "@/components/ui/textarea"
-import type { Lead } from "@/types"
+import type { Lead } from "@/features/crm/types"
 
 interface LeadDetailPanelProps {
   lead: Lead | null
@@ -93,12 +93,8 @@ function LeadDetailContent({
               </div>
             )}
             <div>
-              <Label className="text-muted-foreground">Interest</Label>
-              <p className="font-medium">{lead.interest}</p>
-            </div>
-            <div>
-              <Label className="text-muted-foreground">Status</Label>
-              <Badge variant="outline">{lead.status}</Badge>
+              <Label className="text-muted-foreground">Stage</Label>
+              <Badge variant="outline">{lead.stage}</Badge>
             </div>
             <div>
               <Label className="text-muted-foreground">Source</Label>
@@ -128,12 +124,6 @@ function LeadDetailContent({
         <div>
           <h3 className="text-lg font-semibold mb-3">Attribution</h3>
           <div className="space-y-2 text-sm">
-            {lead.utmCampaign && (
-              <div>
-                <Label className="text-muted-foreground">UTM Campaign</Label>
-                <p className="font-medium">{lead.utmCampaign}</p>
-              </div>
-            )}
             <div>
               <Label className="text-muted-foreground">Referrer</Label>
               <p className="text-muted-foreground">Not available</p>
