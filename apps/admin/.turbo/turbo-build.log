@@ -6,28 +6,47 @@
 
  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
    Creating an optimized production build ...
-Turbopack build encountered 1 warnings:
-./packages/db/src
-Package @prisma/client can't be external
-The request @prisma/client matches serverExternalPackages (or the default list).
-The request could not be resolved by Node.js from the project directory.
-Packages that should be external need to be installed in the project directory, so they can be resolved from the output files.
-Try to install it into the project directory by running npm install @prisma/client from the project directory.
-
-
- ✓ Compiled successfully in 5.1s
+ ✓ Compiled successfully in 5.3s
    Running TypeScript ...
-Failed to compile.
+   Collecting page data using 27 workers ...
+Error: ❌ Missing or invalid environment variables:
+DATABASE_URL: Invalid input: expected string, received undefined
+AUTH_SECRET: Invalid input: expected string, received undefined
+S3_ENDPOINT: Invalid input: expected string, received undefined
+S3_ACCESS_KEY: Invalid input: expected string, received undefined
+S3_SECRET_KEY: Invalid input: expected string, received undefined
+S3_BUCKET: Invalid input: expected string, received undefined
+    at <unknown> (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__1e1a0491._.js:10:11460)
+    at module evaluation (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__1e1a0491._.js:11:17)
+    at instantiateModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:715:9)
+    at getOrInstantiateModuleFromParent (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:738:12)
+    at Context.esmImport [as i] (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:228:20)
+    at module evaluation (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__861febc5._.js:1:6821)
+    at instantiateModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:715:9)
+    at instantiateRuntimeModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:743:12)
+    at getOrInstantiateRuntimeModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:756:12)
+    at Object.m (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:765:18)
+Error: ❌ Missing or invalid environment variables:
+DATABASE_URL: Invalid input: expected string, received undefined
+AUTH_SECRET: Invalid input: expected string, received undefined
+S3_ENDPOINT: Invalid input: expected string, received undefined
+S3_ACCESS_KEY: Invalid input: expected string, received undefined
+S3_SECRET_KEY: Invalid input: expected string, received undefined
+S3_BUCKET: Invalid input: expected string, received undefined
+    at <unknown> (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__1e1a0491._.js:10:11460)
+    at module evaluation (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__1e1a0491._.js:11:17)
+    at instantiateModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:715:9)
+    at getOrInstantiateModuleFromParent (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:738:12)
+    at Context.esmImport [as i] (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:228:20)
+    at module evaluation (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__4b3aba38._.js:1:6821)
+    at instantiateModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:715:9)
+    at instantiateRuntimeModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:743:12)
+    at getOrInstantiateRuntimeModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:756:12)
+    at Object.m (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:765:18)
 
-./src/app/api/content/comments/route.ts:58:21
-Type error: Parameter 'comment' implicitly has an 'any' type.
-
-[0m [90m 56 |[39m
- [90m 57 |[39m     [36mreturn[39m successResponse(
-[31m[1m>[22m[39m[90m 58 |[39m       comments[33m.[39mmap((comment) [33m=>[39m ({
- [90m    |[39m                     [31m[1m^[22m[39m
- [90m 59 |[39m         id[33m:[39m comment[33m.[39mid[33m,[39m
- [90m 60 |[39m         postId[33m:[39m comment[33m.[39mpostId[33m,[39m
- [90m 61 |[39m         postTitle[33m:[39m comment[33m.[39mpost[33m.[39mtitle[33m,[39m[0m
-Next.js build worker exited with code: 1 and signal: null
+> Build error occurred
+Error: Failed to collect page data for /api/content/media/presign
+    at ignore-listed frames {
+  type: 'Error'
+}
  ELIFECYCLE  Command failed with exit code 1.

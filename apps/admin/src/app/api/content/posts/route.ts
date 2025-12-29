@@ -30,26 +30,28 @@ export async function GET(request: NextRequest) {
     const where = buildWhereClause(parsed.filters, ["title", "slug", "excerpt"])
     const orderBy = buildOrderBy(parsed.sort)
 
-    const [posts, total] = await Promise.all([
-      db.post.findMany({
-        ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
-        include: {
-          author: true,
-          category: true,
-          tags: {
-            include: {
-              tag: true,
-            },
+    const posts = await db.post.findMany({
+      ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
+      include: {
+        author: true,
+        category: true,
+        tags: {
+          include: {
+            tag: true,
           },
         },
-      }),
-      db.post.count({ where }),
-    ])
+      },
+    })
+
+    const total = await db.post.count({ where })
 
     const totalPages = Math.ceil(total / parsed.pageSize)
 
+    type PostWithRelations = typeof posts[0]
+    type PostTag = PostWithRelations["tags"][0]
+
     return successResponse(
-      posts.map((post) => ({
+      posts.map((post: PostWithRelations) => ({
         id: post.id,
         title: post.title,
         slug: post.slug,
@@ -59,7 +61,7 @@ export async function GET(request: NextRequest) {
         coverMediaId: post.coverMediaId,
         categoryId: post.categoryId,
         category: post.category?.name,
-        tags: post.tags.map((pt) => pt.tag.name),
+        tags: post.tags.map((pt: PostTag) => pt.tag.name),
         authorId: post.authorId,
         authorName: post.author.name || post.author.email,
         scheduledAt: post.scheduledAt,

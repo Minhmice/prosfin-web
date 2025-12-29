@@ -5773,3 +5773,136 @@
 {"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1766986706059,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
 {"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1766986706054,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
 {"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1766986706058,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:7","message":"Component loaded on server","data":{"hasUseClient":true},"timestamp":1767010749987,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010749995,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749995,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010749999,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749999,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010749999,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750002,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750003,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750008,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750008,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750009,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750009,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750009,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750014,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750014,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750015,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750015,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750015,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750016,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750017,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750017,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750025,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750027,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750027,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750025,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750032,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750027,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750032,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750036,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750036,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750037,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750037,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750037,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750041,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750042,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750041,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750042,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750042,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750043,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750043,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750042,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750052,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750053,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750052,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750053,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750063,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750064,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750053,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750068,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750069,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750070,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750070,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750071,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750072,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750071,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750072,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750072,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:7","message":"Component loaded on server","data":{"hasUseClient":true},"timestamp":1767010749963,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010749970,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749970,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749975,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010749975,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010749975,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010749981,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749981,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010749985,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749985,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010749986,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749986,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010749986,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010749999,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749999,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750000,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750001,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750001,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750000,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010749999,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750002,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750002,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750009,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750009,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750027,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750036,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750036,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750037,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750047,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750047,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750050,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750050,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750051,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750051,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750052,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750052,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750052,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750053,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750054,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750054,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750056,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750058,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750059,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750056,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750060,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750059,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750060,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750061,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750061,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750062,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750062,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750066,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750066,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750067,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750067,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750067,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750068,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750068,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750069,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750069,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750070,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750070,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750070,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750080,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750090,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750080,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750091,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750090,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750094,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"outline"},"timestamp":1767010750094,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750098,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750099,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"primary"},"timestamp":1767010750094,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750091,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:33","message":"ProsfinButton called","data":{"isServer":true,"brandVariant":"ghost"},"timestamp":1767010750100,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"brand-button.tsx:50","message":"About to render motion.div","data":{"isServer":true},"timestamp":1767010750100,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}

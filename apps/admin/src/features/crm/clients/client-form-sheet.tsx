@@ -56,7 +56,7 @@ export function ClientFormSheet({
       status: client?.status || "active",
       ownerId: client?.ownerId || "",
       ownerName: client?.ownerName || "",
-      tags: client?.tags || [],
+      tags: client?.tags ?? [],
     },
   })
 
@@ -96,7 +96,6 @@ export function ClientFormSheet({
       } else {
         await crmProvider.createClient({
           ...data,
-          createdAt: new Date(),
         })
         toast.success("Client created successfully")
       }

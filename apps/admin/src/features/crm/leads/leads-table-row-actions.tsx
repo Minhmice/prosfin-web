@@ -2,7 +2,7 @@
  * Leads Table Row Actions
  */
 
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 
 export function getLeadsRowActions(lead: Lead) {
   return [

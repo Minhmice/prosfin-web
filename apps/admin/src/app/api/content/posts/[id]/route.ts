@@ -43,6 +43,8 @@ export async function GET(
       return notFoundResponse("Post not found")
     }
 
+    type PostTag = typeof post["tags"][0]
+
     return successResponse({
       id: post.id,
       title: post.title,
@@ -53,7 +55,7 @@ export async function GET(
       coverMediaId: post.coverMediaId,
       categoryId: post.categoryId,
       category: post.category?.name,
-      tags: post.tags.map((pt) => pt.tag.name),
+      tags: post.tags.map((pt: PostTag) => pt.tag.name),
       authorId: post.authorId,
       authorName: post.author.name || post.author.email,
       scheduledAt: post.scheduledAt,

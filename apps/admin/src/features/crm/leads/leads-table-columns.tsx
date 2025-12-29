@@ -5,33 +5,32 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 
 function getSourceBadgeVariant(source: Lead["source"]) {
   switch (source) {
-    case "web":
+    case "website":
       return "default"
     case "referral":
       return "secondary"
-    case "event":
+    case "social":
       return "outline"
     default:
       return "outline"
   }
 }
 
-function getStageBadgeVariant(stage: Lead["stage"]) {
-  switch (stage) {
+function getStatusBadgeVariant(status: Lead["status"]) {
+  switch (status) {
     case "new":
       return "default"
-    case "qualified":
+    case "contacted":
       return "secondary"
-    case "proposal":
+    case "qualified":
       return "outline"
-    case "won":
+    case "converted":
       return "default"
-    case "lost":
+    case "archived":
       return "destructive"
     default:
       return "outline"
@@ -68,24 +67,11 @@ export const leadsTableColumns: ColumnDef<Lead>[] = [
     },
   },
   {
-    accessorKey: "stage",
-    header: "Stage",
+    accessorKey: "status",
+    header: "Status",
     cell: ({ row }) => {
-      const stage = row.getValue("stage") as Lead["stage"]
-      return <Badge variant={getStageBadgeVariant(stage)}>{stage}</Badge>
-    },
-  },
-  {
-    accessorKey: "score",
-    header: "Score",
-    cell: ({ row }) => {
-      const score = row.getValue("score") as number
-      return (
-        <div className="flex items-center gap-2 w-24">
-          <Progress value={score} className="h-2" />
-          <span className="text-muted-foreground text-xs w-8">{score}</span>
-        </div>
-      )
+      const status = row.getValue("status") as Lead["status"]
+      return <Badge variant={getStatusBadgeVariant(status)}>{status}</Badge>
     },
   },
   {
@@ -94,14 +80,6 @@ export const leadsTableColumns: ColumnDef<Lead>[] = [
     cell: ({ row }) => {
       const owner = row.getValue("ownerName") as string | undefined
       return owner || <span className="text-muted-foreground">Unassigned</span>
-    },
-  },
-  {
-    accessorKey: "nextActionAt",
-    header: "Next Action",
-    cell: ({ row }) => {
-      const date = row.getValue("nextActionAt") as Date | undefined
-      return date ? format(date, "MMM d, yyyy") : <span className="text-muted-foreground">—</span>
     },
   },
   {

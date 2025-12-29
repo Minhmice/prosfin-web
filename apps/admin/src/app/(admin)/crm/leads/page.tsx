@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { PageHeader } from "@/components/shared/page-header"
 import { PageBody } from "@/components/shared/page-body"
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 import { crmProvider } from "@/features/crm/data/provider"
 import { useLeadListQuery } from "@/hooks/use-lead-list-query"
 import { leadsTableColumns } from "@/features/crm/leads/leads-table-columns"
@@ -56,8 +56,8 @@ export default function LeadsPage() {
     try {
       const result = await crmProvider.listLeads({
         q: query.q,
-        status: query.stage as any, // Map stage to status for backward compatibility
-        source: query.source ? (query.source === "web" ? "website" : query.source === "event" ? "social" : query.source) as any : undefined,
+        status: query.status,
+        source: query.source,
         ownerId: query.owner,
         page: query.page,
         pageSize: query.pageSize,
@@ -231,23 +231,15 @@ export default function LeadsPage() {
   )
 
   const handleBulkSetStage = React.useCallback(
-    async (stage: Lead["stage"]) => {
+    async (status: Lead["status"]) => {
       try {
-        // Map stage to status for API compatibility
-        const statusMap: Record<string, string> = {
-          new: "new",
-          qualified: "qualified",
-          proposal: "contacted",
-          won: "converted",
-          lost: "archived",
-        }
         await Promise.all(
-          selectedLeads.map((lead) => crmProvider.updateLead(lead.id, { status: statusMap[stage] as any }))
+          selectedLeads.map((lead) => crmProvider.updateLead(lead.id, { status }))
         )
-        toast.success(`Set stage for ${selectedLeads.length} lead${selectedLeads.length !== 1 ? "s" : ""}`)
+        toast.success(`Set status for ${selectedLeads.length} lead${selectedLeads.length !== 1 ? "s" : ""}`)
         fetchLeads()
       } catch (error: any) {
-        toast.error(error.message || "Failed to set stage")
+        toast.error(error.message || "Failed to set status")
       }
     },
     [selectedLeads, fetchLeads]
@@ -327,11 +319,9 @@ export default function LeadsPage() {
           <LeadsTableToolbar
             query={query}
             onSearchChange={updateSearch}
-            onStageChange={(stage) => updateQuery({ stage, page: 1 })}
+            onStatusChange={(status) => updateQuery({ status, page: 1 })}
             onSourceChange={(source) => updateQuery({ source, page: 1 })}
             onOwnerChange={(owner) => updateQuery({ owner, page: 1 })}
-            onScoreRangeChange={(min, max) => updateQuery({ scoreMin: min, scoreMax: max, page: 1 })}
-            onDateRangeChange={(from, to) => updateQuery({ dateFrom: from, dateTo: to, page: 1 })}
             onReset={resetFilters}
             table={tableInstance || undefined}
           />

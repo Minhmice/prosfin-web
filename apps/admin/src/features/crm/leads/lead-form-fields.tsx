@@ -96,9 +96,9 @@ export function LeadFormFields({ form }: LeadFormFieldsProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="web">Web</SelectItem>
+                  <SelectItem value="website">Website</SelectItem>
                   <SelectItem value="referral">Referral</SelectItem>
-                  <SelectItem value="event">Event</SelectItem>
+                  <SelectItem value="social">Social</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
@@ -108,10 +108,10 @@ export function LeadFormFields({ form }: LeadFormFieldsProps) {
         />
         <FormField
           control={form.control}
-          name="stage"
+          name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Stage</FormLabel>
+              <FormLabel>Status</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -120,10 +120,10 @@ export function LeadFormFields({ form }: LeadFormFieldsProps) {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="new">New</SelectItem>
+                  <SelectItem value="contacted">Contacted</SelectItem>
                   <SelectItem value="qualified">Qualified</SelectItem>
-                  <SelectItem value="proposal">Proposal</SelectItem>
-                  <SelectItem value="won">Won</SelectItem>
-                  <SelectItem value="lost">Lost</SelectItem>
+                  <SelectItem value="converted">Converted</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -133,52 +133,12 @@ export function LeadFormFields({ form }: LeadFormFieldsProps) {
       </div>
       <FormField
         control={form.control}
-        name="score"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Score (0-100)</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                {...field}
-                value={field.value || 0}
-                onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
-                min={0}
-                max={100}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
         name="ownerId"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Owner</FormLabel>
             <FormControl>
               <Input {...field} placeholder="Owner ID" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="nextActionAt"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Next Action Date</FormLabel>
-            <FormControl>
-              <Input
-                type="datetime-local"
-                value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                onChange={(e) => {
-                  const value = e.target.value
-                  field.onChange(value ? new Date(value) : undefined)
-                }}
-              />
             </FormControl>
             <FormMessage />
           </FormItem>

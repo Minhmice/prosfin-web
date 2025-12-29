@@ -31,12 +31,12 @@ export function SchedulesTablePage() {
       const from = query.from ? new Date(query.from) : undefined
       const to = query.to ? new Date(query.to) : undefined
       
-      const items = await contentProvider.listSchedules({
-        dateFrom: from,
-        dateTo: to,
+      const result = await contentProvider.listSchedules({
+        from: from,
+        to: to,
         q: query.q,
       })
-      setSchedules(items)
+      setSchedules(result.data)
     } catch (error) {
       toast.error("Failed to load schedules")
     } finally {

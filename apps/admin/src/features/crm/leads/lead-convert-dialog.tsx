@@ -16,7 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 
 interface LeadConvertDialogProps {
   open: boolean

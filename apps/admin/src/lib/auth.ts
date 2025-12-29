@@ -3,7 +3,7 @@
  * NextAuth setup with Prisma adapter
  */
 
-import type { NextAuthOptions, Session } from "next-auth"
+import type { Session } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { db } from "@prosfin/db"
@@ -11,10 +11,10 @@ import bcrypt from "bcryptjs"
 import { cookies } from "next/headers"
 import { decode } from "next-auth/jwt"
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   adapter: PrismaAdapter(db) as any,
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   pages: {
     signIn: "/signin",
@@ -31,8 +31,11 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
+        const email = String(credentials.email)
+        const password = String(credentials.password)
+
         const user = await db.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
           include: {
             roles: {
               include: {
@@ -46,7 +49,7 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        const isValid = await bcrypt.compare(credentials.password, user.passwordHash)
+        const isValid = await bcrypt.compare(password, user.passwordHash)
 
         if (!isValid) {
           return null
@@ -56,20 +59,20 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
-          roles: user.roles.map((ur) => ur.role.name),
+          roles: user.roles.map((ur: { role: { name: string } }) => ur.role.name),
         }
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id
         token.roles = (user as any).roles || []
       }
       return token
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (session.user) {
         session.user.id = token.id as string
         session.user.roles = (token.roles as string[]) || []
@@ -98,7 +101,8 @@ export async function getServerSession() {
     const decoded = await decode({
       token: sessionToken,
       secret: process.env.NEXTAUTH_SECRET || "your-secret-key",
-    })
+      salt: "",
+    } as any)
 
     if (!decoded) {
       return null

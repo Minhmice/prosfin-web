@@ -1,4 +1,4 @@
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 
 const names = [
   "John Doe", "Jane Smith", "Michael Johnson", "Emily Davis", "David Wilson",
@@ -31,8 +31,8 @@ const owners = [
   undefined,
 ]
 
-const stages: Lead["stage"][] = ["new", "qualified", "proposal", "won", "lost"]
-const sources: Lead["source"][] = ["web", "referral", "event", "other"]
+const statuses: Lead["status"][] = ["new", "contacted", "qualified", "converted", "archived"]
+const sources: Lead["source"][] = ["website", "referral", "social", "other"]
 
 // Fixed dates để data không thay đổi
 const baseDate = new Date("2024-01-01T00:00:00Z")
@@ -47,13 +47,11 @@ function generateLeads(count: number): Lead[] {
     const company = companies[i % companies.length]
     const email = `${name.toLowerCase().replace(/\s+/g, ".")}@${company.toLowerCase().replace(/\s+/g, "")}.com`
     const phone = i % 2 === 0 ? `+84${900000000 + i}` : undefined
-    const stage = stages[i % stages.length]
+    const status = statuses[i % statuses.length]
     const source = sources[i % sources.length]
     const owner = owners[i % owners.length]
-    const score = (i % 100) // 0-99
     const createdAt = daysAgo(90 - (i % 90))
     const updatedAt = daysAgo(90 - (i % 90) - (i % 30))
-    const nextActionAt = i % 3 === 0 ? daysFromNow(7 - (i % 7)) : undefined
 
     leads.push({
       id: `lead-${i + 1}`,
@@ -61,12 +59,10 @@ function generateLeads(count: number): Lead[] {
       company,
       email,
       phone,
-      stage,
+      status,
       source,
-      score,
       ownerId: owner?.id,
       ownerName: owner?.name,
-      nextActionAt,
       createdAt,
       updatedAt,
     })

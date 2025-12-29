@@ -9,7 +9,7 @@ import { Plus } from "lucide-react"
 import { PageHeader } from "@/components/shared/page-header"
 import { PageBody } from "@/components/shared/page-body"
 import { mockLeads } from "@/data/leads"
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 import { LeadDetailPanel } from "@/components/leads/lead-detail-panel"
 import { LeadFormSheet } from "@/features/crm/leads/lead-form-sheet"
 import {
@@ -36,13 +36,13 @@ const columns: ColumnDef<Lead>[] = [
     header: "Phone",
   },
   {
-    accessorKey: "stage",
-    header: "Stage",
+    accessorKey: "status",
+    header: "Status",
     cell: ({ row }) => {
-      const stage = row.getValue("stage") as string
+      const status = row.getValue("status") as string
       return (
         <Badge variant="outline">
-          {stage}
+          {status}
         </Badge>
       )
     },

@@ -3,6 +3,8 @@
  * Extended types for Client and Lead
  */
 
+import type { Lead } from "@prosfin/shared"
+
 export type ClientStatus = "active" | "inactive" | "archived"
 
 export interface Client {
@@ -64,24 +66,10 @@ export interface Client360 {
   files: File[]
 }
 
+// Lead type is now imported from @prosfin/shared
+// Legacy types kept for backward compatibility if needed
 export type LeadStage = "new" | "qualified" | "proposal" | "won" | "lost"
 export type LeadSource = "web" | "referral" | "event" | "other"
-
-export interface Lead {
-  id: string
-  name: string
-  company: string
-  email: string
-  phone?: string
-  stage: LeadStage
-  source: LeadSource
-  score: number
-  ownerId?: string
-  ownerName?: string
-  nextActionAt?: Date
-  createdAt: Date
-  updatedAt: Date
-}
 
 export interface LeadSourceSeries {
   points: Array<{

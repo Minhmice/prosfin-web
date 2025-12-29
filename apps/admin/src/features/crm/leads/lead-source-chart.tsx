@@ -17,17 +17,21 @@ import { useLeadSourceChart } from "./use-lead-source-chart"
 import { Skeleton } from "@/components/ui/skeleton"
 
 const chartConfig: ChartConfig = {
-  web: {
-    label: "Web",
+  website: {
+    label: "Website",
     color: "var(--chart-1)",
   },
   referral: {
     label: "Referral",
     color: "var(--chart-2)",
   },
-  event: {
-    label: "Event",
+  social: {
+    label: "Social",
     color: "var(--chart-3)",
+  },
+  other: {
+    label: "Other",
+    color: "var(--chart-4)",
   },
   facebook: {
     label: "Facebook",
@@ -43,10 +47,6 @@ const chartConfig: ChartConfig = {
   },
   twitter: {
     label: "Twitter",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
     color: "var(--chart-4)",
   },
 } satisfies ChartConfig
@@ -154,19 +154,22 @@ export function LeadSourceChart({ range }: LeadSourceChartProps) {
           wrapperStyle={{ paddingTop: "20px" }}
           iconType="square"
         />
-        {sources.map((source) => (
-          <Area
-            key={source}
-            type="monotone"
-            dataKey={source}
-            stackId="1"
-            stroke={`var(--color-${source})`}
-            fill={`var(--color-${source})`}
-            fillOpacity={0.6}
-            name={chartConfig[source as keyof typeof chartConfig]?.label || source}
-          />
-        ))}
-        {formattedChartData.some((d) => d.other && d.other > 0) && (
+        {sources.map((source) => {
+          const sourceLabel = String(chartConfig[source as keyof typeof chartConfig]?.label ?? source)
+          return (
+            <Area
+              key={source}
+              type="monotone"
+              dataKey={source}
+              stackId="1"
+              stroke={`var(--color-${source})`}
+              fill={`var(--color-${source})`}
+              fillOpacity={0.6}
+              name={sourceLabel}
+            />
+          )
+        })}
+        {formattedChartData.some((d) => typeof d.other === "number" && d.other > 0) && (
           <Area
             type="monotone"
             dataKey="other"

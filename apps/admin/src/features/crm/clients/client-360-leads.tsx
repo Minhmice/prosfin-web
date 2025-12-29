@@ -2,7 +2,7 @@
  * Client 360 Leads Tab
  */
 
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 import { DataTable } from "@/components/table"
 import type { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"

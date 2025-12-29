@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 
 interface LeadQuickViewDialogProps {
   open: boolean
@@ -29,28 +29,28 @@ interface LeadQuickViewDialogProps {
 
 function getSourceBadgeVariant(source: Lead["source"]) {
   switch (source) {
-    case "web":
+    case "website":
       return "default"
     case "referral":
       return "secondary"
-    case "event":
+    case "social":
       return "outline"
     default:
       return "outline"
   }
 }
 
-function getStageBadgeVariant(stage: Lead["stage"]) {
-  switch (stage) {
+function getStatusBadgeVariant(status: Lead["status"]) {
+  switch (status) {
     case "new":
       return "default"
-    case "qualified":
+    case "contacted":
       return "secondary"
-    case "proposal":
+    case "qualified":
       return "outline"
-    case "won":
+    case "converted":
       return "default"
-    case "lost":
+    case "archived":
       return "destructive"
     default:
       return "outline"
@@ -105,15 +105,9 @@ export function LeadQuickViewDialog({
                   </div>
                 </div>
                 <div>
-                  <span className="text-sm font-medium">Stage:</span>
+                  <span className="text-sm font-medium">Status:</span>
                   <div className="mt-1">
-                    <Badge variant={getStageBadgeVariant(lead.stage)}>{lead.stage}</Badge>
-                  </div>
-                </div>
-                <div>
-                  <span className="text-sm font-medium">Score:</span>
-                  <div className="mt-1">
-                    <span className="text-sm">{lead.score}/100</span>
+                    <Badge variant={getStatusBadgeVariant(lead.status)}>{lead.status}</Badge>
                   </div>
                 </div>
                 {lead.ownerName && (
@@ -121,14 +115,6 @@ export function LeadQuickViewDialog({
                     <span className="text-sm font-medium">Owner:</span>
                     <div className="mt-1">
                       <span className="text-sm">{lead.ownerName}</span>
-                    </div>
-                  </div>
-                )}
-                {lead.nextActionAt && (
-                  <div>
-                    <span className="text-sm font-medium">Next Action:</span>
-                    <div className="mt-1">
-                      <span className="text-sm">{format(lead.nextActionAt, "MMM d, yyyy")}</span>
                     </div>
                   </div>
                 )}

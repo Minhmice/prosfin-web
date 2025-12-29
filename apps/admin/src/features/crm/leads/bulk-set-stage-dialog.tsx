@@ -21,15 +21,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { Lead } from "../types"
+import type { Lead } from "@prosfin/shared"
 
-const LEAD_STAGES: Lead["stage"][] = ["new", "qualified", "proposal", "won", "lost"]
+const LEAD_STATUSES: Lead["status"][] = ["new", "contacted", "qualified", "converted", "archived"]
 
 interface BulkSetStageDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   leads: Lead[]
-  onConfirm: (stage: Lead["stage"]) => Promise<void>
+  onConfirm: (status: Lead["status"]) => Promise<void>
 }
 
 export function BulkSetStageDialog({
@@ -38,20 +38,20 @@ export function BulkSetStageDialog({
   leads,
   onConfirm,
 }: BulkSetStageDialogProps) {
-  const [selectedStage, setSelectedStage] = React.useState<Lead["stage"] | undefined>(undefined)
+  const [selectedStatus, setSelectedStatus] = React.useState<Lead["status"] | undefined>(undefined)
   const [isLoading, setIsLoading] = React.useState(false)
 
   React.useEffect(() => {
     if (open) {
-      setSelectedStage(undefined)
+      setSelectedStatus(undefined)
     }
   }, [open])
 
   const handleConfirm = async () => {
-    if (!selectedStage) return
+    if (!selectedStatus) return
     setIsLoading(true)
     try {
-      await onConfirm(selectedStage)
+      await onConfirm(selectedStatus)
       onOpenChange(false)
     } finally {
       setIsLoading(false)
@@ -62,25 +62,25 @@ export function BulkSetStageDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Set Stage for {leads.length} Lead{leads.length !== 1 ? "s" : ""}</DialogTitle>
+          <DialogTitle>Set Status for {leads.length} Lead{leads.length !== 1 ? "s" : ""}</DialogTitle>
           <DialogDescription aria-describedby={undefined}>
-            Select a stage to set for the selected leads.
+            Select a status to set for the selected leads.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Stage</label>
+            <label className="text-sm font-medium">Status</label>
             <Select
-              value={selectedStage || ""}
-              onValueChange={(value) => setSelectedStage(value as Lead["stage"])}
+              value={selectedStatus || ""}
+              onValueChange={(value) => setSelectedStatus(value as Lead["status"])}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select stage..." />
+                <SelectValue placeholder="Select status..." />
               </SelectTrigger>
               <SelectContent>
-                {LEAD_STAGES.map((stage) => (
-                  <SelectItem key={stage} value={stage}>
-                    {stage.charAt(0).toUpperCase() + stage.slice(1)}
+                {LEAD_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -95,8 +95,8 @@ export function BulkSetStageDialog({
           >
             Cancel
           </Button>
-          <Button onClick={handleConfirm} disabled={isLoading || !selectedStage}>
-            {isLoading ? "Setting..." : "Set Stage"}
+          <Button onClick={handleConfirm} disabled={isLoading || !selectedStatus}>
+            {isLoading ? "Setting..." : "Set Status"}
           </Button>
         </div>
       </DialogContent>

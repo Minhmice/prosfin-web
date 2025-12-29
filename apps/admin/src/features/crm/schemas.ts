@@ -14,7 +14,7 @@ export const clientSchema = z.object({
   status: z.enum(["active", "inactive", "archived"]),
   ownerId: z.string().optional(),
   ownerName: z.string().optional(),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()),
   lastContactedAt: z.date().optional(),
 })
 
@@ -38,23 +38,17 @@ export const leadSchema = z.object({
   company: z.string().min(1, "Company is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
-  stage: z.enum(["new", "qualified", "proposal", "won", "lost"]),
-  source: z.enum(["web", "referral", "event", "other"]),
-  score: z.number().min(0).max(100).default(0),
+  status: z.enum(["new", "contacted", "qualified", "converted", "archived"]),
+  source: z.enum(["website", "referral", "social", "other"]),
   ownerId: z.string().optional(),
   ownerName: z.string().optional(),
-  nextActionAt: z.date().optional(),
 })
 
 export const leadListQuerySchema = z.object({
   q: z.string().optional(),
-  stage: z.enum(["new", "qualified", "proposal", "won", "lost"]).optional(),
-  source: z.enum(["web", "referral", "event", "other"]).optional(),
+  status: z.enum(["new", "contacted", "qualified", "converted", "archived"]).optional(),
+  source: z.enum(["website", "referral", "social", "other"]).optional(),
   owner: z.string().optional(),
-  scoreMin: z.coerce.number().int().min(0).max(100).optional(),
-  scoreMax: z.coerce.number().int().min(0).max(100).optional(),
-  dateFrom: z.string().optional(), // ISO date string
-  dateTo: z.string().optional(), // ISO date string
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().max(100).default(20),
   sort: z.string().optional(), // format: "-updatedAt" or "name.asc"

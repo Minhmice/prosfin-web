@@ -15,7 +15,7 @@ export function getScheduleRowActions(schedule: ScheduleItem): Array<{
     { label: "Open Post", action: "openPost" },
   ]
 
-  if (schedule.status === "queued") {
+  if (schedule.status === "pending") {
     actions.push({ label: "Cancel", action: "cancel", variant: "destructive" })
   }
 

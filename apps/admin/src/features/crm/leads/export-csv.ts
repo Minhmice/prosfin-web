@@ -3,7 +3,7 @@
  * Utility function to export filtered/selected leads to CSV format
  */
 
-import type { Lead } from "../types"
+import type { Lead } from "@prosfin/shared"
 
 /**
  * Convert leads array to CSV string
@@ -19,20 +19,15 @@ export function leadsToCSV(leads: Lead[]): string {
     "Company",
     "Email",
     "Phone",
-    "Stage",
+    "Status",
     "Source",
-    "Score",
     "Owner",
-    "Next Action",
     "Created At",
     "Updated At",
   ]
 
   // CSV Rows
   const rows = leads.map((lead) => {
-    const nextAction = lead.nextActionAt
-      ? new Date(lead.nextActionAt).toISOString().split("T")[0]
-      : ""
     const createdAt = lead.createdAt
       ? new Date(lead.createdAt).toISOString().split("T")[0]
       : ""
@@ -45,11 +40,9 @@ export function leadsToCSV(leads: Lead[]): string {
       escapeCSV(lead.company),
       escapeCSV(lead.email),
       escapeCSV(lead.phone || ""),
-      escapeCSV(lead.stage),
+      escapeCSV(lead.status),
       escapeCSV(lead.source),
-      String(lead.score),
       escapeCSV(lead.ownerName || ""),
-      escapeCSV(nextAction),
       escapeCSV(createdAt),
       escapeCSV(updatedAt),
     ]

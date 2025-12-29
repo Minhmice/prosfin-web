@@ -12,7 +12,7 @@ import type { ParsedQuery } from "./query-parser"
 export function buildWhereClause<T extends Record<string, any>>(
   filters: ParsedQuery["filters"],
   searchFields?: string[]
-): Prisma.Enumerable<T> {
+): T {
   const where: any = {}
 
   // Text search
@@ -36,7 +36,7 @@ export function buildWhereClause<T extends Record<string, any>>(
     }
   }
 
-  return where as Prisma.Enumerable<T>
+  return where as T
 }
 
 /**

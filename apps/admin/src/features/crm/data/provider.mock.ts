@@ -161,14 +161,12 @@ export class MockCRMProvider implements CRMProvider {
       id: `client-${Date.now()}`,
       name: data.name,
       company: data.company,
-      title: data.title,
       email: data.email,
       phone: data.phone,
       status: data.status || "active",
       ownerId: data.ownerId,
       ownerName: data.ownerId ? "Owner Name" : undefined,
       tags: data.tags || [],
-      lastContactedAt: data.lastContactedAt,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -226,9 +224,9 @@ export class MockCRMProvider implements CRMProvider {
 
     // Stage filter - use stage field directly
     // Note: LeadFilterInput might have 'status' field for backward compatibility
-    const stage = (params as any).stage || params.status
-    if (stage) {
-      filtered = filtered.filter((l) => l.stage === stage)
+    const status = params.status
+    if (status) {
+      filtered = filtered.filter((l) => l.status === status)
     }
 
     // Source filter
@@ -242,15 +240,7 @@ export class MockCRMProvider implements CRMProvider {
     }
 
     // Score range filter
-    const scoreMin = (params as any).scoreMin
-    const scoreMax = (params as any).scoreMax
-    if (scoreMin !== undefined || scoreMax !== undefined) {
-      filtered = filtered.filter((l) => {
-        if (scoreMin !== undefined && l.score < scoreMin) return false
-        if (scoreMax !== undefined && l.score > scoreMax) return false
-        return true
-      })
-    }
+    // Score filter - removed as Lead from shared doesn't have score field
 
     // Date range filter (createdAt or updatedAt)
     const dateFrom = (params as any).dateFrom
@@ -317,12 +307,10 @@ export class MockCRMProvider implements CRMProvider {
       company: data.company,
       email: data.email,
       phone: data.phone,
-      stage: (data as any).stage || "new",
-      source: data.source || "web",
-      score: (data as any).score || 0,
+      status: data.status || "new",
+      source: data.source || "website",
       ownerId: data.ownerId,
       ownerName: data.ownerId ? "Owner Name" : undefined,
-      nextActionAt: (data as any).nextActionAt,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -356,6 +344,7 @@ export class MockCRMProvider implements CRMProvider {
       phone: lead.phone,
       status: "active",
       ownerId: lead.ownerId,
+      tags: [],
     })
     // Update lead stage to "won" after conversion
     await this.updateLead(id, { stage: "won" } as any)

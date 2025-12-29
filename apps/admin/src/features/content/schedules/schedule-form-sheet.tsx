@@ -54,7 +54,10 @@ export function ScheduleFormSheet({
     resolver: zodResolver(scheduleSchema),
     defaultValues: {
       postId: schedule?.postId || defaultPostId || "",
-      scheduledAt: schedule?.scheduledAt || defaultRunAt || new Date(Date.now() + 24 * 60 * 60 * 1000),
+      runAt: schedule?.runAt || defaultRunAt || new Date(Date.now() + 24 * 60 * 60 * 1000),
+      timezone: schedule?.timezone || "Asia/Bangkok",
+      channels: schedule?.channels || [],
+      action: schedule?.action || "publish",
     },
   })
 
@@ -62,12 +65,12 @@ export function ScheduleFormSheet({
     if (schedule) {
       form.reset({
         postId: schedule.postId,
-        scheduledAt: schedule.scheduledAt,
+        runAt: schedule.runAt,
       })
     } else if (defaultPostId || defaultRunAt) {
       form.reset({
         postId: defaultPostId || "",
-        scheduledAt: defaultRunAt || new Date(Date.now() + 24 * 60 * 60 * 1000),
+        runAt: defaultRunAt || new Date(Date.now() + 24 * 60 * 60 * 1000),
       })
     }
   }, [schedule, defaultPostId, defaultRunAt, form])
@@ -75,13 +78,13 @@ export function ScheduleFormSheet({
   const onSubmit = async (data: ScheduleFormData) => {
     try {
       if (schedule) {
-        await contentProvider.reschedule(schedule.postId, data.scheduledAt)
+        await contentProvider.reschedule(schedule.postId, data.runAt)
         toast.success("Schedule updated")
       } else {
         // Create new schedule via post scheduling
         const post = await contentProvider.getPost(data.postId)
         if (post) {
-          await contentProvider.schedulePost(data.postId, data.scheduledAt)
+          await contentProvider.schedulePost(data.postId, data.runAt)
           toast.success("Schedule created")
         }
       }
@@ -125,7 +128,7 @@ export function ScheduleFormSheet({
 
             <FormField
               control={form.control}
-              name="scheduledAt"
+              name="runAt"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Scheduled Date & Time</FormLabel>

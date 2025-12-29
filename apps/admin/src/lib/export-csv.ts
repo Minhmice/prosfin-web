@@ -61,14 +61,10 @@ export function exportTableData<TData>(
     visibleColumns.forEach((colId) => {
       const cell = row.getVisibleCells().find((c) => c.column.id === colId)
       if (cell) {
-        // Get the raw value from the row
-        const column = table.getColumn(colId)
-        const accessorFn = column?.columnDef.accessorFn
-        if (accessorFn) {
-          rowData[colId] = accessorFn(row.original, row.index)
-        } else {
-          rowData[colId] = (row.original as any)[colId]
-        }
+        // Get the raw value from the cell
+        rowData[colId] = cell.getValue()
+      } else {
+        rowData[colId] = (row.original as any)[colId]
       }
     })
     return rowData
@@ -111,10 +107,10 @@ export function exportSelected<TData>(
   const data = selectedRows.map((row) => {
     const rowData: Record<string, any> = {}
     visibleColumns.forEach((colId) => {
-      const column = table.getColumn(colId)
-      const accessorFn = column?.columnDef.accessorFn
-      if (accessorFn) {
-        rowData[colId] = accessorFn(row.original, row.index)
+      const cell = row.getVisibleCells().find((c) => c.column.id === colId)
+      if (cell) {
+        // Get the raw value from the cell
+        rowData[colId] = cell.getValue()
       } else {
         rowData[colId] = (row.original as any)[colId]
       }

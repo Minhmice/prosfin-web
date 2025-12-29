@@ -11,7 +11,7 @@ import { requireRole, unauthorizedResponse } from "@/lib/rbac"
 import { successResponse, errorResponse } from "@/lib/api-response"
 import { parseQuery } from "@/lib/query-parser"
 import { buildWhereClause, buildOrderBy, paginateQuery } from "@/lib/db-query"
-import { db } from "@prosfin/db"
+import { db, Prisma } from "@prosfin/db"
 import { commentFilterSchema, updateCommentSchema } from "@prosfin/shared/schemas"
 import { z } from "zod"
 
@@ -36,21 +36,20 @@ export async function GET(request: NextRequest) {
     const where = buildWhereClause(parsed.filters, ["authorName", "content"])
     const orderBy = buildOrderBy(parsed.sort) || { createdAt: "desc" }
 
-    const [comments, total] = await Promise.all([
-      db.comment.findMany({
-        ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
-        include: {
-          post: {
-            select: {
-              id: true,
-              title: true,
-              slug: true,
-            },
+    const comments = await db.comment.findMany({
+      ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
+      include: {
+        post: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
           },
         },
-      }),
-      db.comment.count({ where }),
-    ])
+      },
+    })
+
+    const total = await db.comment.count({ where })
 
     const totalPages = Math.ceil(total / parsed.pageSize)
 

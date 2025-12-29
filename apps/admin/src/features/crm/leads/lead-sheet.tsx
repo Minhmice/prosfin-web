@@ -18,7 +18,7 @@ import {
 import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { leadSchema, type LeadFormData } from "../schemas"
-import type { Lead } from "../types"
+import type { Lead } from "@prosfin/shared"
 import { crmProvider } from "../data/provider"
 import { toast } from "sonner"
 import { LeadFormFields } from "./lead-form-fields"
@@ -45,12 +45,10 @@ export function LeadSheet({
       company: lead?.company || "",
       email: lead?.email || "",
       phone: lead?.phone || "",
-      stage: lead?.stage || "new",
-      source: lead?.source || "web",
-      score: lead?.score || 0,
+      status: lead?.status || "new",
+      source: lead?.source || "website",
       ownerId: lead?.ownerId || "",
       ownerName: lead?.ownerName || "",
-      nextActionAt: lead?.nextActionAt,
     },
   })
 
@@ -61,12 +59,10 @@ export function LeadSheet({
         company: lead.company,
         email: lead.email,
         phone: lead.phone,
-        stage: lead.stage,
+        status: lead.status,
         source: lead.source,
-        score: lead.score,
         ownerId: lead.ownerId,
         ownerName: lead.ownerName,
-        nextActionAt: lead.nextActionAt,
       })
     } else {
       form.reset({
@@ -74,12 +70,10 @@ export function LeadSheet({
         company: "",
         email: "",
         phone: "",
-        stage: "new",
-        source: "web",
-        score: 0,
+        status: "new",
+        source: "website",
         ownerId: "",
         ownerName: "",
-        nextActionAt: undefined,
       })
     }
   }, [lead, form])

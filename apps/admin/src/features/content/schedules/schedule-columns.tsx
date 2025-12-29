@@ -53,11 +53,14 @@ export function createScheduleColumns(): ColumnDef<ScheduleItem>[] {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string
-        const variant = {
-          queued: "outline",
-          sent: "default",
-          cancelled: "secondary",
-        }[status as keyof typeof variant] || "outline"
+        const variantMap: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+          pending: "outline",
+          running: "default",
+          done: "default",
+          failed: "destructive",
+          canceled: "secondary",
+        }
+        const variant = variantMap[status] || "outline"
 
         return <Badge variant={variant}>{status}</Badge>
       },

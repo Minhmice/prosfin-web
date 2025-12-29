@@ -33,17 +33,18 @@ export async function GET(request: NextRequest) {
     const where = buildWhereClause(parsed.filters, ["name", "mime"])
     const orderBy = buildOrderBy(parsed.sort) || { createdAt: "desc" }
 
-    const [media, total] = await Promise.all([
-      db.mediaAsset.findMany({
-        ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
-      }),
-      db.mediaAsset.count({ where }),
-    ])
+    const media = await db.mediaAsset.findMany({
+      ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
+    })
+
+    const total = await db.mediaAsset.count({ where })
 
     const totalPages = Math.ceil(total / parsed.pageSize)
 
+    type MediaAsset = typeof media[0]
+
     return successResponse(
-      media.map((m) => ({
+      media.map((m: MediaAsset) => ({
         id: m.id,
         type: m.type,
         name: m.name,

@@ -92,10 +92,10 @@ function CoverMediaPicker() {
 function HeroMediaPicker() {
   const form = useFormContext<PostFormData>()
   const [isPickerOpen, setIsPickerOpen] = React.useState(false)
-  const heroMediaId = form.watch("coverMediaId")
+  const heroMediaId = form.watch("heroMediaId")
 
   const handleSelect = (media: MediaAsset) => {
-    form.setValue("coverMediaId", media.id)
+    form.setValue("heroMediaId", media.id)
   }
 
   return (

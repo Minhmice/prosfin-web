@@ -12,8 +12,9 @@ export const postSchema = z.object({
   content: z.string().min(1, "Content is required"),
   status: z.enum(["draft", "scheduled", "published", "archived"]),
   coverMediaId: z.string().optional(),
+  heroMediaId: z.string().optional(),
   category: z.string().optional(),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()).min(0),
   scheduledAt: z.date().optional(),
 })
 
@@ -32,7 +33,7 @@ export const scheduleSchema = z.object({
   runAt: z.date().refine((date) => date > new Date(), {
     message: "Run date must be in the future",
   }),
-  timezone: z.string().default("Asia/Bangkok"),
+  timezone: z.string(),
   notes: z.string().optional(),
 })
 

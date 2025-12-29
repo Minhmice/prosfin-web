@@ -42,6 +42,8 @@ export async function GET(
       return notFoundResponse("Lead not found")
     }
 
+    type LeadTag = typeof lead["tags"][0]
+
     return successResponse({
       id: lead.id,
       name: lead.name,
@@ -53,7 +55,7 @@ export async function GET(
       source: lead.source,
       ownerId: lead.ownerId,
       utmCampaign: lead.attribution?.utmCampaign,
-      tags: lead.tags.map((lt) => lt.tag.name),
+      tags: lead.tags.map((lt: LeadTag) => lt.tag.name),
       createdAt: lead.createdAt,
       updatedAt: lead.updatedAt,
     })

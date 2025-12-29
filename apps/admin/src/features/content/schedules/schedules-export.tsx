@@ -10,12 +10,12 @@ export async function exportSchedulesToCSV(
   dateTo?: Date,
   selection?: string[]
 ): Promise<void> {
-  const schedules = await contentProvider.listSchedules({
-    dateFrom,
-    dateTo,
+  const schedulesResult = await contentProvider.listSchedules({
+    from: dateFrom,
+    to: dateTo,
   })
   
-  let data = schedules
+  let data = schedulesResult.data
   if (selection && selection.length > 0) {
     data = data.filter((s) => selection.includes(s.id))
   }

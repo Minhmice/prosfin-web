@@ -30,25 +30,27 @@ export async function GET(request: NextRequest) {
     const where = buildWhereClause(parsed.filters, ["name", "company", "email"])
     const orderBy = buildOrderBy(parsed.sort)
 
-    const [leads, total] = await Promise.all([
-      db.lead.findMany({
-        ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
-        include: {
-          tags: {
-            include: {
-              tag: true,
-            },
+    const leads = await db.lead.findMany({
+      ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
+      include: {
+        tags: {
+          include: {
+            tag: true,
           },
-          attribution: true,
         },
-      }),
-      db.lead.count({ where }),
-    ])
+        attribution: true,
+      },
+    })
+
+    const total = await db.lead.count({ where })
 
     const totalPages = Math.ceil(total / parsed.pageSize)
 
+    type LeadWithRelations = typeof leads[0]
+    type LeadTag = LeadWithRelations["tags"][0]
+
     return successResponse(
-      leads.map((lead) => ({
+      leads.map((lead: LeadWithRelations) => ({
         id: lead.id,
         name: lead.name,
         company: lead.company,
@@ -59,7 +61,7 @@ export async function GET(request: NextRequest) {
         source: lead.source,
         ownerId: lead.ownerId,
         utmCampaign: lead.attribution?.utmCampaign,
-        tags: lead.tags.map((lt) => lt.tag.name),
+        tags: lead.tags.map((lt: LeadTag) => lt.tag.name),
         createdAt: lead.createdAt,
         updatedAt: lead.updatedAt,
       })),

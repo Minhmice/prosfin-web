@@ -30,24 +30,26 @@ export async function GET(request: NextRequest) {
     const where = buildWhereClause(parsed.filters, ["name", "company", "email"])
     const orderBy = buildOrderBy(parsed.sort)
 
-    const [clients, total] = await Promise.all([
-      db.client.findMany({
-        ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
-        include: {
-          tags: {
-            include: {
-              tag: true,
-            },
+    const clients = await db.client.findMany({
+      ...paginateQuery({ where, orderBy }, parsed.page, parsed.pageSize),
+      include: {
+        tags: {
+          include: {
+            tag: true,
           },
         },
-      }),
-      db.client.count({ where }),
-    ])
+      },
+    })
+
+    const total = await db.client.count({ where })
 
     const totalPages = Math.ceil(total / parsed.pageSize)
 
+    type ClientWithRelations = typeof clients[0]
+    type ClientTag = ClientWithRelations["tags"][0]
+
     return successResponse(
-      clients.map((client) => ({
+      clients.map((client: ClientWithRelations) => ({
         id: client.id,
         name: client.name,
         company: client.company,
@@ -55,7 +57,7 @@ export async function GET(request: NextRequest) {
         phone: client.phone,
         status: client.status,
         ownerId: client.ownerId,
-        tags: client.tags.map((ct) => ct.tag.name),
+        tags: client.tags.map((ct: ClientTag) => ct.tag.name),
         lastContactedAt: client.lastContactedAt,
         createdAt: client.createdAt,
         updatedAt: client.updatedAt,

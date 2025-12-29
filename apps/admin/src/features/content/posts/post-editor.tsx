@@ -41,8 +41,9 @@ export function PostEditor({ post }: PostEditorProps) {
       content: post?.content || "",
       status: post?.status || "draft",
       coverMediaId: post?.coverMediaId || undefined,
+      heroMediaId: post?.heroMediaId || undefined,
       category: post?.category,
-      tags: post?.tags || [],
+      tags: post?.tags ?? [],
       scheduledAt: post?.scheduledAt,
     },
   })
@@ -83,6 +84,7 @@ export function PostEditor({ post }: PostEditorProps) {
           status: finalStatus,
           authorId: "author-1",
           authorName: "Admin User",
+          channels: [],
         })
         emitActivity.postCreated(newPost.id, newPost.title, "Admin User")
         toast.success("Post created")
@@ -108,6 +110,7 @@ export function PostEditor({ post }: PostEditorProps) {
         status: "published",
         authorId: "author-1",
         authorName: "Admin User",
+        channels: [],
       })
       await contentProvider.publishPost(newPost.id)
       emitActivity.postPublished(newPost.id, newPost.title, "Admin User")
@@ -135,6 +138,7 @@ export function PostEditor({ post }: PostEditorProps) {
         scheduledAt,
         authorId: "author-1",
         authorName: "Admin User",
+        channels: [],
       })
       await contentProvider.schedulePost(newPost.id, scheduledAt)
       emitActivity.postScheduled(newPost.id, newPost.title, "Admin User")

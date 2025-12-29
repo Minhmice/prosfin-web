@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 import { Textarea } from "@/components/ui/textarea"
-import type { Lead } from "@/features/crm/types"
+import type { Lead } from "@prosfin/shared"
 
 interface LeadDetailPanelProps {
   lead: Lead | null
@@ -93,8 +93,8 @@ function LeadDetailContent({
               </div>
             )}
             <div>
-              <Label className="text-muted-foreground">Stage</Label>
-              <Badge variant="outline">{lead.stage}</Badge>
+              <Label className="text-muted-foreground">Status</Label>
+              <Badge variant="outline">{lead.status}</Badge>
             </div>
             <div>
               <Label className="text-muted-foreground">Source</Label>

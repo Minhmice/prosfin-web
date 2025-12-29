@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { OwnerCombobox } from "@/features/crm/clients/owner-combobox"
-import type { Lead } from "../types"
+import type { Lead } from "@prosfin/shared"
 
 interface BulkAssignOwnerDialogProps {
   open: boolean

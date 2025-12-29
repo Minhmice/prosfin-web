@@ -11,13 +11,9 @@ import { parseQuery, stringifyQuery } from "@/features/crm/shared/query"
 
 export interface LeadListQuery {
   q?: string
-  stage?: "new" | "qualified" | "proposal" | "won" | "lost"
-  source?: "web" | "referral" | "event" | "other"
+  status?: "new" | "contacted" | "qualified" | "converted" | "archived"
+  source?: "website" | "referral" | "social" | "other"
   owner?: string
-  scoreMin?: number
-  scoreMax?: number
-  dateFrom?: string
-  dateTo?: string
   page: number
   pageSize: number
   sort?: string

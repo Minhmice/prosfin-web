@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { leadSchema, type LeadFormData } from "../schemas"
-import type { Lead } from "../types"
+import type { Lead } from "@prosfin/shared"
 import { crmProvider } from "../data/provider"
 import { toast } from "sonner"
 
@@ -52,9 +52,8 @@ export function LeadFormSheet({
       company: lead?.company || "",
       email: lead?.email || "",
       phone: lead?.phone || "",
-      stage: lead?.stage || "new",
-      source: lead?.source || "web",
-      score: lead?.score || 0,
+      status: lead?.status || "new",
+      source: lead?.source || "website",
       ownerId: lead?.ownerId || "",
       ownerName: lead?.ownerName || "",
     },
@@ -67,9 +66,8 @@ export function LeadFormSheet({
         company: lead.company,
         email: lead.email,
         phone: lead.phone,
-        stage: lead.stage,
+        status: lead.status,
         source: lead.source,
-        score: lead.score,
         ownerId: lead.ownerId,
         ownerName: lead.ownerName,
       })
@@ -84,8 +82,6 @@ export function LeadFormSheet({
       } else {
         await crmProvider.createLead({
           ...data,
-          createdAt: new Date(),
-          updatedAt: new Date(),
         })
         toast.success("Lead created successfully")
       }
@@ -161,10 +157,10 @@ export function LeadFormSheet({
             />
             <FormField
               control={form.control}
-              name="stage"
+              name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Stage</FormLabel>
+                  <FormLabel>Status</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -176,10 +172,10 @@ export function LeadFormSheet({
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="new">New</SelectItem>
+                      <SelectItem value="contacted">Contacted</SelectItem>
                       <SelectItem value="qualified">Qualified</SelectItem>
-                      <SelectItem value="proposal">Proposal</SelectItem>
-                      <SelectItem value="won">Won</SelectItem>
-                      <SelectItem value="lost">Lost</SelectItem>
+                      <SelectItem value="converted">Converted</SelectItem>
+                      <SelectItem value="archived">Archived</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -202,31 +198,12 @@ export function LeadFormSheet({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="web">Web</SelectItem>
+                      <SelectItem value="website">Website</SelectItem>
                       <SelectItem value="referral">Referral</SelectItem>
-                      <SelectItem value="event">Event</SelectItem>
+                      <SelectItem value="social">Social</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="score"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Score</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={100}
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
-                    />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
