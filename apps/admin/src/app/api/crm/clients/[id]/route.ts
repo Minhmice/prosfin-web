@@ -41,6 +41,8 @@ export async function GET(
       return notFoundResponse("Client not found")
     }
 
+    type ClientTag = typeof client.tags[0]
+
     return successResponse({
       id: client.id,
       name: client.name,
@@ -49,7 +51,7 @@ export async function GET(
       phone: client.phone,
       status: client.status,
       ownerId: client.ownerId,
-      tags: client.tags.map((ct) => ct.tag.name),
+      tags: client.tags.map((ct: ClientTag) => ct.tag.name),
       lastContactedAt: client.lastContactedAt,
       createdAt: client.createdAt,
       updatedAt: client.updatedAt,
