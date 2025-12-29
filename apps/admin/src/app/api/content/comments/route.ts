@@ -53,8 +53,10 @@ export async function GET(request: NextRequest) {
 
     const totalPages = Math.ceil(total / parsed.pageSize)
 
+    type CommentWithPost = typeof comments[0]
+
     return successResponse(
-      comments.map((comment) => ({
+      comments.map((comment: CommentWithPost) => ({
         id: comment.id,
         postId: comment.postId,
         postTitle: comment.post.title,
