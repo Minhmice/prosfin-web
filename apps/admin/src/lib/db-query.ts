@@ -3,7 +3,6 @@
  * Build Prisma queries from parsed filters
  */
 
-import { Prisma } from "@prisma/client"
 import type { ParsedQuery } from "./query-parser"
 
 /**

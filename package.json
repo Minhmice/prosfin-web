@@ -10,7 +10,8 @@
     "dev:web": "pnpm --filter prosfin-web dev",
     "dev:admin": "pnpm --filter prosfin-admin dev",
     "build:web": "pnpm --filter prosfin-web build",
-    "build:admin": "pnpm --filter prosfin-admin build"
+    "build:admin": "pnpm --filter @prosfin/db db:generate && pnpm --filter prosfin-admin build",
+    "db:generate": "pnpm --filter @prosfin/db db:generate"
   },
   "devDependencies": {
     "typescript": "^5",
