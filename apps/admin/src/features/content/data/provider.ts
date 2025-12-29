@@ -13,12 +13,14 @@ import type {
   CommentChannel,
   PublicCommentStatus,
   InternalCommentStatus,
+  CommentStatus,
 } from "../types"
 import { mockPosts as basePosts } from "@/data/posts"
 import { parseSort, type SortConfig } from "@/lib/url-state"
 
 // Convert existing mock data to new format
-const posts: Post[] = basePosts.map((p) => ({
+// Guard against undefined basePosts
+const posts: Post[] = (basePosts && Array.isArray(basePosts) ? basePosts : []).map((p) => ({
   ...p,
   excerpt: p.title.substring(0, 100) + "...",
   content: `# ${p.title}\n\nContent for ${p.title}...`,
@@ -168,9 +170,13 @@ import type { ScheduleStatus, ScheduleAction } from "../types"
 interface ListPostsParams {
   q?: string
   status?: string
+  channel?: string[]
+  campaign?: string
   author?: string
   tag?: string
   category?: string
+  from?: string
+  to?: string
   page?: number
   pageSize?: number
   sort?: string
@@ -233,6 +239,8 @@ function filterAndSort<T>(
 
   if (sortConfig) {
     result = [...result].sort((a, b) => {
+      // Guard against undefined/null items
+      if (!a || !b) return 0
       const aVal = (a as any)[sortConfig.field]
       const bVal = (b as any)[sortConfig.field]
       if (aVal === bVal) return 0
@@ -252,15 +260,21 @@ export const contentProvider = {
     const {
       q,
       status,
+      channel,
+      campaign,
       author,
       tag,
       category,
+      from,
+      to,
       page = 1,
       pageSize = 10,
       sort,
     } = params
 
     const sortConfig = parseSort(sort)
+    const fromDate = from ? new Date(from) : undefined
+    const toDate = to ? new Date(to) : undefined
 
     let filtered = filterAndSort(
       posts,
@@ -270,9 +284,13 @@ export const contentProvider = {
           return false
         }
         if (status && post.status !== status) return false
+        if (channel && channel.length > 0 && !channel.some((ch) => post.channels.includes(ch))) return false
+        if (campaign && post.campaign !== campaign) return false
         if (author && post.authorName !== author) return false
         if (tag && !post.tags.includes(tag)) return false
         if (category && post.category !== category) return false
+        if (fromDate && post.createdAt < fromDate) return false
+        if (toDate && post.createdAt > toDate) return false
         return true
       },
       sortConfig
@@ -338,8 +356,15 @@ export const contentProvider = {
       schedules.push({
         id: `schedule-${id}`,
         postId: id,
+        channels: ["facebook"],
+        action: "publish",
+        runAt: datetime,
+        timezone: "Asia/Bangkok",
+        status: "pending",
+        attempts: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         scheduledAt: datetime,
-        status: "queued",
       })
     }
     
@@ -415,6 +440,8 @@ export const contentProvider = {
     if (sort) {
       const [field, direction] = sort.split(":")
       filtered.sort((a, b) => {
+        // Guard against undefined/null items
+        if (!a || !b) return 0
         let aVal: any = a[field as keyof MediaAsset]
         let bVal: any = b[field as keyof MediaAsset]
         if (field === "createdAt" || field === "size") {
@@ -454,6 +481,8 @@ export const contentProvider = {
         height: undefined,
         createdAt: new Date(),
         createdBy: "admin",
+        tags: [],
+        usedInPosts: [],
       }
       newMedia.push(media)
       mediaAssets.push(media)
@@ -506,8 +535,10 @@ export const contentProvider = {
         if (status && schedule.status !== status) return false
         if (postId && schedule.postId !== postId) return false
         if (q) {
-          const post = posts.find((p) => p.id === schedule.postId)
-          if (!post || !post.title.toLowerCase().includes(q.toLowerCase())) {
+          // Guard against undefined posts array
+          if (!posts || !Array.isArray(posts)) return false
+          const post = posts.find((p) => p?.id === schedule?.postId)
+          if (!post || !post.title?.toLowerCase().includes(q.toLowerCase())) {
             return false
           }
         }
@@ -601,7 +632,8 @@ export const contentProvider = {
     // CSV header
     const headers = ["Run At", "Channels", "Action", "Post Title", "Status", "Attempts", "Created"]
     const rows = data.map((schedule) => {
-      const post = posts.find((p) => p.id === schedule.postId)
+      // Guard against undefined posts array
+      const post = posts && Array.isArray(posts) ? posts.find((p) => p?.id === schedule?.postId) : undefined
       const runAt = schedule.runAt || schedule.scheduledAt
       return [
         runAt ? runAt.toISOString() : "",
@@ -700,6 +732,8 @@ export const contentProvider = {
     if (sort) {
       const [field, direction] = sort.split(":")
       filtered.sort((a, b) => {
+        // Guard against undefined/null items
+        if (!a || !b) return 0
         let aVal: any = a[field as keyof Comment]
         let bVal: any = b[field as keyof Comment]
         if (field === "createdAt" || field === "updatedAt") {
@@ -801,7 +835,7 @@ export const contentProvider = {
     return csv
   },
 
-  async moderateComment(id: string, action: "approve" | "reject" | "spam" | "restore"): Promise<Comment> {
+  async moderateComment(id: string, action: "approve" | "hide" | "spam" | "restore" | "reject"): Promise<Comment> {
     const comment = comments.find((c) => c.id === id)
     if (!comment) throw new Error("Comment not found")
     
@@ -809,14 +843,17 @@ export const contentProvider = {
       case "approve":
         comment.status = "approved"
         break
-      case "reject":
-        comment.status = "trashed"
+      case "hide":
+        comment.status = "trash"
         break
       case "spam":
         comment.status = "spam"
         break
       case "restore":
         comment.status = "pending"
+        break
+      case "reject":
+        comment.status = "rejected"
         break
     }
     

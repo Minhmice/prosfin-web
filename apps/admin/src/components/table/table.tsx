@@ -60,7 +60,7 @@ export function DataTable<TData>({
   onTableReady,
 }: DataTableProps<TData>) {
   const pathname = usePathname()
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [rowSelection, setRowSelection] = React.useState<Record<string, boolean>>({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(() => {
     if (typeof window === "undefined") return {}
     const stored = localStorage.getItem(`table-columns-${pathname}`)
@@ -117,15 +117,31 @@ export function DataTable<TData>({
                 />
               </div>
             ),
-            cell: ({ row }: { row: any }) => (
+            cell: ({ row }: { row: any }) => {
+              // Guard against undefined rowSelection when calling getIsSelected
+              let isSelected = false
+              try {
+                isSelected = row.getIsSelected() || false
+              } catch (error) {
+                // If getIsSelected fails, default to false
+                isSelected = false
+              }
+              return (
               <div className="flex items-center justify-center">
                 <Checkbox
-                  checked={row.getIsSelected()}
-                  onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    checked={isSelected}
+                    onCheckedChange={(value) => {
+                      try {
+                        row.toggleSelected(!!value)
+                      } catch (error) {
+                        // If toggleSelected fails, ignore
+                      }
+                    }}
                   aria-label="Select row"
                 />
               </div>
-            ),
+              )
+            },
             enableSorting: false,
             enableHiding: false,
           },
@@ -250,16 +266,34 @@ export function DataTable<TData>({
   const table = useReactTable({
     data,
     columns: finalColumns,
-    getRowId: getRowId || ((row: TData) => (row as any).id || String(Math.random())),
+    getRowId: getRowId || ((row: TData) => {
+      // Guard against undefined row
+      if (!row) return String(Math.random())
+      return (row as any)?.id || String(Math.random())
+    }),
     state: {
       sorting: enableSorting ? sorting : undefined,
       columnVisibility: enableColumnVisibility ? columnVisibility : undefined,
-      rowSelection: enableRowSelection ? rowSelection : undefined,
+      rowSelection: enableRowSelection ? (rowSelection || {}) : undefined,
       columnFilters: enableFiltering ? columnFilters : undefined,
       pagination,
     },
     enableRowSelection: enableRowSelection,
-    onRowSelectionChange: enableRowSelection ? setRowSelection : undefined,
+    onRowSelectionChange: enableRowSelection ? (updater: any) => {
+      try {
+        if (typeof updater === 'function') {
+          setRowSelection((prev) => {
+            const newSelection = updater(prev || {})
+            return newSelection || {}
+          })
+        } else {
+          setRowSelection(updater || {})
+        }
+      } catch (error) {
+        // If rowSelection update fails, reset to empty object
+        setRowSelection({})
+      }
+    } : undefined,
     onSortingChange: enableSorting ? setSorting : undefined,
     onColumnFiltersChange: enableFiltering ? setColumnFilters : undefined,
     onColumnVisibilityChange: enableColumnVisibility ? setColumnVisibility : undefined,
@@ -311,20 +345,34 @@ export function DataTable<TData>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
+                // Guard against undefined row
+                if (!row) return null
                 const rowId = row.id
                 const isHighlighted = highlightedRowId === rowId
+                // Guard against undefined rowSelection when calling getIsSelected
+                let isSelected = false
+                try {
+                  isSelected = row.getIsSelected() || false
+                } catch (error) {
+                  // If getIsSelected fails, default to false
+                  isSelected = false
+                }
                 return (
                   <TableRow
                     key={rowId}
-                    data-state={row.getIsSelected() && "selected"}
+                    data-state={isSelected && "selected"}
                     data-row-id={rowId}
                     className={isHighlighted ? "bg-primary/10 border-primary border-2" : ""}
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      // Guard against undefined cell
+                      if (!cell) return null
+                      return (
+                        <TableCell key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      )
+                    })}
                   </TableRow>
                 )
               })

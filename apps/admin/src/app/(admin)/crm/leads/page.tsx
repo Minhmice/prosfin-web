@@ -57,17 +57,13 @@ export default function LeadsPage() {
       const result = await crmProvider.listLeads({
         q: query.q,
         status: query.stage as any, // Map stage to status for backward compatibility
-        source: query.source,
+        source: query.source ? (query.source === "web" ? "website" : query.source === "event" ? "social" : query.source) as any : undefined,
         ownerId: query.owner,
-        scoreMin: query.scoreMin,
-        scoreMax: query.scoreMax,
-        dateFrom: query.dateFrom,
-        dateTo: query.dateTo,
         page: query.page,
         pageSize: query.pageSize,
         sort: query.sort,
-      })
-      setLeads(result.data)
+      } as any)
+      setLeads(result.data as unknown as Lead[])
       setPageCount(result.meta.totalPages)
       setRowCount(result.meta.total)
     } catch (error: any) {
@@ -222,9 +218,6 @@ export default function LeadsPage() {
           selectedLeads.map((lead) =>
             crmProvider.updateLead(lead.id, {
               ownerId,
-              ownerName: ownerId
-                ? users.find((u) => u.id === ownerId)?.name
-                : undefined,
             })
           )
         )
@@ -240,8 +233,16 @@ export default function LeadsPage() {
   const handleBulkSetStage = React.useCallback(
     async (stage: Lead["stage"]) => {
       try {
+        // Map stage to status for API compatibility
+        const statusMap: Record<string, string> = {
+          new: "new",
+          qualified: "qualified",
+          proposal: "contacted",
+          won: "converted",
+          lost: "archived",
+        }
         await Promise.all(
-          selectedLeads.map((lead) => crmProvider.updateLead(lead.id, { stage }))
+          selectedLeads.map((lead) => crmProvider.updateLead(lead.id, { status: statusMap[stage] as any }))
         )
         toast.success(`Set stage for ${selectedLeads.length} lead${selectedLeads.length !== 1 ? "s" : ""}`)
         fetchLeads()

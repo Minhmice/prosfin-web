@@ -1,14 +1,14 @@
 "use client"
 
 import * as React from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { PageHeader } from "@/components/shared/page-header"
 import { PageBody } from "@/components/shared/page-body"
 import { SchedulesView } from "@/components/content/schedules/schedules-view"
-import { RangeSelector } from "@/components/content/schedules/range-selector"
-import { ShareLinkButton } from "@/components/content/schedules/share-link-button"
-import { ScheduleFormSheet } from "@/features/content/schedules/schedule-form-sheet"
+import { ShareLinkButton } from "@/components/shared/share-link-button"
+import { ScheduleFormSheet } from "@/components/content/schedules/schedule-form-sheet"
 import {
   Select,
   SelectContent,
@@ -16,36 +16,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useScheduleListQuery } from "@/hooks/use-schedule-list-query"
-import { useRouter, useSearchParams } from "next/navigation"
-import { contentProvider } from "@/features/content/data/provider"
+import { parseContentParams, buildContentUrl } from "@/lib/url-state-content"
+import { mockSchedules } from "@/data/content-mock"
 import type { ScheduleItem } from "@/features/content/types"
 
 export default function SchedulesPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { query, updateQuery } = useScheduleListQuery()
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   const [editingSchedule, setEditingSchedule] = React.useState<ScheduleItem | null>(null)
+
+  const params = React.useMemo(() => {
+    return parseContentParams(new URLSearchParams(searchParams))
+  }, [searchParams])
 
   React.useEffect(() => {
     const action = searchParams.get("action")
     const postId = searchParams.get("postId")
     const scheduleId = searchParams.get("scheduleId")
-    const runAt = searchParams.get("runAt")
     
-    if (action === "create" || postId || runAt) {
+    if (action === "create" || postId) {
       setIsSheetOpen(true)
     } else if (scheduleId) {
-      const loadSchedule = async () => {
-        const result = await contentProvider.listSchedules({ page: 1, pageSize: 1000 })
-        const schedule = result.data.find((s) => s.id === scheduleId)
-        if (schedule) {
-          setEditingSchedule(schedule)
-          setIsSheetOpen(true)
-        }
+      const schedule = mockSchedules.find((s) => s.id === scheduleId)
+      if (schedule) {
+        setEditingSchedule(schedule)
+        setIsSheetOpen(true)
       }
-      loadSchedule()
     }
   }, [searchParams])
 
@@ -59,12 +56,19 @@ export default function SchedulesPage() {
     setIsSheetOpen(open)
     if (!open) {
       setEditingSchedule(null)
-      router.push("/content/schedules", { scroll: false })
+      const url = buildContentUrl("/content/schedules", params)
+      router.push(url, { scroll: false })
     }
   }
 
-  const handleSuccess = () => {
-    // Refresh will be handled by child components
+  const handleChannelChange = (channel: string) => {
+    const newParams = {
+      ...params,
+      channel: channel === "all" ? undefined : [channel],
+      page: 1,
+    }
+    const url = buildContentUrl("/content/schedules", newParams)
+    router.push(url)
   }
 
   return (
@@ -74,18 +78,9 @@ export default function SchedulesPage() {
         subtitle="Manage scheduled posts and publishing queue"
         actions={
           <div className="flex items-center gap-2">
-            <RangeSelector
-              range={query.range || "week"}
-              from={query.from}
-              to={query.to}
-              onRangeChange={(range) => updateQuery({ range, page: 1 })}
-              onDateChange={(from, to) => updateQuery({ from, to, page: 1 })}
-            />
             <Select
-              value={query.channel || "all"}
-              onValueChange={(value) =>
-                updateQuery({ channel: value === "all" ? undefined : value, page: 1 })
-              }
+              value={params.channel?.[0] || "all"}
+              onValueChange={handleChannelChange}
             >
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="Channel" />
@@ -98,7 +93,7 @@ export default function SchedulesPage() {
                 <SelectItem value="twitter">Twitter</SelectItem>
               </SelectContent>
             </Select>
-            <ShareLinkButton />
+            <ShareLinkButton path="/content/schedules" params={params} size="sm" />
             <Button onClick={handleNewSchedule}>
               <Plus className="mr-2 size-4" />
               New Schedule
@@ -112,10 +107,9 @@ export default function SchedulesPage() {
       <ScheduleFormSheet
         open={isSheetOpen}
         onOpenChange={handleSheetClose}
-        schedule={editingSchedule}
-        defaultPostId={searchParams.get("postId") || undefined}
-        defaultRunAt={searchParams.get("runAt") ? new Date(searchParams.get("runAt")!) : undefined}
-        onSuccess={handleSuccess}
+        schedule={editingSchedule || undefined}
+        prefillPostId={searchParams.get("postId") || undefined}
+        prefillDate={searchParams.get("runAt") ? new Date(searchParams.get("runAt")!) : undefined}
       />
     </>
   )

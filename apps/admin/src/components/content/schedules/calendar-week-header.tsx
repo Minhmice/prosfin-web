@@ -20,9 +20,8 @@ export function CalendarWeekHeader({
   const channelCounts = React.useMemo(() => {
     const counts: Record<string, number> = {}
     schedules.forEach((schedule) => {
-      schedule.channels.forEach((channel) => {
-        counts[channel] = (counts[channel] || 0) + 1
-      })
+      const channel = schedule.channel || "facebook"
+      counts[channel] = (counts[channel] || 0) + 1
     })
     return counts
   }, [schedules])

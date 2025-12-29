@@ -1,7 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import type { ColumnDef } from "@tanstack/react-table"
 import { Calendar, MoreVertical } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -11,167 +13,203 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { DataTable } from "@/components/table"
+import { ShareLinkButton } from "@/components/shared/share-link-button"
 import { contentProvider } from "@/features/content/data/provider"
+import { mockSchedules, mockPosts } from "@/data/content-mock"
+import { parseContentParams, buildContentUrl } from "@/lib/url-state-content"
 import type { ScheduleItem, Post } from "@/features/content/types"
 import { toast } from "sonner"
+import { format } from "date-fns"
 
 interface SchedulesQueueProps {
   dateFilter?: Date
 }
 
+type ScheduleWithPost = ScheduleItem & { postTitle?: string }
+
+const columns: ColumnDef<ScheduleWithPost>[] = [
+  {
+    accessorKey: "postTitle",
+    header: "Post",
+    cell: ({ row }) => {
+      const schedule = row.original
+      return (
+        <Link
+          href={`/content/posts/${schedule.postId}/edit`}
+          className="font-medium hover:underline"
+        >
+          {schedule.postTitle || "Unknown"}
+        </Link>
+      )
+    },
+  },
+  {
+    accessorKey: "channel",
+    header: "Channel",
+    cell: ({ row }) => (
+      <Badge variant="outline" className="capitalize">
+        {row.original.channel}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "scheduledAt",
+    header: "Scheduled At",
+    cell: ({ row }) => {
+      const date = row.original.scheduledAt
+      return (
+        <div className="flex items-center gap-2">
+          <Calendar className="size-4 text-muted-foreground" />
+          <span>{date ? format(date, "PPp") : "-"}</span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <Badge variant="secondary">{row.original.status}</Badge>
+    ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const schedule = row.original
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="size-8">
+              <MoreVertical className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/content/schedules?scheduleId=${schedule.id}&action=edit`}>
+                Edit
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/content/posts/${schedule.postId}/edit`}>
+                Open Post
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
+  },
+]
+
 export function SchedulesQueue({ dateFilter }: SchedulesQueueProps) {
-  const [schedules, setSchedules] = React.useState<Array<ScheduleItem & { post?: Post }>>([])
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [schedules, setSchedules] = React.useState<ScheduleWithPost[]>([])
+  const [isLoading, setIsLoading] = React.useState(true)
+
+  const params = React.useMemo(() => {
+    return parseContentParams(new URLSearchParams(searchParams))
+  }, [searchParams])
 
   React.useEffect(() => {
     const loadSchedules = async () => {
-      const dateFrom = dateFilter
-        ? new Date(new Date(dateFilter).setHours(0, 0, 0, 0))
-        : new Date()
-      const dateTo = dateFilter
-        ? new Date(new Date(dateFilter).setHours(23, 59, 59, 999))
-        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      setIsLoading(true)
+      try {
+        const dateFrom = params.from
+          ? new Date(params.from)
+          : dateFilter
+          ? new Date(new Date(dateFilter).setHours(0, 0, 0, 0))
+          : new Date()
+        const dateTo = params.to
+          ? new Date(params.to)
+          : dateFilter
+          ? new Date(new Date(dateFilter).setHours(23, 59, 59, 999))
+          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 
-      const result = await contentProvider.listSchedules({
-        from: dateFrom,
-        to: dateTo,
-        page: 1,
-        pageSize: 1000,
-      })
+        const filtered = mockSchedules
+          .filter((s) => {
+            if (params.channel && s.channel && !params.channel.includes(s.channel)) return false
+            if (params.status && s.status !== params.status) return false
+            const scheduleDate = s.scheduledAt
+            return scheduleDate && scheduleDate >= dateFrom && scheduleDate <= dateTo
+          })
+          .map((schedule) => {
+            const post = mockPosts.find((p) => p.id === schedule.postId)
+            return {
+              ...schedule,
+              postTitle: post?.title,
+            }
+          })
+          .sort((a, b) => (a.scheduledAt?.getTime() || 0) - (b.scheduledAt?.getTime() || 0))
 
-      // Load post details for each schedule
-      const schedulesWithPosts = await Promise.all(
-        result.data.map(async (schedule) => {
-          const post = await contentProvider.getPost(schedule.postId)
-          const runAt = schedule.runAt || schedule.scheduledAt
-          return { ...schedule, post: post || undefined, scheduledAt: runAt || new Date() }
-        })
-      )
-
-      setSchedules(schedulesWithPosts.sort((a, b) =>
-        (a.scheduledAt?.getTime() || 0) - (b.scheduledAt?.getTime() || 0)
-      ))
+        setSchedules(filtered)
+      } catch (error) {
+        toast.error("Failed to load schedules")
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     loadSchedules()
-  }, [dateFilter])
+  }, [dateFilter, params])
 
-  const handleReschedule = (postId: string) => {
-    // Will open reschedule dialog
-    toast.info("Reschedule dialog coming soon")
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const newParams = { ...params, page, pageSize }
+    const url = buildContentUrl("/content/schedules", newParams)
+    router.push(url)
   }
 
-  const handleCancel = async (scheduleId: string) => {
-    try {
-      await contentProvider.cancelSchedule(scheduleId)
-      toast.success("Schedule cancelled")
-      setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
-    } catch (error) {
-      toast.error("Failed to cancel schedule")
+  const handleSortingChange = (sort: { field: string; direction: "asc" | "desc" } | null) => {
+    const newParams = {
+      ...params,
+      sort: sort ? `${sort.field}:${sort.direction}` : undefined,
     }
+    const url = buildContentUrl("/content/schedules", newParams)
+    router.push(url)
   }
 
-  const handlePublishNow = async (postId: string) => {
-    try {
-      await contentProvider.publishNow(postId)
-      toast.success("Post published")
-      setSchedules((prev) => prev.filter((s) => s.postId !== postId))
-    } catch (error) {
-      toast.error("Failed to publish")
+  const handleFilterChange = (filters: Record<string, any>) => {
+    const newParams = {
+      ...params,
+      ...filters,
+      page: 1,
     }
+    const url = buildContentUrl("/content/schedules", newParams)
+    router.push(url)
   }
 
-  const formatDateTime = (date: Date) => {
-    return date.toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">Loading schedules...</p>
+      </div>
+    )
   }
 
   return (
-    <div className="rounded-lg border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Post</TableHead>
-            <TableHead>Scheduled At</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {schedules.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                No scheduled posts
-              </TableCell>
-            </TableRow>
-          ) : (
-            schedules.map((schedule) => (
-              <TableRow key={schedule.id}>
-                <TableCell>
-                  {schedule.post ? (
-                    <Link
-                      href={`/content/posts/${schedule.post.id}/edit`}
-                      className="font-medium hover:underline"
-                    >
-                      {schedule.post.title}
-                    </Link>
-                  ) : (
-                    <span className="text-muted-foreground">Post not found</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="size-4 text-muted-foreground" />
-                    <span>{schedule.scheduledAt ? formatDateTime(schedule.scheduledAt) : "-"}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="secondary">{schedule.status}</Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="size-8">
-                        <MoreVertical className="size-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleReschedule(schedule.postId)}>
-                        Reschedule
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handlePublishNow(schedule.postId)}>
-                        Publish Now
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleCancel(schedule.id)}>
-                        Cancel
-                      </DropdownMenuItem>
-                      {schedule.post && (
-                        <DropdownMenuItem asChild>
-                          <Link href={`/content/posts/${schedule.post.id}/edit`}>
-                            Open Post
-                          </Link>
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+    <div className="space-y-4">
+      <div className="flex items-center justify-end gap-2">
+        <ShareLinkButton path="/content/schedules" params={params} size="sm" />
+      </div>
+      <DataTable
+        data={schedules}
+        columns={columns}
+        enableRowSelection={false}
+        enableColumnVisibility
+        enableSorting
+        enableFiltering
+        manualPagination
+        manualSorting
+        manualFiltering
+        pageCount={Math.ceil(schedules.length / (params.pageSize || 20))}
+        rowCount={schedules.length}
+        initialPage={params.page || 1}
+        initialPageSize={params.pageSize || 20}
+        onPaginationChange={handlePaginationChange}
+        onSortingChange={handleSortingChange}
+        onFilterChange={handleFilterChange}
+      />
     </div>
   )
 }

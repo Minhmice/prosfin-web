@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { type Icon } from "@tabler/icons-react"
+// Icon can be from either @tabler/icons-react or lucide-react
 
 import {
   SidebarGroup,
@@ -22,8 +22,8 @@ export function NavSecondary({
   items: {
     title: string
     url: string
-    icon: Icon
-    children?: { title: string; url: string; icon: Icon }[]
+    icon: React.ComponentType<any>
+    children?: { title: string; url: string; icon: React.ComponentType<any> }[]
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const pathname = usePathname()
@@ -41,7 +41,12 @@ export function NavSecondary({
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
-            const isActive = pathname === item.url || pathname?.startsWith(item.url + "/")
+            // For exact routes like /content, only match exact pathname
+            // For routes with children like /content/posts, match startsWith
+            const isExactRoute = item.url === "/content"
+            const isActive = isExactRoute 
+              ? pathname === item.url
+              : pathname === item.url || pathname?.startsWith(item.url + "/")
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>

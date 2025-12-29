@@ -7,6 +7,7 @@ import { HeroVisual } from "./hero-visual";
 import { MiniLeadFormModal } from "./components/mini-lead-form/mini-lead-form-modal";
 import { RevealOnScroll } from "@/components/shared/animation/reveal-on-scroll";
 import { useHeroModal } from "./hero-modal-context";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import { cn } from "@/lib/utils";
 
 
@@ -46,14 +47,14 @@ export function HeroSection({ content, className }: HeroSectionProps) {
 
   return (
     <>
-      <section
+      <AuroraBackground
         className={cn(
           "relative min-h-[80vh] py-16 sm:min-h-[85vh] sm:py-24 lg:min-h-[90vh]",
           className
         )}
         id="hero"
       >
-        <PageContainer>
+        <PageContainer className="relative z-10">
           <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
             {/* Cột trái - Text Block */}
             <RevealOnScroll direction="right" delay={0} className="order-1 lg:order-1">
@@ -69,7 +70,10 @@ export function HeroSection({ content, className }: HeroSectionProps) {
             </RevealOnScroll>
           </div>
         </PageContainer>
-      </section>
+        
+        {/* Fade gradient để liền mạch với section tiếp theo */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+      </AuroraBackground>
 
       {/* Mini Lead Form (Step 1) */}
       <MiniLeadFormModal open={isModalOpen} onOpenChange={closeModal} />

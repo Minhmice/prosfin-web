@@ -26,11 +26,12 @@ const formatFileSize = (bytes: number) => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-export function MediaListView() {
-  const { query, updateQuery } = useMediaListQuery()
-  const [media, setMedia] = React.useState<MediaAsset[]>([])
-  const [isLoading, setIsLoading] = React.useState(true)
-  const [selectedRows, setSelectedRows] = React.useState<string[]>([])
+interface MediaListViewProps {
+  media: MediaAsset[]
+  onDelete?: (id: string) => void
+}
+
+export function MediaListView({ media, onDelete }: MediaListViewProps) {
   const [previewMedia, setPreviewMedia] = React.useState<MediaAsset | null>(null)
   const [usageMedia, setUsageMedia] = React.useState<MediaAsset | null>(null)
 
@@ -79,8 +80,16 @@ export function MediaListView() {
         header: "Used In",
         cell: ({ row }) => (
           <span className="text-sm">
-            {row.original.usedInPosts.length} {row.original.usedInPosts.length === 1 ? "post" : "posts"}
+            {row.original.usedInPosts?.length || 0}{" "}
+            {(row.original.usedInPosts?.length || 0) === 1 ? "post" : "posts"}
           </span>
+        ),
+      },
+      {
+        id: "createdBy",
+        header: "Uploaded By",
+        cell: ({ row }) => (
+          <span className="text-sm">{row.original.createdBy || "Unknown"}</span>
         ),
       },
       {
@@ -109,51 +118,26 @@ export function MediaListView() {
     []
   )
 
-  const loadMedia = React.useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const from = query.from ? new Date(query.from) : undefined
-      const to = query.to ? new Date(query.to) : undefined
-
-      const result = await contentProvider.listMedia({
-        q: query.q,
-        type: query.type,
-        tag: query.tag,
-        used: query.used,
-        from,
-        to,
-        sort: query.sort,
-        page: query.page,
-        pageSize: query.pageSize,
-      })
-      setMedia(result.data)
-    } catch (error) {
-      toast.error("Failed to load media")
-    } finally {
-      setIsLoading(false)
-    }
-  }, [query])
-
-  React.useEffect(() => {
-    loadMedia()
-  }, [loadMedia])
-
   return (
     <>
-    <DataTable
-      columns={columns}
-      data={media}
-      isLoading={isLoading}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      pagination={{
-        page: query.page,
-        pageSize: query.pageSize,
-        total: media.length, // Will be updated when we have total from API
-        onPageChange: (page) => updateQuery({ page }),
-        onPageSizeChange: (pageSize) => updateQuery({ pageSize, page: 1 }),
-      }}
-    />
+      <DataTable
+        data={media}
+        columns={columns}
+        enableRowSelection={false}
+        enableColumnVisibility
+        enableSorting
+        enableFiltering
+        onRowAction={(action, row) => {
+          if (action === "delete" && onDelete) {
+            onDelete(row.id)
+          }
+        }}
+        rowActions={(row) => [
+          { label: "Preview", action: "preview" },
+          { label: "View Usage", action: "usage" },
+          { label: "Delete", action: "delete", variant: "destructive" },
+        ]}
+      />
       <MediaPreviewDialog
         open={!!previewMedia}
         onOpenChange={(open) => !open && setPreviewMedia(null)}

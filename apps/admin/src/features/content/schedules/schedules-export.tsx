@@ -3,16 +3,40 @@
  * Export schedules to CSV format
  */
 
-import { contentProvider } from "../data/provider"
-import type { ScheduleItem } from "../types"
-import type { ListSchedulesParams } from "../data/provider"
+import { contentProvider } from "@/features/content/data/provider"
 
 export async function exportSchedulesToCSV(
-  params: ListSchedulesParams,
+  dateFrom?: Date,
+  dateTo?: Date,
   selection?: string[]
 ): Promise<void> {
-  const csv = await contentProvider.exportSchedules(params, selection)
+  const schedules = await contentProvider.listSchedules({
+    dateFrom,
+    dateTo,
+  })
   
+  let data = schedules
+  if (selection && selection.length > 0) {
+    data = data.filter((s) => selection.includes(s.id))
+  }
+
+  // CSV header
+  const headers = ["Scheduled At", "Channel", "Post ID", "Status"]
+  const rows = data.map((schedule) => {
+    return [
+      schedule.scheduledAt ? schedule.scheduledAt.toISOString() : "",
+      schedule.channel || "",
+      schedule.postId,
+      schedule.status,
+    ]
+  })
+
+  // Simple CSV generation
+  const csv = [
+    headers.join(","),
+    ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
+  ].join("\n")
+
   // Create blob and download
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
   const link = document.createElement("a")

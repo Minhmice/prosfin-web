@@ -59,8 +59,8 @@ const contentItems = secondaryNavItems
   .map((item) => ({
     title: item.label,
     url: item.href,
-    icon: item.icon,
-  }))
+    icon: item.icon as any,
+  })) as any
 
 // Posts items
 const postsItems = [
@@ -89,9 +89,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
-          <NavMain items={mainNavItemsFormatted} />
+          <NavMain items={mainNavItemsFormatted as any} />
           <div className="mt-4 md:mt-8">
-            <NavSecondary items={contentItems} />
+            <NavSecondary items={contentItems as any} />
             <NavPosts items={postsItems} />
           </div>
         </SidebarContent>

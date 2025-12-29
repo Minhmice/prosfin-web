@@ -3,7 +3,7 @@
  * NextAuth setup with Prisma adapter
  */
 
-import type { NextAuthOptions } from "next-auth"
+import type { NextAuthOptions, Session } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { db } from "@prosfin/db"
@@ -112,8 +112,8 @@ export async function getServerSession() {
         name: decoded.name as string,
         roles: (decoded.roles as string[]) || [],
       },
-      expires: decoded.exp ? new Date(decoded.exp * 1000).toISOString() : undefined,
-    }
+      expires: decoded.exp ? new Date(decoded.exp * 1000).toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    } as Session
   } catch (error) {
     console.error("Failed to decode session token:", error)
     return null

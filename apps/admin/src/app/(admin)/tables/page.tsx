@@ -65,7 +65,7 @@ export default function TablesPlaygroundPage() {
         </p>
       </div>
       <DataTable
-        data={mockLeads}
+        data={mockLeads as any}
         columns={columns}
         enableRowSelection
         enableColumnVisibility

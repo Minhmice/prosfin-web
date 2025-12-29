@@ -21,6 +21,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Tư vấn dòng tiền", "Kiểm soát nội bộ", "Quản trị rủi ro"],
     bestFor: ["SME", "Startup", "M&A"],
     tags: ["CFO", "Ex-Big4", "ACCA", "CPA"],
+    serviceSlugs: ["advisor", "consulting"],
+    priority: 10,
   },
   {
     id: "person-2",
@@ -35,6 +37,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Kế toán doanh nghiệp", "Tối ưu thuế", "Tuân thủ thuế"],
     bestFor: ["SME", "Manufacturing", "Retail"],
     tags: ["Tax", "Ex-Big4", "ACCA"],
+    serviceSlugs: ["advisor", "consulting", "audit"],
+    priority: 9,
   },
   {
     id: "person-3",
@@ -49,6 +53,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Quản lý dòng tiền", "Tối ưu vốn lưu động", "Chu kỳ công nợ"],
     bestFor: ["Manufacturing", "Trading", "SME"],
     tags: ["CFO", "Cash Flow", "Working Capital"],
+    serviceSlugs: ["execution-coaching", "consulting"],
+    priority: 8,
   },
   {
     id: "person-4",
@@ -63,6 +69,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Kiểm soát nội bộ", "Quản trị rủi ro", "Tuân thủ"],
     bestFor: ["SME", "Manufacturing", "Services"],
     tags: ["Internal Control", "Risk Management", "Audit"],
+    serviceSlugs: ["audit", "consulting"],
+    priority: 7,
   },
   {
     id: "person-5",
@@ -77,6 +85,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["M&A", "Cấu trúc vốn", "Định giá doanh nghiệp"],
     bestFor: ["M&A", "Private Equity", "Corporate Finance"],
     tags: ["M&A", "Capital Structure", "Valuation"],
+    serviceSlugs: ["advisor", "consulting"],
+    priority: 6,
   },
   {
     id: "person-6",
@@ -91,6 +101,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Thuế doanh nghiệp", "Tối ưu thuế", "Kế hoạch thuế"],
     bestFor: ["SME", "Manufacturing", "Trading"],
     tags: ["Tax", "Compliance", "Planning"],
+    serviceSlugs: ["consulting", "audit"],
+    priority: 5,
   },
   {
     id: "person-7",
@@ -105,6 +117,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Lập kế hoạch tài chính", "Dự báo", "Financial Modeling"],
     bestFor: ["SME", "Startup", "Growth Stage"],
     tags: ["Financial Planning", "Forecasting", "Modeling"],
+    serviceSlugs: ["execution-coaching", "consulting"],
+    priority: 4,
   },
   {
     id: "person-8",
@@ -119,6 +133,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Kiểm toán nội bộ", "Đánh giá rủi ro", "Kiểm soát nội bộ"],
     bestFor: ["SME", "Manufacturing", "Services"],
     tags: ["Audit", "Internal Control", "Risk Assessment"],
+    serviceSlugs: ["audit"],
+    priority: 3,
   },
   {
     id: "person-9",
@@ -133,6 +149,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Chiến lược tài chính", "Quản trị vốn", "Strategic Planning"],
     bestFor: ["Growth Stage", "M&A", "Corporate Finance"],
     tags: ["CFO", "Strategy", "Capital Management"],
+    serviceSlugs: ["advisor", "mentor"],
+    priority: 2,
   },
   {
     id: "person-10",
@@ -147,6 +165,8 @@ export const PEOPLE: Person[] = [
     focusAreas: ["Đào tạo tài chính", "Phát triển năng lực", "Training Design"],
     bestFor: ["SME", "Accounting Teams", "Management"],
     tags: ["Training", "Development", "Education"],
+    serviceSlugs: ["seminar", "mentor"],
+    priority: 1,
   },
 ];
 

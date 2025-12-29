@@ -2,10 +2,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   getServiceBySlug,
-  getRelatedServices,
+  getAllServices,
+  getPostsByService,
+  getPeopleByService,
+  // Fallback for backward compatibility
   getPeopleByIds,
   getPostsByIds,
-  getAllServices,
   getPostsByTags,
 } from "@/lib/content/services";
 import { ProsfinSectionWrapper } from "@/components/shared";
@@ -14,6 +16,7 @@ import { RelatedPosts } from "@/components/services/related-posts";
 import { OurPeople } from "@/components/services/our-people";
 import { SeeMore } from "@/components/services/see-more";
 import { ServiceCta } from "@/components/services/service-cta";
+import { BigLeadCta } from "@/components/services/big-lead-cta";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -44,16 +47,24 @@ export async function generateMetadata({
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
+  const canonicalUrl = `${baseUrl}/services/${slug}`;
   const title = `${service.title} | ProsFIN`;
   const description = service.excerpt || service.shortDescription;
+  const keywords = service.tags?.join(", ") || "";
 
   return {
     title,
     description,
-    keywords: service.tags?.join(", "),
+    keywords,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title,
       description,
+      url: canonicalUrl,
+      siteName: "ProsFIN",
       images: service.coverImage
         ? [
             {
@@ -63,7 +74,24 @@ export async function generateMetadata({
               alt: service.title,
             },
           ]
-        : undefined,
+        : [
+            {
+              url: `${baseUrl}/services/${slug}/opengraph-image`, // Dynamic OG image
+              width: 1200,
+              height: 630,
+              alt: service.title || "ProsFIN",
+            },
+          ],
+      locale: "vi_VN",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: service.coverImage
+        ? [service.coverImage]
+        : [`${baseUrl}/services/${slug}/opengraph-image`],
     },
   };
 }
@@ -84,19 +112,31 @@ export default async function ServiceDetailPage({
   }
 
   // Get related data
-  // Combine posts from IDs and tags
-  const postsByIds = getPostsByIds(service.relatedPostIds || []);
-  const postsByTags = service.relatedPostTags
-    ? getPostsByTags(service.relatedPostTags)
-    : [];
-  // Merge and deduplicate
-  const allRelatedPosts = [...postsByIds, ...postsByTags];
-  const uniquePosts = Array.from(
-    new Map(allRelatedPosts.map((post) => [post.id, post])).values()
-  );
-  const relatedPosts = uniquePosts.slice(0, 6); // Limit to 6 posts
+  // Priority: use serviceSlugs relationship, fallback to IDs/tags for backward compatibility
+  const postsByService = getPostsByService(slug, 6);
+  
+  // Fallback: combine posts from IDs and tags if no serviceSlugs match
+  let relatedPosts = postsByService;
+  if (relatedPosts.length === 0) {
+    const postsByIds = getPostsByIds(service.relatedPostIds || []);
+    const postsByTags = service.relatedPostTags
+      ? getPostsByTags(service.relatedPostTags)
+      : [];
+    const allRelatedPosts = [...postsByIds, ...postsByTags];
+    relatedPosts = Array.from(
+      new Map(allRelatedPosts.map((post) => [post.id, post])).values()
+    ).slice(0, 6);
+  }
 
-  const relatedPeople = getPeopleByIds(service.peopleIds || []);
+  // Get people by service, fallback to IDs
+  let relatedPeople = getPeopleByService(slug, 6);
+  // Phase 5: Try supportPeopleIds first, then fallback to peopleIds
+  if (relatedPeople.length === 0) {
+    const peopleIdsToUse = service.supportPeopleIds || service.peopleIds || [];
+    if (peopleIdsToUse.length > 0) {
+      relatedPeople = getPeopleByIds(peopleIdsToUse);
+    }
+  }
   const allServices = getAllServices();
 
   // Build breadcrumb
@@ -132,9 +172,9 @@ export default async function ServiceDetailPage({
         <SeeMore services={allServices} currentSlug={slug} />
       </ProsfinSectionWrapper>
 
-      {/* CTA Leads */}
-      <ProsfinSectionWrapper background="muted">
-        <ServiceCta cta={service.cta} />
+      {/* Big CTA Leads */}
+      <ProsfinSectionWrapper background="muted" padding="lg">
+        <BigLeadCta cta={service.cta} />
       </ProsfinSectionWrapper>
     </>
   );

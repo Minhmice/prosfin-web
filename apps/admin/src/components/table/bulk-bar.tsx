@@ -27,8 +27,18 @@ export function BulkBar<TData>({
     rows: TData[]
   } | null>(null)
 
-  const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedCount = selectedRows.length
+  // Guard against null/undefined row model
+  let selectedRowModel
+  let selectedRows: Array<{ original: TData }> = []
+  let selectedCount = 0
+  try {
+    selectedRowModel = table.getFilteredSelectedRowModel()
+    selectedRows = selectedRowModel?.rows ?? []
+    selectedCount = selectedRows.length
+  } catch (error) {
+    selectedCount = 0
+    selectedRows = []
+  }
 
   if (selectedCount === 0) {
     return null

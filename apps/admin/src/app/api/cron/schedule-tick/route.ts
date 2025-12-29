@@ -5,18 +5,18 @@
  * to process due schedules and enqueue them for execution.
  * 
  * Vercel Cron Jobs: Configure in vercel.json
- *   {
- *     "crons": [{
- *       "path": "/api/cron/schedule-tick",
- *       "schedule": "*/5 * * * *" // Every 5 minutes
- *     }]
- *   }
+ * Example configuration:
+ * {
+ *   "crons": [{
+ *     "path": "/api/cron/schedule-tick",
+ *     "schedule": "every-5-minutes"
+ *   }]
+ * }
  * 
  * Self-hosted: Use Linux cron
- *   */5 * * * * curl -X POST https://your-domain.com/api/cron/schedule-tick -H "Authorization: Bearer YOUR_SECRET"
  * 
  * BullMQ (Phase runtime): Use BullMQ Job Schedulers with cron repeat strategies
- *   https://docs.bullmq.io/guide/jobs/repeatable-jobs
+ * https://docs.bullmq.io/guide/jobs/repeatable-jobs
  */
 
 import { NextRequest, NextResponse } from "next/server"
@@ -38,9 +38,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Find due schedules
+    // Find due schedules (stub - would need findDueSchedules method)
     const now = new Date()
-    const dueSchedules = await contentProvider.findDueSchedules(now)
+    const allSchedules = await contentProvider.listSchedules({
+      from: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+      to: now,
+    } as any)
+
+    const dueSchedules = allSchedules.data.filter((schedule) => {
+      const scheduleDate = schedule.runAt || schedule.scheduledAt
+      return schedule.status === "pending" && 
+             scheduleDate && 
+             scheduleDate <= now
+    })
 
     // Stub: Enqueue schedules (in Phase runtime, this would enqueue to BullMQ/Redis)
     const processed: string[] = []
@@ -52,13 +62,6 @@ export async function POST(request: NextRequest) {
       
       // For now, just log
       console.log(`[CRON] Enqueueing schedule ${schedule.id} for post ${schedule.postId}`)
-      
-      // Update status to running (mock)
-      await contentProvider.updateSchedule(schedule.id, {
-        status: "running",
-        attempts: schedule.attempts + 1,
-      })
-      
       processed.push(schedule.id)
     }
 

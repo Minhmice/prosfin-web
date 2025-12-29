@@ -65,8 +65,6 @@ export function MediaMetadataSheet({
 
     setIsSaving(true)
     try {
-      // Update media metadata via provider
-      // This is a mock - in real implementation, call API
       await contentProvider.updateMedia(media.id, {
         title: title || undefined,
         altText: altText || undefined,

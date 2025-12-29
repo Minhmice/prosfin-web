@@ -13,6 +13,9 @@ export function getPostRowActions(post: Post): Array<{
     variant?: "default" | "destructive"
   }> = [
     { label: "Edit", action: "edit" },
+    { label: "Open Comments", action: "openComments" },
+    { label: "Open Schedule", action: "openSchedule" },
+    { label: "Attach Media", action: "attachMedia" },
     { label: "Duplicate", action: "duplicate" },
   ]
 

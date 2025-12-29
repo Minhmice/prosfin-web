@@ -164,3 +164,29 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+@keyframes aurora {
+  from {
+    background-position: 50% 50%, 50% 50%;
+  }
+  to {
+    background-position: 350% 50%, 350% 50%;
+  }
+}
+
+@keyframes aurora-reverse {
+  from {
+    background-position: 350% 50%, 350% 50%;
+  }
+  to {
+    background-position: 50% 50%, 50% 50%;
+  }
+}
+
+.animate-aurora {
+  animation: aurora 60s linear infinite;
+}
+
+.animate-aurora-reverse {
+  animation: aurora-reverse 60s linear infinite;
+}

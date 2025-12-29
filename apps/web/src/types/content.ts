@@ -28,8 +28,13 @@ export type ServiceSectionType =
   | "stats"
   | "faq"
   | "steps"
+  | "bullet-steps"
   | "quote"
-  | "ctaInline";
+  | "ctaInline"
+  | "intro"
+  | "problem-solution"
+  | "capabilities"
+  | "requirements";
 
 /**
  * Service section content
@@ -45,6 +50,11 @@ export interface ServiceSection {
   stats?: Array<{ value: string; label: string }>;
   quote?: { text: string; author?: string };
   cta?: CtaConfig;
+  // Fields for new section types
+  problems?: string[]; // For "problem-solution"
+  solutions?: string[]; // For "problem-solution"
+  capabilities?: Array<{ title: string; description: string; icon?: string }>; // For "capabilities"
+  faqs?: Array<{ question: string; answer: string }>; // For "faq"
 }
 
 /**
@@ -62,7 +72,11 @@ export type ServiceLayoutVariant =
   | "executive-brief"
   | "journey-roadmap"
   | "toolkit-modules"
-  | "transformation-story";
+  | "transformation-story"
+  | "narrative"
+  | "framework"
+  | "split-panel"
+  | "timeline";
 
 /**
  * Service content
@@ -79,12 +93,17 @@ export interface Service extends BaseContent {
   layoutVariant: ServiceLayoutVariant;
   sections: ServiceSection[];
   breadcrumb?: Array<{ label: string; href?: string }>;
-  relatedPostIds: string[];
-  peopleIds: string[];
+  relatedPostIds: string[]; // Backward compatibility - prefer relatedPostSlugs
+  peopleIds: string[]; // Backward compatibility - prefer supportPeopleIds
   category?: string; // Phân loại dịch vụ (để filter See More)
   bodySections?: ServiceSection[]; // Tách riêng sections cho body (nếu cần)
   relatedPostTags?: string[]; // Tags để filter posts (bổ sung cho relatedPostIds)
+  relatedServiceSlugs?: string[]; // Explicit cross-service links (ưu tiên hơn category)
   cta?: CtaConfig; // CTA config cho service
+  // New fields for Phase 5
+  relatedPostSlugs?: string[]; // Post slugs (preferred over relatedPostIds)
+  supportPeopleIds?: string[]; // People IDs (preferred over peopleIds, same purpose)
+  seeMoreServiceSlugs?: string[]; // Explicit related services for "See More" section
 }
 
 /**
@@ -230,6 +249,8 @@ export interface Person {
   bioLong?: string; // Bio dài (cho tooltip/hovercard)
   focusAreas?: string[]; // Lĩnh vực chuyên sâu
   bestFor?: string[]; // Phù hợp cho (vd: "SME", "Startup", "M&A")
+  serviceSlugs?: string[]; // Services mà person này hỗ trợ (bidirectional link)
+  priority?: number; // Priority để sort (số cao hơn = ưu tiên hơn)
 }
 
 /**

@@ -13,9 +13,10 @@ export const runtime = "nodejs" // Required for filesystem access
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     // In real implementation, look up media by ID in DB to get filename
     // For now, assume filename is the ID
     const filename = params.id

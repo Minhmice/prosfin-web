@@ -26,7 +26,14 @@ export function ExportButton<TData>({
   variant = "outline",
   size = "default",
 }: ExportButtonProps<TData>) {
-  const selectedCount = table.getFilteredSelectedRowModel().rows.length
+  // Guard against null/undefined row model
+  let selectedCount = 0
+  try {
+    const selectedModel = table.getFilteredSelectedRowModel()
+    selectedCount = selectedModel?.rows?.length ?? 0
+  } catch (error) {
+    selectedCount = 0
+  }
   const hasSelection = selectedCount > 0
 
   const handleExportFiltered = () => {
@@ -70,3 +77,4 @@ export function ExportButton<TData>({
     </DropdownMenu>
   )
 }
+

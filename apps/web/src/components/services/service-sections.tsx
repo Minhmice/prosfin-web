@@ -2,10 +2,16 @@
 
 import type { ServiceSection } from "@/types/content";
 import { ProsfinSectionHeading } from "@/components/shared/section/section-heading-block";
-import { ProsfinPrimaryButton } from "@/components/shared/button/primary-button";
-import { ProsfinSecondaryButton } from "@/components/shared/button/secondary-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/shared/accordion/accordion";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ServiceSectionsProps {
   sections: ServiceSection[];
@@ -106,6 +112,121 @@ export function ServiceSections({ sections }: ServiceSectionsProps) {
                       <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
                     </CardContent>
                   </Card>
+                ))}
+              </div>
+            )}
+
+            {section.type === "intro" && section.content && (
+              <p className="text-lg leading-relaxed text-muted-foreground max-w-3xl">
+                {section.content}
+              </p>
+            )}
+
+            {section.type === "problem-solution" && (
+              <div className="grid gap-8 md:grid-cols-2">
+                {section.problems && section.problems.length > 0 && (
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-destructive flex items-center gap-2">
+                      <AlertCircle className="h-5 w-5" />
+                      Vấn đề
+                    </h4>
+                    <ul className="space-y-2">
+                      {section.problems.map((problem, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="mt-1.5 text-destructive">•</span>
+                          <span className="text-muted-foreground">{problem}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {section.solutions && section.solutions.length > 0 && (
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-primary flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5" />
+                      Giải pháp
+                    </h4>
+                    <ul className="space-y-2">
+                      {section.solutions.map((solution, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="mt-1.5 text-primary">•</span>
+                          <span className="text-muted-foreground">{solution}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {section.type === "capabilities" && section.capabilities && (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {section.capabilities.map((capability, idx) => (
+                  <Card key={idx}>
+                    <CardHeader>
+                      {capability.icon && (
+                        <div className="mb-2 text-2xl">{capability.icon}</div>
+                      )}
+                      <CardTitle className="text-base">{capability.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        {capability.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {section.type === "requirements" && (
+              <Card className="border-l-4 border-l-primary bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="text-lg">Yêu cầu từ khách hàng</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {section.items && section.items.length > 0 ? (
+                    <ul className="space-y-2">
+                      {section.items.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="mt-1.5 text-primary">•</span>
+                          <span className="text-muted-foreground">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : section.content ? (
+                    <p className="text-muted-foreground">{section.content}</p>
+                  ) : null}
+                </CardContent>
+              </Card>
+            )}
+
+            {section.type === "faq" && section.faqs && section.faqs.length > 0 && (
+              <Accordion type="single" collapsible className="w-full">
+                {section.faqs.map((faq, idx) => (
+                  <AccordionItem key={idx} value={`faq-${idx}`}>
+                    <AccordionTrigger className="text-left">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+
+            {section.type === "bullet-steps" && section.items && (
+              <div className="space-y-4">
+                {section.items.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-4">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+                      {idx + 1}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-muted-foreground">{item}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}

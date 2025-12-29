@@ -13,6 +13,7 @@ import { RelatedPosts } from "@/components/services/related-posts";
 import { OurPeople } from "@/components/services/our-people";
 import { SeeMore } from "@/components/services/see-more";
 import { ServiceCta } from "@/components/services/service-cta";
+import { ServicesByNeed } from "@/components/services/services-by-need";
 
 /**
  * Services Page
@@ -58,11 +59,16 @@ export default function ServicesPage() {
         </div>
       </ProsfinSectionWrapper>
 
-      {/* Services Grid */}
+      {/* Services by Need */}
       <ProsfinSectionWrapper>
+        <ServicesByNeed />
+      </ProsfinSectionWrapper>
+
+      {/* Services Grid */}
+      <ProsfinSectionWrapper background="muted">
         <div className="space-y-8">
           <ProsfinSectionHeading
-            title="Các dịch vụ"
+            title="Tất cả dịch vụ"
             align="left"
             titleSize="lg"
           />

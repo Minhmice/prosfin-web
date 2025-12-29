@@ -532,8 +532,17 @@ export function DataTable({
         </div>
         <div className="flex items-center justify-between px-4">
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            {(() => {
+              try {
+                const selectedModel = table.getFilteredSelectedRowModel()
+                const filteredModel = table.getFilteredRowModel()
+                const selectedCount = selectedModel?.rows?.length ?? 0
+                const totalCount = filteredModel?.rows?.length ?? 0
+                return `${selectedCount} of ${totalCount} row(s) selected.`
+              } catch (error) {
+                return '0 of 0 row(s) selected.'
+              }
+            })()}
           </div>
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">

@@ -19,8 +19,13 @@ export function ShareLinkButton({
   variant = "outline",
   size = "default",
 }: ShareLinkButtonProps) {
+  // Memoize params to prevent infinite loops
+  const memoizedParams = React.useMemo(() => params, [JSON.stringify(params)])
+  
+  // Guard against null params
+  const safeParams = memoizedParams ?? {}
   const handleCopy = async () => {
-    await copyShareLink(path, params as Record<string, string | string[] | undefined>)
+    await copyShareLink(path, safeParams as Record<string, string | string[] | undefined>)
   }
 
   return (
@@ -30,3 +35,4 @@ export function ShareLinkButton({
     </Button>
   )
 }
+
