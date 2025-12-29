@@ -76,7 +76,8 @@ export type ServiceLayoutVariant =
   | "narrative"
   | "framework"
   | "split-panel"
-  | "timeline";
+  | "timeline"
+  | "custom";
 
 /**
  * Service content

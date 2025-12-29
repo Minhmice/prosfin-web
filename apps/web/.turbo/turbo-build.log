@@ -1,0 +1,50 @@
+
+> prosfin-web@0.1.0 build C:\Users\minhmice\Documents\projects\prosfin-web\apps\web
+> next build
+
+   ▲ Next.js 16.0.10 (Turbopack)
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 4.3s
+   Running TypeScript ...
+   Collecting page data using 27 workers ...
+   Generating static pages using 27 workers (0/26) ...
+   Generating static pages using 27 workers (6/26) 
+   Generating static pages using 27 workers (12/26) 
+   Generating static pages using 27 workers (19/26) 
+ ✓ Generating static pages using 27 workers (26/26) in 945.9ms
+   Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ƒ /api/draft
+├ ○ /case-studies
+├ ƒ /case-studies/[slug]
+├ ○ /contact
+├ ○ /contact-lite
+├ ○ /faq
+├ ƒ /insights/[slug]
+├ ƒ /knowledge/[slug]
+├ ○ /onboarding/detail-information
+├ ○ /onboarding/thanks
+├ ○ /process
+├ ƒ /resources/[slug]
+├ ○ /robots.txt
+├ ○ /services
+├ ● /services/[slug]
+│ ├ /services/advisor
+│ ├ /services/execution-coaching
+│ ├ /services/consulting
+│ └ [+6 more paths]
+├ ƒ /services/[slug]/opengraph-image-1m3o9y
+├ ○ /services/cleardata
+├ ○ /services/cleardata/thanks
+└ ○ /sitemap.xml
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
