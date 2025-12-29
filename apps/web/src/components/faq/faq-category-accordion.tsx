@@ -10,7 +10,7 @@ import {
 
 export type FaqAccordionEntry = {
   id: string;
-  question: string;
+  question: React.ReactNode;
   answer: React.ReactNode;
 };
 
@@ -27,7 +27,9 @@ export function FaqCategoryAccordion({
     <Accordion type="single" collapsible>
       {items.map((item) => (
         <AccordionItem key={item.id} value={item.id} className="mb-2">
-          <AccordionTrigger>{item.question}</AccordionTrigger>
+          <AccordionTrigger>
+            <span className="flex-1 pr-4">{item.question}</span>
+          </AccordionTrigger>
           <AccordionContent>{item.answer}</AccordionContent>
         </AccordionItem>
       ))}

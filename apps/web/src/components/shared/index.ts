@@ -79,6 +79,14 @@ export {
   ProsfinContactCardWrapper,
   type ProsfinContactCardWrapperProps,
 } from "./card/contact-card-wrapper";
+export {
+  ProsfinFeatureCardWrapper,
+  type ProsfinFeatureCardWrapperProps,
+} from "./card/feature-card-wrapper";
+export {
+  ProsfinScopeCardWrapper,
+  type ProsfinScopeCardWrapperProps,
+} from "./card/scope-card-wrapper";
 
 // Stat/Metric components
 export {

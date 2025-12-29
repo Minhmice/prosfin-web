@@ -386,5 +386,31 @@ export const SERVICES: Service[] = [
     relatedPostIds: ["post-1", "post-5"],
     peopleIds: ["person-1", "person-5"],
   },
+  {
+    id: "cleardata",
+    slug: "cleardata",
+    title: "ProsFIN ClearData™",
+    excerpt: "Dịch vụ kế toán–thuế theo chuẩn dữ liệu, giúp doanh nghiệp chuyển từ '2 sổ' sang một hệ số liệu nhất quán, truy vết và đối chiếu được.",
+    shortDescription: "Chuẩn hoá dữ liệu kế toán",
+    layoutVariant: "custom",
+    tags: ["Kế toán", "Chuẩn hoá dữ liệu", "Kế toán dịch vụ"],
+    category: "Kế toán",
+    coverImage: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=800&fit=crop",
+    relatedPostTags: ["Kế toán", "Chuẩn hoá", "Dữ liệu"],
+    cta: {
+      label: "Nhận Checklist CLEAR",
+      href: "/services/cleardata#hero-form",
+      variant: "primary",
+    },
+    sections: [
+      {
+        type: "hero",
+        title: "ProsFIN ClearData™",
+        subtitle: "Chuẩn hoá dữ liệu kế toán",
+      },
+    ],
+    relatedPostIds: [],
+    peopleIds: [],
+  },
 ];
 

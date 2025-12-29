@@ -3,13 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "start": "turbo start",
+    "lint": "turbo lint",
     "dev:web": "pnpm --filter prosfin-web dev",
     "dev:admin": "pnpm --filter prosfin-admin dev",
     "build:web": "pnpm --filter prosfin-web build",
-    "build:admin": "pnpm --filter prosfin-admin build",
-    "lint": "pnpm -r lint"
+    "build:admin": "pnpm --filter prosfin-admin build"
   },
   "devDependencies": {
-    "typescript": "^5"
+    "typescript": "^5",
+    "turbo": "^2.3.3"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
   }
 }

@@ -22,6 +22,10 @@ export interface ProsfinProblemCardWrapperProps {
    */
   impact?: string;
   /**
+   * Optional solution statement (displayed as italic text)
+   */
+  solution?: string;
+  /**
    * Optional icon (ReactNode)
    */
   icon?: React.ReactNode;
@@ -48,6 +52,7 @@ export function ProsfinProblemCardWrapper({
   title,
   description,
   impact,
+  solution,
   icon,
   className,
   variant = "default",
@@ -80,6 +85,9 @@ export function ProsfinProblemCardWrapper({
             <span className="font-medium">Tác động: </span>
             {impact}
           </div>
+        )}
+        {solution && (
+          <p className="mt-3 text-xs italic text-muted-foreground">{solution}</p>
         )}
       </CardContent>
     </Card>

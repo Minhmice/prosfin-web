@@ -11,11 +11,11 @@ export interface ProsfinSectionHeadingProps {
   /**
    * Main title / headline
    */
-  title: string;
+  title: string | React.ReactNode;
   /**
    * Subtitle / description
    */
-  subtitle?: string;
+  subtitle?: string | React.ReactNode;
   /**
    * Text alignment
    * @default "left"

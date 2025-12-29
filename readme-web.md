@@ -603,7 +603,6 @@ const ref = useInViewAnimation({
 - A/B testing infrastructure
 
 ### Future Features
-- Financial Health Self-Check tool
 - Interactive Dashboard Preview
 - Resources/Insights Hub
 - Who-We-Help segmentation page

@@ -9,7 +9,6 @@ import {
   getPostsByTags,
 } from "@/lib/content/services";
 import { ProsfinSectionWrapper } from "@/components/shared";
-import { SiteBreadcrumbs } from "@/components/site/breadcrumbs";
 import { ServiceRenderer } from "@/components/services/service-renderer";
 import { RelatedPosts } from "@/components/services/related-posts";
 import { OurPeople } from "@/components/services/our-people";
@@ -109,14 +108,9 @@ export default async function ServiceDetailPage({
 
   return (
     <>
-      {/* Breadcrumb */}
-      <ProsfinSectionWrapper padding="sm" background="default">
-        <SiteBreadcrumbs items={breadcrumbItems} />
-      </ProsfinSectionWrapper>
-
       {/* Hero + Service Content */}
       <ProsfinSectionWrapper background="muted" padding="lg">
-        <ServiceRenderer service={service} />
+        <ServiceRenderer service={service} breadcrumbItems={breadcrumbItems} />
       </ProsfinSectionWrapper>
 
       {/* Our Thinking */}

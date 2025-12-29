@@ -1,6 +1,7 @@
 "use client";
 
 import type { Service } from "@/types/content";
+import type { BreadcrumbItemData } from "@/components/site/breadcrumbs";
 import { ServiceHero } from "./service-hero";
 import { ServiceSections } from "./service-sections";
 import { ExecutiveBriefLayout } from "./layouts/executive-brief-layout";
@@ -10,6 +11,7 @@ import { TransformationStoryLayout } from "./layouts/transformation-story-layout
 
 interface ServiceRendererProps {
   service: Service;
+  breadcrumbItems?: BreadcrumbItemData[];
 }
 
 /**
@@ -18,7 +20,7 @@ interface ServiceRendererProps {
  * Render service content theo layoutVariant.
  * Phase 2: implement 4 variants mới (executive-brief, journey-roadmap, toolkit-modules, transformation-story)
  */
-export function ServiceRenderer({ service }: ServiceRendererProps) {
+export function ServiceRenderer({ service, breadcrumbItems }: ServiceRendererProps) {
   const { layoutVariant, sections } = service;
 
   // Filter out hero và ctaInline sections (render riêng)
@@ -31,7 +33,7 @@ export function ServiceRenderer({ service }: ServiceRendererProps) {
     case "advisor":
       return (
         <div className="space-y-12">
-          <ServiceHero service={service} layoutVariant="advisor" />
+          <ServiceHero service={service} layoutVariant="advisor" breadcrumbItems={breadcrumbItems} />
           <ServiceSections sections={contentSections} />
         </div>
       );
@@ -39,7 +41,7 @@ export function ServiceRenderer({ service }: ServiceRendererProps) {
     case "execution-coaching":
       return (
         <div className="space-y-12">
-          <ServiceHero service={service} layoutVariant="execution-coaching" />
+          <ServiceHero service={service} layoutVariant="execution-coaching" breadcrumbItems={breadcrumbItems} />
           <ServiceSections sections={contentSections} />
         </div>
       );
@@ -60,7 +62,7 @@ export function ServiceRenderer({ service }: ServiceRendererProps) {
       // Generic layout cho các variant còn lại
       return (
         <div className="space-y-12">
-          <ServiceHero service={service} layoutVariant={layoutVariant} />
+          <ServiceHero service={service} layoutVariant={layoutVariant} breadcrumbItems={breadcrumbItems} />
           <ServiceSections sections={contentSections} />
         </div>
       );

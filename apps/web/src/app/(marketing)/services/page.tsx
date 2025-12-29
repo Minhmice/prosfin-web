@@ -1,4 +1,8 @@
-import { getAllServices, getAllPosts, getAllPeople } from "@/lib/content/services";
+import {
+  getAllServices,
+  getAllPosts,
+  getAllPeople,
+} from "@/lib/content/services";
 import {
   ProsfinSectionWrapper,
   ProsfinSectionHeading,
@@ -12,7 +16,7 @@ import { ServiceCta } from "@/components/services/service-cta";
 
 /**
  * Services Page
- * 
+ *
  * Trang tổng quan về các dịch vụ của ProsFIN.
  * Layout: Hero, Services Grid, Our Thinking, Our People, See more, CTA
  */
@@ -100,4 +104,3 @@ export default function ServicesPage() {
     </>
   );
 }
-

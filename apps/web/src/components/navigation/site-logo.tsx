@@ -35,8 +35,8 @@ export function SiteLogo({ variant = "default", className }: SiteLogoProps) {
       <Image
         src="/brand/logo_rectangle.svg"
         alt="ProsFIN"
-        width={140}
-        height={28}
+        width={180}
+        height={36}
         priority={variant === "default"}
         className="h-full"
       />

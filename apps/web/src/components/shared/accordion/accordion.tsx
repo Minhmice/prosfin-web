@@ -185,7 +185,7 @@ export function AccordionContent({
           }}
           className={cn("overflow-hidden", className)}
         >
-          <div className="px-4 pb-4 text-sm leading-relaxed text-muted-foreground">
+          <div className="px-4 pt-1 pb-4 text-sm leading-relaxed text-muted-foreground">
             {children}
           </div>
         </motion.div>

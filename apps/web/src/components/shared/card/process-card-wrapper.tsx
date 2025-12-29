@@ -6,7 +6,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Text } from "@/components/shared";
+import { Text, ProsfinBadge } from "@/components/shared";
 
 export interface ProsfinProcessCardWrapperProps {
   /**
@@ -26,6 +26,19 @@ export interface ProsfinProcessCardWrapperProps {
    */
   outcome?: string;
   /**
+   * Optional bullets list
+   */
+  bullets?: string[];
+  /**
+   * Optional output tag (displayed as badge)
+   */
+  outputTag?: string;
+  /**
+   * Step number position
+   * @default "left"
+   */
+  stepNumberPosition?: "left" | "right";
+  /**
    * Additional className
    */
   className?: string;
@@ -33,7 +46,7 @@ export interface ProsfinProcessCardWrapperProps {
    * Card variant
    * @default "default"
    */
-  variant?: "default" | "bordered" | "elevated";
+  variant?: "default" | "bordered" | "bordered-muted" | "elevated";
   /**
    * Children for custom content
    */
@@ -53,6 +66,9 @@ export function ProsfinProcessCardWrapper({
   title,
   description,
   outcome,
+  bullets,
+  outputTag,
+  stepNumberPosition = "left",
   className,
   variant = "default",
   children,
@@ -60,6 +76,7 @@ export function ProsfinProcessCardWrapper({
   const variantClasses = {
     default: "border-border shadow-sm bg-card",
     bordered: "border-2 border-border shadow-none bg-card",
+    "bordered-muted": "border-2 border-border shadow-none bg-muted",
     elevated: "border-border shadow-md bg-card",
   };
 
@@ -69,18 +86,28 @@ export function ProsfinProcessCardWrapper({
     return numValue.toString().padStart(2, "0");
   };
 
+  const isStepNumberRight = stepNumberPosition === "right" && stepNumber !== undefined;
+
   return (
     <Card
       className={cn(
         "flex h-full flex-col transition-all duration-200 ease-out",
         "hover:-translate-y-1 hover:shadow-lg hover:border-primary/50",
         variantClasses[variant],
+        isStepNumberRight && "relative",
         className
       )}
     >
-      <CardHeader>
-        {/* Step Number */}
-        {stepNumber !== undefined && (
+      {/* Step Number - Right Position */}
+      {isStepNumberRight && (
+        <div className="absolute top-6 right-6 w-12 h-12 bg-foreground text-background rounded-full flex items-center justify-center">
+          <span className="text-xl font-bold">{stepNumber}</span>
+        </div>
+      )}
+
+      <CardHeader className={isStepNumberRight ? "pr-14" : ""}>
+        {/* Step Number - Left Position */}
+        {stepNumber !== undefined && !isStepNumberRight && (
           <Text as="div" variant="stepNumber" className="mb-3">
             {formatStepNumber(stepNumber)}
           </Text>
@@ -93,6 +120,26 @@ export function ProsfinProcessCardWrapper({
           <p className="text-base leading-relaxed text-muted-foreground">
             {description}
           </p>
+        )}
+
+        {/* Bullets */}
+        {bullets && bullets.length > 0 && (
+          <ul className="space-y-3">
+            {bullets.map((bullet, index) => (
+              <li
+                key={index}
+                className="flex items-start gap-2 text-sm text-muted-foreground"
+              >
+                <span className="text-muted-foreground/50 mt-1">•</span>
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Output Tag */}
+        {outputTag && (
+          <ProsfinBadge variant="default">{outputTag}</ProsfinBadge>
         )}
 
         {/* Outcome */}

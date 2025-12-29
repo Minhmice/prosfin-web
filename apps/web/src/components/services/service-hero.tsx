@@ -1,14 +1,18 @@
 "use client";
 
 import type { Service, ServiceLayoutVariant } from "@/types/content";
+import type { BreadcrumbItemData } from "@/components/site/breadcrumbs";
 import { ProsfinSectionHeading } from "@/components/shared/section/section-heading-block";
 import { ProsfinPrimaryButton } from "@/components/shared/button/primary-button";
 import { ProsfinSecondaryButton } from "@/components/shared/button/secondary-button";
 import { AppBadge } from "@/components/shared/wrappers/app-badge";
+import { SiteBreadcrumbs } from "@/components/site/breadcrumbs";
+import { PageContainer } from "@/components/shared";
 
 interface ServiceHeroProps {
   service: Service;
   layoutVariant: ServiceLayoutVariant;
+  breadcrumbItems?: BreadcrumbItemData[];
 }
 
 /**
@@ -17,7 +21,7 @@ interface ServiceHeroProps {
  * Hiển thị hero section với title, subtitle, tags và CTA buttons.
  * Layout có thể thay đổi theo layoutVariant.
  */
-export function ServiceHero({ service, layoutVariant }: ServiceHeroProps) {
+export function ServiceHero({ service, layoutVariant, breadcrumbItems }: ServiceHeroProps) {
   const heroSection = service.sections.find((s) => s.type === "hero");
 
   if (!heroSection) {
@@ -28,7 +32,12 @@ export function ServiceHero({ service, layoutVariant }: ServiceHeroProps) {
   const isCoaching = layoutVariant === "execution-coaching";
 
   return (
-    <div className="space-y-6">
+    <div className="relative space-y-6">
+      {breadcrumbItems && (
+        <div className="absolute -top-8 left-0 z-10">
+          <SiteBreadcrumbs items={breadcrumbItems} />
+        </div>
+      )}
       {service.tags && service.tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {service.tags.map((tag) => (
