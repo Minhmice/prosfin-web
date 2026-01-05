@@ -27,9 +27,11 @@ ProsFIN Admin là hệ thống quản trị nội bộ cung cấp:
 
 ### Data & State Management
 - **TanStack Table**: 8.21.3 - Powerful table library với sorting, filtering, pagination
+- **MSW (Mock Service Worker)**: Mock REST API cho frontend-only development
 - **Sonner**: 2.0.7 - Toast notifications
 - **React Hook Form**: 7.68.0 - Form handling
 - **Zod**: 4.2.1 - Schema validation
+- **cmdk**: 1.1.1 - Command palette component
 
 ### Utilities
 - **class-variance-authority**: 0.7.1 - Component variants
@@ -133,6 +135,26 @@ apps/admin/src/
 │   │   ├── types.ts             # TypeScript types
 │   │   └── index.ts             # Barrel exports
 │   │
+│   ├── shell/                   # NEW: App Shell components
+│   │   ├── topbar.tsx           # Topbar với breadcrumbs, search, actions
+│   │   ├── breadcrumbs.tsx      # Breadcrumb navigation
+│   │   ├── global-search.tsx    # Global search / Command Palette
+│   │   ├── quick-actions.tsx    # Quick create dropdown
+│   │   ├── notifications-button.tsx # Notifications với badge
+│   │   └── user-menu.tsx        # User menu (moved from sidebar)
+│   │
+│   ├── shared/
+│   │   ├── skeletons/           # NEW: Skeleton components
+│   │   │   ├── table-skeleton.tsx
+│   │   │   ├── card-skeleton.tsx
+│   │   │   ├── list-skeleton.tsx
+│   │   │   ├── detail-panel-skeleton.tsx
+│   │   │   └── index.ts
+│   │   └── ...                  # Other shared components
+│   │
+│   ├── providers/
+│   │   └── msw-provider.tsx     # NEW: MSW initialization provider
+│   │
 │   ├── dashboard/               # Dashboard components
 │   │   └── sections/
 │   │       ├── stats-cards.tsx      # KPI cards
@@ -148,10 +170,8 @@ apps/admin/src/
 │   │   └── client-detail-panel.tsx
 │   │
 │   ├── app-sidebar.tsx          # Main sidebar
-│   ├── site-header.tsx          # Top header với breadcrumb
 │   ├── nav-main.tsx             # Main navigation
 │   ├── nav-secondary.tsx        # Secondary navigation
-│   ├── nav-user.tsx             # User menu
 │   └── ui/                      # shadcn/ui components (KHÔNG SỬA)
 │       ├── alert-dialog.tsx
 │       ├── sidebar.tsx
@@ -170,8 +190,31 @@ apps/admin/src/
 │   │   ├── leads.ts            # Lead actions (markContacted, archive, etc.)
 │   │   ├── clients.ts          # Client actions
 │   │   └── posts.ts            # Post actions
+│   ├── api/                    # NEW: API Client
+│   │   └── client.ts           # Type-safe fetch wrapper
+│   ├── data/                   # NEW: Data layer
+│   │   ├── adapter/            # Data adapters
+│   │   │   ├── clients.ts
+│   │   │   ├── leads.ts
+│   │   │   ├── posts.ts
+│   │   │   ├── schedules.ts
+│   │   │   ├── tasks.ts
+│   │   │   └── index.ts
+│   │   ├── store.ts            # In-memory store
+│   │   └── seed.ts             # Seed data generator
+│   ├── analytics/              # NEW: Telemetry
+│   │   ├── adapter.ts          # Analytics adapter interface
+│   │   ├── console-adapter.ts  # Console logger
+│   │   └── telemetry.ts        # Event tracking
+│   ├── msw-init.ts             # NEW: MSW initialization
 │   ├── notify.ts               # Sonner notification helpers
 │   └── utils.ts                # Utility functions (cn, etc.)
+│
+├── mocks/                      # NEW: MSW Mock Service Worker
+│   ├── handlers.ts             # Request handlers
+│   ├── browser.ts              # Browser setup
+│   ├── server.ts               # Server setup
+│   └── index.ts
 │
 ├── types/
 │   └── index.ts                # TypeScript types (Lead, Client, Post, Tag)
@@ -255,8 +298,13 @@ export default function LeadsPage() {
 
 **Shell** bao gồm:
 - **Sidebar** - Collapsible sidebar với navigation (shadcn Sidebar component)
-- **Header** - Top bar với breadcrumb dynamic, sidebar trigger
-- **Layout** - Route group `(admin)` với SidebarProvider và Toaster
+- **Topbar** - Enhanced top bar với:
+  - Breadcrumbs navigation (dynamic từ pathname)
+  - Global search / Command Palette (⌘K)
+  - Quick actions dropdown (Create lead/client/post)
+  - Notifications button với badge count
+  - User menu (Profile, Preferences, Logout)
+- **Layout** - Route group `(admin)` với SidebarProvider, Toaster, MSWProvider
 
 ### Detail Panels
 
@@ -400,13 +448,21 @@ npm run start
 
 ## 📊 Data Flow
 
-### Current State (Phase 1)
-- **Mock Data** - Data từ `data/*.ts` files
+### Current State (Phase A)
+- **MSW (Mock Service Worker)** - Mock REST API với handlers structure
+- **API Client** - Type-safe fetch wrapper sẵn sàng cho real API
+- **Data Adapter Layer** - Abstract layer cho entities (clients, leads, posts, schedules, tasks)
+- **In-memory Store** - Store structure với seed data generator (TODO: implement seed data)
+- **Mock Data** - Data từ `data/*.ts` files (sẵn sàng migrate sang store)
 - **Mock Actions** - Actions trong `lib/actions/*.ts` với setTimeout simulation
 - **Local State** - React state cho UI interactions
+- **Telemetry** - Event tracking với console adapter (dev mode)
 
-### Future State (Phase 3)
-- **API Integration** - Connect actions to backend API
+### Next Steps (Phase B+)
+- **Store Integration** - Connect MSW handlers với dataStore
+- **Seed Data** - Generate realistic data với relationships
+- **Persistence** - localStorage/IndexedDB persistence
+- **Real API Integration** - Swap MSW handlers với real API calls
 - **Server Components** - Fetch data từ server
 - **Real-time Updates** - WebSocket hoặc polling cho live data
 
@@ -419,20 +475,44 @@ npm run start
 - [x] Dashboard production-grade
 - [x] Hardening (loading/error/not-found)
 
-### Phase 2 (Planned)
-- [ ] Authentication & Authorization
-- [ ] User management
-- [ ] Settings page implementation
-- [ ] Advanced filters & search
-- [ ] Export functionality
-- [ ] Audit logs
+### Phase A ✅ (Vừa hoàn thành - App Shell & UX Foundation)
+- [x] **Topbar Enhancement** - Breadcrumbs navigation, global search, quick actions, user menu, notifications
+- [x] **Command Palette** - ⌘K keyboard shortcut với search pages, create actions, jump to entity
+- [x] **Notifications Center** - Notifications drawer với badge count, mark as read
+- [x] **Skeleton Components** - Table, card, list, detail panel skeletons
+- [x] **MSW Setup** - Mock Service Worker với handlers structure cho REST API
+- [x] **API Client** - Type-safe fetch wrapper với error handling
+- [x] **Data Adapter Layer** - Abstract layer cho clients/leads/posts/schedules/tasks
+- [x] **Store & Seed Structure** - In-memory store với seed data structure
+- [x] **App Telemetry** - Analytics adapter với console logger, event tracking
 
-### Phase 3 (Planned)
-- [ ] API integration
-- [ ] Real-time updates
-- [ ] Advanced analytics
-- [ ] Custom dashboards
-- [ ] Workflow automation
+### Phase B (Next - Core CRM)
+- [ ] Leads Pipeline (Kanban + Table + Bulk actions + Lead detail drawer + Smart filters)
+- [ ] Clients 360 (Client list + Client detail page + Financial snapshot + Relationship tracking + Activity timeline + Health Score)
+- [ ] Notes, Tasks, Reminders (Markdown-lite editor, Task views, Reminders widget)
+
+### Phase C (Content Ops)
+- [ ] Posts CMS-lite (List, Editor với content blocks, Publishing workflow, SEO checklist)
+- [ ] Scheduling Center (Calendar, Timeline, Queue views, Linking schedules)
+- [ ] Media Library (Upload, Local preview, Tags, Folders, Usage panel, Basic transforms)
+
+### Phase D (Collaboration Layer)
+- [ ] Threaded Comments (under posts/schedules, Mentions, Reactions, Resolve/unresolve)
+- [ ] Activity timeline auto-logging
+- [ ] Notifications center integration
+
+### Phase E (Insights & Reports)
+- [ ] Dashboard 2.0 (Widgets với drag & drop, Persist per user, Widget settings)
+- [ ] Reports MVP (Leads, Clients, Content reports, Export CSV/PDF, Saved views)
+
+### Phase F (Admin Settings & Security)
+- [ ] Settings Center (Profile, Preferences, Team directory, Roles & permissions mock RBAC)
+- [ ] Audit Log (Central log page)
+
+### Phase G (Quality & Polishing)
+- [ ] A11y + UX polish
+- [ ] Performance (Virtualized table, Lazy load, Image optimization)
+- [ ] Testing (Unit tests, E2E smoke với Playwright)
 
 ## 📚 Resources
 
@@ -453,5 +533,5 @@ npm run start
 
 ---
 
-**Version**: 1.0.0 (Phase 1 Complete)
-**Last Updated**: 2024
+**Version**: 1.1.0 (Phase A Complete)
+**Last Updated**: January 2025
