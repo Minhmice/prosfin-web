@@ -525,11 +525,21 @@ npm run start
 
 ## 📝 Notes
 
-- **Mock Data**: Hiện tại sử dụng mock data, sẵn sàng cho API integration
-- **Actions**: Tất cả actions đều mock với setTimeout, sẽ thay bằng API calls trong Phase 3
+### Phase A Completion Notes
+- **MSW Setup**: MSW handlers structure đã sẵn sàng, cần install MSW package và generate service worker
+- **API Client**: Type-safe fetch wrapper hoàn chỉnh, sẵn sàng integrate với real API
+- **Data Adapters**: Tất cả adapters đã được tạo (clients, leads, posts, schedules, tasks), cần connect với store
+- **Store & Seed**: Store structure đã có, cần implement seed data generation và persistence
+- **Telemetry**: Event tracking sẵn sàng, có thể swap adapter cho production (Google Analytics, Mixpanel, etc.)
+
+### General Notes
+- **Mock Data**: Hiện tại sử dụng mock data từ `data/*.ts`, sẵn sàng migrate sang store/seed
+- **Actions**: Tất cả actions đều mock với setTimeout, sẽ thay bằng API calls qua adapters
 - **Detail Panels**: Notes trong detail panels là mock state, chưa persist
 - **Column Visibility**: Persist vào localStorage theo pathname
 - **Server-ready**: DataTable kit đã support manualPagination cho server-side data
+- **Component Size**: Tất cả components tuân thủ limit 200 lines
+- **shadcn Guard**: Không sửa trực tiếp `components/ui/**`, dùng wrapper pattern
 
 ---
 
