@@ -105,6 +105,14 @@ export interface Service extends BaseContent {
   relatedPostSlugs?: string[]; // Post slugs (preferred over relatedPostIds)
   supportPeopleIds?: string[]; // People IDs (preferred over peopleIds, same purpose)
   seeMoreServiceSlugs?: string[]; // Explicit related services for "See More" section
+  // Taxonomy fields for Service Discovery (Phase 1)
+  personas?: string[]; // ["owner", "cfo", "chief-accountant"]
+  outcomes?: string[]; // ["profit", "compliance", "cashflow", "tax", "risk"]
+  stages?: string[]; // ["early", "growth", "scale"]
+  formats?: string[]; // ["advisory", "consulting", "coaching", "audit", "assessment"]
+  timeToValue?: { label: string; minWeeks?: number; maxWeeks?: number };
+  priority?: number; // Tie-breaker (0-2)
+  isFeatured?: boolean; // Fallback display
 }
 
 /**
@@ -255,18 +263,29 @@ export interface Person {
 }
 
 /**
- * Post (Our Thinking)
+ * Post (Research Hub - Phase 2)
  */
 export interface Post {
   id: string;
   title: string;
   excerpt: string;
-  date: string;
+  date: string; // Backward compatibility - prefer publishedAt
   tags: string[];
-  href: string;
-  coverImage?: string;
+  href: string; // Backward compatibility - will be /research/[slug]
+  coverImage?: string; // Backward compatibility - prefer cover.src
   serviceSlugs?: string[]; // Services liên quan
-  readingTime?: number; // Thời gian đọc (phút)
+  readingTime?: number | { minutes: number; words?: number }; // Backward compatibility: number, new: object
   category?: string; // Category của post
+  // New fields for Phase 2
+  type?: "brief" | "playbook" | "tool"; // Research type (replaces insight|knowledge|resource)
+  topics?: string[]; // ["cashflow", "tax", "compliance", "risk", "capital"]
+  personas?: string[]; // ["owner", "cfo", "chief-accountant"]
+  outcomes?: string[]; // ["profit", "cashflow", "compliance", "tax", "risk"]
+  publishedAt?: string; // ISO date string
+  updatedAt?: string; // ISO date string
+  cover?: { src: string; alt: string }; // Cover image with alt text
+  seo?: { title?: string; description?: string; canonical?: string }; // SEO metadata
+  content?: any; // Lexical editor state or markdown
+  keyTakeaways?: string[]; // Key points extracted or manual
 }
 

@@ -18,6 +18,11 @@ export const navigationItems: NavigationItem[] = [
     description: "Tư vấn tài chính, kế toán thuế, kiểm soát nội bộ và CFO đồng hành cho doanh nghiệp SME, startup và hộ kinh doanh.",
   },
   {
+    label: "Research",
+    href: "/research",
+    description: "Nghiên cứu và insights về tài chính doanh nghiệp. Briefs, playbooks và tools để nắm vững kiến thức tài chính.",
+  },
+  {
     label: "Quy trình",
     href: "/#process",
     description: "Quy trình làm việc bài bản từ khám sức khỏe tài chính, phân tích dữ liệu đến triển khai giải pháp và đồng hành dài hạn.",

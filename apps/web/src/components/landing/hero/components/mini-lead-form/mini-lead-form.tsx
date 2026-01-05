@@ -18,6 +18,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormTitle, ProsfinPrimaryButton, Text } from "@/components/shared";
 import { useLeadDraft } from "@/hooks/use-lead-draft";
 import { useAttribution } from "@/hooks/use-attribution";
+import { useLeadSubmit } from "@/hooks/use-lead-submit";
+import { TurnstileField } from "@/components/shared/forms/turnstile-field";
+import { FormSubmitStatus } from "@/components/shared/forms/form-submit-status";
 
 const miniLeadSchema = z.object({
   fullName: z.string().min(2, "Họ tên cần ít nhất 2 ký tự"),
@@ -43,7 +46,16 @@ export function MiniLeadForm({
   const router = useRouter();
   const { draft, hydrated, updateDraft } = useLeadDraft();
   const { attribution } = useAttribution();
-  const [submitting, setSubmitting] = React.useState(false);
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>();
+  
+  const { submit, isSubmitting, error, errorCode, retry } = useLeadSubmit({
+    source: "hero_modal",
+    attribution: attribution || undefined,
+    onSuccess: (leadId) => {
+      onSubmitted?.();
+      router.push(`/onboarding/thanks?leadId=${leadId}`);
+    },
+  });
 
   const form = useForm<MiniLeadValues>({
     resolver: zodResolver(miniLeadSchema),
@@ -70,56 +82,16 @@ export function MiniLeadForm({
   }, [hydrated]);
 
   const onSubmit = async (values: MiniLeadValues) => {
-    setSubmitting(true);
-    try {
-      updateDraft(values);
-      
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
-      
-      // Map form data to API format
-      const payload = {
-        name: values.fullName,
-        company: "",
-        email: values.email,
-        phone: values.phone || undefined,
-        interest: values.concern,
-        source: "website" as const,
-        attribution: attribution ? {
-          utm_source: attribution.utm_source,
-          utm_medium: attribution.utm_medium,
-          utm_campaign: attribution.utm_campaign,
-          utm_term: attribution.utm_term,
-          utm_content: attribution.utm_content,
-          referrer: attribution.referrer,
-          landingPath: attribution.landingPath,
-          userAgent: typeof window !== "undefined" ? window.navigator.userAgent : undefined,
-        } : undefined,
-      };
+    updateDraft(values);
+    
+    const payload = {
+      fullName: values.fullName,
+      email: values.email,
+      phone: values.phone,
+      concern: values.concern,
+    };
 
-      const response = await fetch(`${apiBaseUrl}/api/public/leads`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ error: "Failed to submit form" }));
-        throw new Error(error.error || "Failed to submit form");
-      }
-      
-      onSubmitted?.();
-      router.push("/onboarding/thanks");
-    } catch (error: any) {
-      // Silently fail for better UX, user can retry
-      console.error("Failed to submit lead:", error);
-      // Still redirect to thanks page
-      onSubmitted?.();
-      router.push("/onboarding/thanks");
-    } finally {
-      setSubmitting(false);
-    }
+    await submit(payload, turnstileToken);
   };
 
   return (
@@ -195,7 +167,25 @@ export function MiniLeadForm({
             )}
           />
 
-          <ProsfinPrimaryButton type="submit" className="w-full" loading={submitting}>
+          <TurnstileField
+            onVerify={(token) => setTurnstileToken(token)}
+            onError={() => setTurnstileToken(undefined)}
+            theme="auto"
+            size="normal"
+          />
+
+          <FormSubmitStatus
+            status={isSubmitting ? "submitting" : error ? "error" : "idle"}
+            errorCode={errorCode || undefined}
+            onRetry={retry}
+          />
+
+          <ProsfinPrimaryButton
+            type="submit"
+            className="w-full"
+            loading={isSubmitting}
+            disabled={isSubmitting || !turnstileToken}
+          >
             Gửi thông tin nhanh
           </ProsfinPrimaryButton>
         </form>

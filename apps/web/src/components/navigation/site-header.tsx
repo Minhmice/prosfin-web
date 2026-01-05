@@ -7,6 +7,7 @@ import { SiteNav } from "./site-nav";
 import { MobileMenu } from "./mobile-menu";
 import { ProsfinPrimaryButton } from "@/components/shared";
 import { ProsfinContainer } from "@/components/layout/container";
+import { SkipLink } from "@/components/shared/a11y/skip-link";
 import { navigationItems, headerCtaLabel } from "@/data/navigation-content";
 import { cn } from "@/lib/utils";
 import { useHeroModal } from "@/components/landing/hero/hero-modal-context";
@@ -67,6 +68,7 @@ export function SiteHeader({ className }: SiteHeaderProps) {
 
   return (
     <>
+      <SkipLink />
       <header
         className={cn(
           "sticky top-0 z-50 w-full border-b bg-background md:bg-background/95 md:backdrop-blur md:supports-[backdrop-filter]:bg-background/60",

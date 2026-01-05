@@ -14,6 +14,9 @@ import { Form } from "@/components/ui/form";
 import { useProsfinToast } from "@/components/shared";
 import { formContent } from "@/data/form-content";
 import { useAttribution } from "@/hooks/use-attribution";
+import { useLeadSubmit } from "@/hooks/use-lead-submit";
+import { TurnstileField } from "@/components/shared/forms/turnstile-field";
+import { FormSubmitStatus } from "@/components/shared/forms/form-submit-status";
 import { LeadFormActions } from "./lead-form-actions";
 import { LeadFormFields } from "./lead-form-fields";
 import { leadFormSchema, type LeadFormValues } from "./schema";
@@ -29,7 +32,26 @@ interface HeroLeadFormModalProps {
 export function HeroLeadFormModal({ open, onOpenChange }: HeroLeadFormModalProps) {
   const toast = useProsfinToast();
   const { attribution } = useAttribution();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>();
+  
+  const { submit, isSubmitting, error, errorCode, retry } = useLeadSubmit({
+    source: "hero_modal_full",
+    attribution: attribution || undefined,
+    onSuccess: () => {
+      toast.toast({
+        description: formContent.leadForm.successMessage,
+        variant: "success",
+      });
+      form.reset();
+      onOpenChange(false);
+    },
+    onError: (error) => {
+      toast.toast({
+        description: error.message || formContent.leadForm.errorMessage,
+        variant: "error",
+      });
+    },
+  });
 
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
@@ -43,58 +65,15 @@ export function HeroLeadFormModal({ open, onOpenChange }: HeroLeadFormModalProps
   });
 
   const onSubmit = async (data: LeadFormValues) => {
-    setIsSubmitting(true);
-    try {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
-      
-      // Map form data to API format
-      const payload = {
-        name: data.fullName,
-        company: data.companyName || "",
-        email: data.email,
-        phone: data.phone || undefined,
-        interest: data.concern || undefined,
-        source: "website" as const,
-        attribution: attribution ? {
-          utm_source: attribution.utm_source,
-          utm_medium: attribution.utm_medium,
-          utm_campaign: attribution.utm_campaign,
-          utm_term: attribution.utm_term,
-          utm_content: attribution.utm_content,
-          referrer: attribution.referrer,
-          landingPath: attribution.landingPath,
-          userAgent: typeof window !== "undefined" ? window.navigator.userAgent : undefined,
-        } : undefined,
-      };
+    const payload = {
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      companyName: data.companyName,
+      concern: data.concern,
+    };
 
-      const response = await fetch(`${apiBaseUrl}/api/public/leads`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ error: "Failed to submit form" }));
-        throw new Error(error.error || "Failed to submit form");
-      }
-
-      toast.toast({
-        description: formContent.leadForm.successMessage,
-        variant: "success",
-      });
-
-      form.reset();
-      onOpenChange(false);
-    } catch (error: any) {
-      toast.toast({
-        description: error.message || formContent.leadForm.errorMessage,
-        variant: "error",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    await submit(payload, turnstileToken);
   };
 
   return (
@@ -115,6 +94,20 @@ export function HeroLeadFormModal({ open, onOpenChange }: HeroLeadFormModalProps
             className="flex-1 overflow-y-auto space-y-4 pr-2 sm:pr-0"
           >
             <LeadFormFields form={form} />
+            
+            <TurnstileField
+              onVerify={(token) => setTurnstileToken(token)}
+              onError={() => setTurnstileToken(undefined)}
+              theme="auto"
+              size="normal"
+            />
+
+            <FormSubmitStatus
+              status={isSubmitting ? "submitting" : error ? "error" : "idle"}
+              errorCode={errorCode || undefined}
+              onRetry={retry}
+            />
+
             <LeadFormActions
               isSubmitting={isSubmitting}
               onCancel={() => onOpenChange(false)}

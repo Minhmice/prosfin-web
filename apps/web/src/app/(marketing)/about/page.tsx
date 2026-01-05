@@ -1,5 +1,9 @@
+import type { Metadata } from "next";
 import { aboutPageContent } from "@/data/about-page";
 import { aboutSectionContent } from "@/data/about-content";
+import { aboutMetadata } from "./metadata";
+
+export const metadata: Metadata = aboutMetadata;
 import {
   H2,
   ProsfinSectionWrapper,

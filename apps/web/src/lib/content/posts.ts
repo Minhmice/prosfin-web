@@ -116,3 +116,57 @@ export function getPostsByIds(ids: string[]): Post[] {
   return POSTS.filter((p) => ids.includes(p.id));
 }
 
+/**
+ * Get all research posts (Phase 2)
+ * 
+ * Returns all posts, migrated from insights/knowledge/resources
+ */
+export function getAllResearchPosts(): Post[] {
+  return POSTS;
+}
+
+/**
+ * Get post by slug
+ * 
+ * Extracts slug from href (format: /insights/slug, /knowledge/slug, /resources/slug)
+ * or matches by slug directly if href is /research/[slug]
+ */
+export function getPostBySlug(slug: string): Post | undefined {
+  return POSTS.find((post) => {
+    // Check if href ends with slug or contains /slug
+    if (post.href.endsWith(`/${slug}`) || post.href.endsWith(slug)) {
+      return true;
+    }
+    // Also check if post has a slug field (if added in future)
+    return false;
+  });
+}
+
+/**
+ * Get posts by type
+ */
+export function getPostsByType(
+  type: "brief" | "playbook" | "tool"
+): Post[] {
+  return POSTS.filter((post) => post.type === type);
+}
+
+/**
+ * Map old type to new type (migration helper)
+ * 
+ * Maps: insight -> brief, knowledge -> playbook, resource -> tool
+ */
+export function mapOldTypeToNew(
+  oldType: string
+): "brief" | "playbook" | "tool" {
+  const mapping: Record<string, "brief" | "playbook" | "tool"> = {
+    insight: "brief",
+    insights: "brief",
+    knowledge: "playbook",
+    resource: "tool",
+    resources: "tool",
+  };
+
+  return mapping[oldType.toLowerCase()] || "brief";
+}
+

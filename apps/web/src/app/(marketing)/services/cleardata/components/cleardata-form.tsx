@@ -17,6 +17,9 @@ import { ProsfinPrimaryButton, ProsfinSecondaryButton } from "@/components/share
 import { useAttribution } from "@/hooks/use-attribution";
 import { useLeadDraft, clearLeadDraft } from "@/hooks/use-lead-draft";
 import { useProsfinToast } from "@/components/shared";
+import { useLeadSubmit } from "@/hooks/use-lead-submit";
+import { TurnstileField } from "@/components/shared/forms/turnstile-field";
+import { FormSubmitStatus } from "@/components/shared/forms/form-submit-status";
 import { trackEvent } from "@/lib/analytics";
 import {
   clearDataFormSchema,
@@ -61,7 +64,28 @@ export function ClearDataForm({
   const toast = useProsfinToast();
   const { attribution } = useAttribution();
   const { draft, hydrated, updateDraft } = useLeadDraft();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>();
+  
+  const { submit, isSubmitting, error, errorCode, retry } = useLeadSubmit({
+    source: "cleardata_lp",
+    attribution: attribution || undefined,
+    onSuccess: (leadId) => {
+      clearLeadDraft();
+      trackEvent("lead_checklist_submit", {
+        hasPhone: !!form.getValues("phone"),
+        hasEmail: !!form.getValues("email"),
+        hasRevenueRange: !!form.getValues("revenueRange"),
+      });
+      router.push(`/services/cleardata/thanks?leadId=${leadId}`);
+    },
+    onError: (error) => {
+      toast.toast({
+        description: error.message || "Có lỗi xảy ra. Vui lòng thử lại sau.",
+        variant: "error",
+      });
+      trackEvent("form_error", { error: String(error) });
+    },
+  });
 
   const form = useForm<ClearDataFormValues>({
     resolver: zodResolver(clearDataFormSchema),
@@ -88,64 +112,22 @@ export function ClearDataForm({
   }, [hydrated]);
 
   const onSubmit = async (data: ClearDataFormValues) => {
-    setIsSubmitting(true);
+    // Update draft
+    updateDraft({
+      fullName: data.fullName,
+      phone: data.phone,
+      email: data.email,
+      revenueRange: data.revenueRange as any,
+    });
 
-    try {
-      // Update draft
-      updateDraft({
-        fullName: data.fullName,
-        phone: data.phone,
-        email: data.email,
-        revenueRange: data.revenueRange as any,
-      });
+    const payload = {
+      fullName: data.fullName,
+      phone: data.phone,
+      email: data.email,
+      revenueRange: data.revenueRange,
+    };
 
-      // Prepare payload with attribution
-      const payload = {
-        name: data.fullName,
-        phone: data.phone || undefined,
-        email: data.email || undefined,
-        revenueRange: data.revenueRange || undefined,
-        source: "cleardata_service" as const,
-        attribution: attribution
-          ? {
-              landingPath: attribution.landingPath,
-              referrer: attribution.referrer,
-              utm_source: attribution.utm_source,
-              utm_medium: attribution.utm_medium,
-              utm_campaign: attribution.utm_campaign,
-              utm_content: attribution.utm_content,
-              utm_term: attribution.utm_term,
-              timestamp: attribution.timestamp,
-            }
-          : undefined,
-      };
-
-      // TODO(Leads): Wire form submit to CRM/DB in Phase 3
-      console.log("[ClearData Form Submit]", payload);
-
-      // Track analytics event
-      trackEvent("lead_checklist_submit", {
-        hasPhone: !!data.phone,
-        hasEmail: !!data.email,
-        hasRevenueRange: !!data.revenueRange,
-      });
-
-      // Clear draft after successful submit
-      clearLeadDraft();
-
-      // Redirect to thanks page
-      router.push("/services/cleardata/thanks");
-    } catch (error) {
-      console.error("[ClearData Form Error]", error);
-      trackEvent("form_error", { error: String(error) });
-
-      toast.toast({
-        description: "Có lỗi xảy ra. Vui lòng thử lại sau.",
-        variant: "error",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    await submit(payload, turnstileToken);
   };
 
   const handleBookCallClick = () => {
@@ -239,11 +221,24 @@ export function ClearDataForm({
             )}
           />
 
+          <TurnstileField
+            onVerify={(token) => setTurnstileToken(token)}
+            onError={() => setTurnstileToken(undefined)}
+            theme="auto"
+            size="normal"
+          />
+
+          <FormSubmitStatus
+            status={isSubmitting ? "submitting" : error ? "error" : "idle"}
+            errorCode={errorCode || undefined}
+            onRetry={retry}
+          />
+
           <ProsfinPrimaryButton
             type="submit"
             className="w-full"
             loading={isSubmitting}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !turnstileToken}
           >
             {primaryCtaLabel}
           </ProsfinPrimaryButton>

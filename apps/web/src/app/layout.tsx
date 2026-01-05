@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import { MarketingLayout } from "@/components/layout/marketing-layout";
+import { GlobalJsonLd } from "@/components/seo/global-jsonld";
 import "./globals.css";
 
 const jakartaSans = Plus_Jakarta_Sans({
@@ -91,6 +92,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
+      <head>
+        <GlobalJsonLd />
+      </head>
       <body
         className={`${jakartaSans.variable} ${geistMono.variable} antialiased font-sans`}
       >

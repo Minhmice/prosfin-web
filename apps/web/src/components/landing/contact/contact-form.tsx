@@ -6,6 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { ProsfinPrimaryButton, useProsfinToast } from "@/components/shared";
 import { formContent } from "@/data/form-content";
+import { useAttribution } from "@/hooks/use-attribution";
+import { useLeadSubmit } from "@/hooks/use-lead-submit";
+import { TurnstileField } from "@/components/shared/forms/turnstile-field";
+import { FormSubmitStatus } from "@/components/shared/forms/form-submit-status";
 import { contactFormSchema, type ContactFormValues } from "./contact-form/schema";
 import { ContactFormFieldsBasic } from "./contact-form/fields-basic";
 import { ContactFormFieldsExtra } from "./contact-form/fields-extra";
@@ -38,7 +42,26 @@ export function ContactForm({
   className,
 }: ContactFormProps) {
   const toast = useProsfinToast();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { attribution } = useAttribution();
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>();
+  
+  const { submit, isSubmitting, error, errorCode, retry } = useLeadSubmit({
+    source: "contact_page",
+    attribution: attribution || undefined,
+    onSuccess: () => {
+      toast.toast({
+        description: formContent.contactForm.successMessage,
+        variant: "success",
+      });
+      // Don't reset form - keep message for user to copy
+    },
+    onError: () => {
+      toast.toast({
+        description: formContent.contactForm.errorMessage,
+        variant: "error",
+      });
+    },
+  });
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -52,30 +75,20 @@ export function ContactForm({
   });
 
   const handleSubmit = async (data: ContactFormValues) => {
-    setIsSubmitting(true);
-    try {
-      if (onSubmit) {
-        await Promise.resolve(onSubmit(data));
-      } else {
-        // Default: simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log("Contact form submitted:", data);
-      }
-      
-      toast.toast({
-        description: formContent.contactForm.successMessage,
-        variant: "success",
-      });
-      
-      form.reset();
-    } catch {
-      toast.toast({
-        description: formContent.contactForm.errorMessage,
-        variant: "error",
-      });
-    } finally {
-      setIsSubmitting(false);
+    if (onSubmit) {
+      await Promise.resolve(onSubmit(data));
+      return;
     }
+
+    const payload = {
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      company: data.company,
+      concern: data.concern,
+    };
+
+    await submit(payload, turnstileToken);
   };
 
   return (
@@ -88,12 +101,25 @@ export function ContactForm({
           <ContactFormFieldsBasic control={form.control} />
           <ContactFormFieldsExtra control={form.control} />
 
+          <TurnstileField
+            onVerify={(token) => setTurnstileToken(token)}
+            onError={() => setTurnstileToken(undefined)}
+            theme="auto"
+            size="normal"
+          />
+
+          <FormSubmitStatus
+            status={isSubmitting ? "submitting" : error ? "error" : "idle"}
+            errorCode={errorCode || undefined}
+            onRetry={retry}
+          />
+
           <ProsfinPrimaryButton
             type="submit"
             size="lg"
             className="w-full"
             loading={isSubmitting}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !turnstileToken}
           >
             {submitLabel}
           </ProsfinPrimaryButton>

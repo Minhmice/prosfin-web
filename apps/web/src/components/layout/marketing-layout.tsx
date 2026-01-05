@@ -30,7 +30,7 @@ function MarketingLayoutContent({ children }: MarketingLayoutProps) {
     <ProsfinToastProvider>
       <div className="flex min-h-screen flex-col">
         <SiteHeader />
-        <main className="flex-1 pb-20 md:pb-0">{children}</main>
+        <main id="main-content" className="flex-1 pb-20 md:pb-0">{children}</main>
         <SiteFooter />
         <ScrollTopButton />
         <ProsfinCookieBanner />

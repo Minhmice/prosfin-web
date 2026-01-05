@@ -6,6 +6,7 @@
 
 import { SERVICES } from "@/content/services";
 import type { Service } from "@/types/content";
+import { getFacets, type ServiceFacets } from "@/lib/services-discovery/facets";
 
 // Re-export from other content helpers
 export {
@@ -269,5 +270,46 @@ export function getServicesGroupedByFormat(): ServiceGroup[] {
     { key: "kiểm-tra", label: "Kiểm tra & Đánh giá", services: groups["kiểm-tra"] },
     { key: "kiểm-toán", label: "Kiểm toán", services: groups["kiểm-toán"] },
   ].filter((group) => group.services.length > 0);
+}
+
+/**
+ * Get services index with facets
+ * 
+ * Returns all services and their facets for filtering/discovery
+ */
+export function getServicesIndex(): { services: Service[]; facets: ServiceFacets } {
+  const services = getAllServices();
+  const facets = getFacets(services);
+  return { services, facets };
+}
+
+/**
+ * Get featured services
+ * 
+ * Returns services marked as featured, or top services by priority if none marked.
+ * Used as fallback for empty state.
+ */
+export function getFeaturedServices(services: Service[] = SERVICES, limit: number = 3): Service[] {
+  // First, try to get services marked as featured
+  const featured = services.filter((s) => s.isFeatured === true);
+  
+  if (featured.length >= limit) {
+    return featured.slice(0, limit);
+  }
+
+  // If not enough featured, sort by priority and take top N
+  const sorted = [...services].sort((a, b) => {
+    const aPriority = a.priority ?? 0;
+    const bPriority = b.priority ?? 0;
+    if (bPriority !== aPriority) {
+      return bPriority - aPriority;
+    }
+    // Tie-breaker: isFeatured
+    if (a.isFeatured && !b.isFeatured) return -1;
+    if (!a.isFeatured && b.isFeatured) return 1;
+    return 0;
+  });
+
+  return sorted.slice(0, limit);
 }
 

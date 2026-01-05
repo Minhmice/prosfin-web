@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Script from "next/script";
 import {
   getServiceBySlug,
   getAllServices,
@@ -17,6 +18,13 @@ import { OurPeople } from "@/components/services/our-people";
 import { SeeMore } from "@/components/services/see-more";
 import { ServiceCta } from "@/components/services/service-cta";
 import { BigLeadCta } from "@/components/services/big-lead-cta";
+import { ServiceTools } from "@/components/services/service-tools";
+import {
+  generateServiceSchema,
+  generateBreadcrumbListSchema,
+} from "@/components/seo/jsonld";
+import { canonicalForRoute } from "@/lib/seo/canonical";
+import { buildOg } from "@/lib/seo/open-graph";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -48,10 +56,17 @@ export async function generateMetadata({
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
-  const canonicalUrl = `${baseUrl}/services/${slug}`;
+  const canonicalUrl = canonicalForRoute(`/services/${slug}`);
   const title = `${service.title} | ProsFIN`;
-  const description = service.excerpt || service.shortDescription;
+  const description = service.excerpt || service.shortDescription || "";
   const keywords = service.tags?.join(", ") || "";
+  const og = buildOg({
+    title,
+    description,
+    url: canonicalUrl,
+    image: service.coverImage,
+    type: "website",
+  });
 
   return {
     title,
@@ -60,31 +75,7 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
     },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "ProsFIN",
-      images: service.coverImage
-        ? [
-            {
-              url: service.coverImage,
-              width: 1200,
-              height: 630,
-              alt: service.title,
-            },
-          ]
-        : [
-            {
-              url: `${baseUrl}/services/${slug}/opengraph-image`, // Dynamic OG image
-              width: 1200,
-              height: 630,
-              alt: service.title || "ProsFIN",
-            },
-          ],
-      locale: "vi_VN",
-      type: "website",
-    },
+    openGraph: og,
     twitter: {
       card: "summary_large_image",
       title,
@@ -140,14 +131,45 @@ export default async function ServiceDetailPage({
   const allServices = getAllServices();
 
   // Build breadcrumb
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
   const breadcrumbItems = [
     { label: "Home", href: "/" },
     { label: "Services", href: "/services" },
     { label: service.title },
   ];
 
+  // Generate structured data
+  const serviceSchema = generateServiceSchema(
+    {
+      title: service.title,
+      description: service.excerpt || service.shortDescription,
+      slug: service.slug,
+      coverImage: service.coverImage,
+    },
+    baseUrl
+  );
+
+  const breadcrumbSchema = generateBreadcrumbListSchema(
+    breadcrumbItems.map((item) => ({
+      name: item.label,
+      url: item.href ? `${baseUrl}${item.href}` : `${baseUrl}/services/${service.slug}`,
+    }))
+  );
+
   return (
     <>
+      {/* JSON-LD Structured Data */}
+      <Script
+        id="service-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Hero + Service Content */}
       <ProsfinSectionWrapper background="muted" padding="lg">
         <ServiceRenderer service={service} breadcrumbItems={breadcrumbItems} />
@@ -166,6 +188,11 @@ export default async function ServiceDetailPage({
           <OurPeople people={relatedPeople} />
         </ProsfinSectionWrapper>
       )}
+
+      {/* Tools you can run */}
+      <ProsfinSectionWrapper>
+        <ServiceTools serviceSlug={slug} />
+      </ProsfinSectionWrapper>
 
       {/* See more services */}
       <ProsfinSectionWrapper>

@@ -1,34 +1,85 @@
+import type { Metadata } from "next";
 import {
   getAllServices,
   getAllPosts,
   getAllPeople,
 } from "@/lib/content/services";
-import {
-  ProsfinSectionWrapper,
-  ProsfinSectionHeading,
-  ProsfinPrimaryButton,
-} from "@/components/shared";
-import { ServiceCard } from "@/components/services/service-card";
+import { ProsfinSectionWrapper } from "@/components/shared";
 import { RelatedPosts } from "@/components/services/related-posts";
 import { OurPeople } from "@/components/services/our-people";
 import { SeeMore } from "@/components/services/see-more";
 import { ServiceCta } from "@/components/services/service-cta";
 import { ServicesByNeed } from "@/components/services/services-by-need";
+import { ServicesPageClient } from "@/components/services/services-page-client";
+import { ServicesExplorer } from "@/components/services-explorer/services-explorer";
+import { parseExplorerParams } from "@/lib/services-explorer/params";
+import {
+  shouldIndexUrl,
+  getCanonicalUrl,
+  getRobotsMeta,
+} from "@/lib/services-explorer/seo";
 
 /**
  * Services Page
  *
- * Trang tổng quan về các dịch vụ của ProsFIN.
- * Layout: Hero, Services Grid, Our Thinking, Our People, See more, CTA
+ * Services Explorer với filter panel, search/sort, presets, compare feature.
+ * Server-first: load data, pass to client Explorer.
  */
-export default function ServicesPage() {
-  const services = getAllServices();
+interface ServicesPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+/**
+ * Generate metadata for services page
+ */
+export async function generateMetadata({
+  searchParams,
+}: ServicesPageProps): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const urlSearchParams = new URLSearchParams();
+
+  // Convert searchParams to URLSearchParams
+  Object.entries(resolvedSearchParams).forEach(([key, value]) => {
+    if (value) {
+      if (Array.isArray(value)) {
+        value.forEach((v) => urlSearchParams.append(key, v));
+      } else {
+        urlSearchParams.set(key, value);
+      }
+    }
+  });
+
+  const filters = parseExplorerParams(urlSearchParams);
+  const shouldIndex = shouldIndexUrl(filters);
+  const canonicalUrl = getCanonicalUrl(filters);
+  const robots = getRobotsMeta(filters);
+
+  return {
+    title: "Dịch vụ ProsFIN",
+    description:
+      "Khám phá các dịch vụ tư vấn tài chính, kế toán thuế, kiểm soát nội bộ và CFO đồng hành cho doanh nghiệp.",
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    robots: shouldIndex
+      ? undefined
+      : {
+          index: robots.index,
+          follow: robots.follow,
+        },
+  };
+}
+
+export default async function ServicesPage({
+  searchParams,
+}: ServicesPageProps) {
+  const allServices = getAllServices();
   const posts = getAllPosts();
   const people = getAllPeople();
 
   // Get featured posts (union of all relatedPostIds or first 6)
   const featuredPostIds = Array.from(
-    new Set(services.flatMap((s) => s.relatedPostIds))
+    new Set(allServices.flatMap((s) => s.relatedPostIds || []))
   );
   const featuredPosts = posts
     .filter((p) => featuredPostIds.includes(p.id))
@@ -36,7 +87,7 @@ export default function ServicesPage() {
 
   // Get featured people (union of all peopleIds or first 6)
   const featuredPeopleIds = Array.from(
-    new Set(services.flatMap((s) => s.peopleIds))
+    new Set(allServices.flatMap((s) => s.peopleIds || []))
   );
   const featuredPeople = people
     .filter((p) => featuredPeopleIds.includes(p.id))
@@ -44,40 +95,17 @@ export default function ServicesPage() {
 
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero Section with Wizard CTA */}
       <ProsfinSectionWrapper background="muted" padding="lg">
-        <ProsfinSectionHeading
-          title="Dịch vụ ProsFIN"
-          subtitle="Các giải pháp ProsFIN đồng hành cùng tài chính doanh nghiệp. Từ khám sức khỏe tài chính đến đồng hành dài hạn, ProsFIN thiết kế gói dịch vụ phù hợp với từng giai đoạn phát triển của doanh nghiệp."
-          align="center"
-          titleSize="xl"
-        />
-        <div className="mt-8 flex justify-center">
-          <ProsfinPrimaryButton href="/contact" size="lg">
-            Đặt lịch tư vấn miễn phí
-          </ProsfinPrimaryButton>
-        </div>
+        <ServicesPageClient />
       </ProsfinSectionWrapper>
+
+      {/* Services Explorer */}
+      <ServicesExplorer initialServices={allServices} />
 
       {/* Services by Need */}
       <ProsfinSectionWrapper>
         <ServicesByNeed />
-      </ProsfinSectionWrapper>
-
-      {/* Services Grid */}
-      <ProsfinSectionWrapper background="muted">
-        <div className="space-y-8">
-          <ProsfinSectionHeading
-            title="Tất cả dịch vụ"
-            align="left"
-            titleSize="lg"
-          />
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
-          </div>
-        </div>
       </ProsfinSectionWrapper>
 
       {/* Our Thinking */}
@@ -97,7 +125,7 @@ export default function ServicesPage() {
       {/* See more services */}
       <ProsfinSectionWrapper background="muted">
         <SeeMore
-          services={services.slice(0, 4)}
+          services={allServices.slice(0, 4)}
           currentSlug=""
           title="Xem thêm dịch vụ"
         />

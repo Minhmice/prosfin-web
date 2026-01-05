@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ProsfinPrimaryButton } from "../button/primary-button";
 import { ProsfinGhostButton } from "../button/ghost-button";
+import { useConsent } from "@/hooks/use-consent";
 import { cn } from "@/lib/utils";
 
 export interface ProsfinCookieBannerProps {
@@ -27,25 +28,15 @@ export function ProsfinCookieBanner({
   privacyHref = "/privacy",
   className,
 }: ProsfinCookieBannerProps) {
-  // Tránh hydration mismatch: lần render đầu trên server và client phải ra cùng markup.
-  // Sau khi mount mới đọc localStorage để quyết định ẩn/hiện.
-  const [isVisible, setIsVisible] = React.useState(true);
-
-  React.useEffect(() => {
-    try {
-      const hasConsent = !!localStorage.getItem("prosfin-cookie-consent");
-      if (hasConsent) setIsVisible(false);
-    } catch {
-      // Nếu localStorage bị chặn (privacy mode), giữ banner để người dùng có thể chấp nhận.
-      setIsVisible(true);
-    }
-  }, []);
+  const { status, setConsent } = useConsent();
+  const isVisible = status === "pending";
 
   const handleAccept = () => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("prosfin-cookie-consent", "accepted");
-      setIsVisible(false);
-    }
+    setConsent("granted");
+  };
+
+  const handleDeny = () => {
+    setConsent("denied");
   };
 
   if (!isVisible) {
@@ -72,7 +63,7 @@ export function ProsfinCookieBanner({
           .
         </p>
         <div className="flex gap-3">
-          <ProsfinGhostButton onClick={handleAccept} size="sm">
+          <ProsfinGhostButton onClick={handleDeny} size="sm">
             Từ chối
           </ProsfinGhostButton>
           <ProsfinPrimaryButton onClick={handleAccept} size="sm">

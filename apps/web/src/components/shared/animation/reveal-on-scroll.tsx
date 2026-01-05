@@ -5,6 +5,29 @@ import { motion } from "framer-motion";
 import { useInViewAnimation } from "@/hooks/use-in-view-animation";
 import { cn } from "@/lib/utils";
 
+/**
+ * Check if user prefers reduced motion
+ */
+function useReducedMotion(): boolean {
+  const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  return prefersReducedMotion;
+}
+
 export interface RevealOnScrollProps {
   /**
    * Children to animate
@@ -58,6 +81,12 @@ export function RevealOnScroll({
   className,
 }: RevealOnScrollProps) {
   const { ref, isInView } = useInViewAnimation({ delay, threshold: 0.1 });
+  const prefersReducedMotion = useReducedMotion();
+
+  // If reduced motion is preferred, skip animations
+  if (prefersReducedMotion) {
+    return <div className={cn(className)}>{children}</div>;
+  }
 
   const getInitialPosition = () => {
     switch (direction) {

@@ -1,5 +1,4 @@
 import { http, HttpResponse } from "msw"
-import type { RestContext } from "msw"
 
 // TODO: Import types và store khi ready
 // import type { Client, Lead, Post, Schedule, Task } from "@/lib/data/types"
@@ -49,7 +48,7 @@ export const clientHandlers = [
   }),
 
   http.post(`${API_BASE}/clients`, async ({ request }) => {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     // const client = dataStore.createClient(body)
     const client = { id: Date.now().toString(), ...body }
@@ -59,7 +58,7 @@ export const clientHandlers = [
 
   http.put(`${API_BASE}/clients/:id`, async ({ params, request }) => {
     const { id } = params
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     // const client = dataStore.updateClient(id as string, body)
     const client = { id, ...body }
@@ -112,7 +111,7 @@ export const leadHandlers = [
   }),
 
   http.post(`${API_BASE}/leads`, async ({ request }) => {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     const lead = { id: Date.now().toString(), ...body }
 
@@ -121,7 +120,7 @@ export const leadHandlers = [
 
   http.put(`${API_BASE}/leads/:id`, async ({ params, request }) => {
     const { id } = params
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     const lead = { id, ...body }
 
@@ -137,7 +136,7 @@ export const leadHandlers = [
 
   http.post(`${API_BASE}/leads/:id/convert`, async ({ params, request }) => {
     const { id } = params
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement convert lead to client
     const client = { id: Date.now().toString(), convertedFromLeadId: id, ...body }
 
@@ -167,7 +166,7 @@ export const postHandlers = [
   }),
 
   http.post(`${API_BASE}/posts`, async ({ request }) => {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     const post = { id: Date.now().toString(), ...body }
 
@@ -176,7 +175,7 @@ export const postHandlers = [
 
   http.put(`${API_BASE}/posts/:id`, async ({ params, request }) => {
     const { id } = params
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     const post = { id, ...body }
 
@@ -201,7 +200,7 @@ export const scheduleHandlers = [
   }),
 
   http.post(`${API_BASE}/schedules`, async ({ request }) => {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     const schedule = { id: Date.now().toString(), ...body }
 
@@ -210,7 +209,7 @@ export const scheduleHandlers = [
 
   http.put(`${API_BASE}/schedules/:id`, async ({ params, request }) => {
     const { id } = params
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     const schedule = { id, ...body }
 
@@ -235,7 +234,7 @@ export const taskHandlers = [
   }),
 
   http.post(`${API_BASE}/tasks`, async ({ request }) => {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     const task = { id: Date.now().toString(), ...body }
 
@@ -244,7 +243,7 @@ export const taskHandlers = [
 
   http.put(`${API_BASE}/tasks/:id`, async ({ params, request }) => {
     const { id } = params
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     // TODO: Implement with data store
     const task = { id, ...body }
 

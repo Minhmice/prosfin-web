@@ -3,6 +3,8 @@ import {
   getAllServices,
   getAllPosts,
 } from "@/lib/content/services";
+import { getAllResearchPosts } from "@/lib/content/posts";
+import { getAllPresets } from "@/lib/content/presets";
 
 /**
  * Generate sitemap for SEO
@@ -10,7 +12,10 @@ import {
  * Includes all static and dynamic routes:
  * - Static pages (/, /services, /about, etc.)
  * - Service detail pages (/services/[slug])
- * - Post pages (/insights/[slug], /knowledge/[slug], /resources/[slug])
+ * - Research pages (/research, /research/[slug])
+ * 
+ * Note: Old routes (/insights, /knowledge, /resources) are redirected,
+ * so they are not included in sitemap
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
@@ -59,6 +64,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.6,
     },
+    {
+      url: `${baseUrl}/research`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
   ];
 
   // Service detail pages
@@ -70,24 +81,41 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  // Post pages (insights, knowledge, resources)
-  const posts = getAllPosts();
+  // Preset pages (/services/presets/[preset])
+  const presets = getAllPresets();
+  const presetRoutes: MetadataRoute.Sitemap = presets.map((preset) => ({
+    url: `${baseUrl}/services/presets/${preset.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  // Research post pages (/research/[slug])
+  const posts = getAllResearchPosts();
   const postRoutes: MetadataRoute.Sitemap = posts
-    .filter((post) => post.href) // Only include posts with valid href
+    .filter((post) => post.href || post.id) // Only include posts with valid identifier
     .map((post) => {
-      // Extract route type from href (e.g., /insights/slug, /knowledge/slug)
-      const url = post.href.startsWith("/")
-        ? `${baseUrl}${post.href}`
-        : `${baseUrl}/${post.href}`;
+      // Extract slug from href or use id
+      const slug = post.href?.split("/").pop() || post.id;
+      const url = `${baseUrl}/research/${slug}`;
+
+      // Use publishedAt or updatedAt if available, otherwise fallback to date
+      const lastModified = post.updatedAt
+        ? new Date(post.updatedAt)
+        : post.publishedAt
+          ? new Date(post.publishedAt)
+          : post.date
+            ? new Date(post.date)
+            : new Date();
 
       return {
         url,
-        lastModified: post.date ? new Date(post.date) : new Date(),
+        lastModified,
         changeFrequency: "weekly" as const,
         priority: 0.7,
       };
     });
 
-  return [...staticRoutes, ...serviceRoutes, ...postRoutes];
+  return [...staticRoutes, ...serviceRoutes, ...presetRoutes, ...postRoutes];
 }
 
