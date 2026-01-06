@@ -14,6 +14,8 @@ import type {
 } from "./lead.types";
 import { normalizeLead } from "./lead.mapper";
 import { getActiveSinks, type LeadSink } from "./lead.sinks";
+import { findLeadByIdempotencyKey, findDuplicateLead, saveLead } from "./lead.repository";
+import { routeAndAssignLead, notifyLeadAssignment } from "./routing";
 
 /**
  * In-memory store for deduplication (MVP)
@@ -70,7 +72,7 @@ export function enrichAttribution(
   
   return {
     ...attribution,
-    firstTouchAt: attribution?.firstTouchAt || attribution?.timestamp || now,
+    firstTouchAt: attribution?.firstTouchAt || now,
     lastTouchAt: now,
   };
 }
@@ -88,11 +90,60 @@ export async function submitLead(
   isDuplicate: boolean;
   duplicateOf?: string;
 }> {
+  // Phase 7: Check idempotency first
+  const clientRequestId = (rawPayload.extras as any)?.clientRequestId as string | undefined;
+  if (clientRequestId) {
+    const existingLead = await findLeadByIdempotencyKey(clientRequestId);
+    if (existingLead) {
+      // Return existing lead (idempotent)
+      return {
+        lead: existingLead,
+        isDuplicate: !!existingLead.duplicateOf,
+        duplicateOf: existingLead.duplicateOf,
+      };
+    }
+  }
+
   // Normalize lead
   const enrichedAttribution = enrichAttribution(attribution, meta);
-  const lead = normalizeLead(rawPayload, source, enrichedAttribution, meta);
+  let lead = normalizeLead(rawPayload, source, enrichedAttribution, meta);
 
-  // Check deduplication
+  // Phase 8: Route and assign lead
+  const routing = routeAndAssignLead(lead);
+  lead = {
+    ...lead,
+    priority: routing.priority,
+    ownerId: routing.ownerId,
+    sla: {
+      dueAt: routing.slaDueAt,
+      assignedAt: routing.ownerId ? new Date().toISOString() : undefined,
+    },
+    status: routing.status,
+  };
+
+  // Phase 8: Notify assignment
+  notifyLeadAssignment(lead, routing.priority);
+
+  // Phase 7: Check deduplication using repository (email+company+source within T days)
+  const duplicateLead = await findDuplicateLead(
+    lead.contact.email,
+    lead.company?.name,
+    source,
+    lead.contact.phone
+  );
+
+  if (duplicateLead) {
+    lead.duplicateOf = duplicateLead.id;
+    // Still save as duplicate for tracking
+    await saveLead(lead);
+    return {
+      lead,
+      isDuplicate: true,
+      duplicateOf: duplicateLead.id,
+    };
+  }
+
+  // Fallback to in-memory dedupe (for backward compatibility)
   const dedupeResult = dedupeLead(lead.contact.email, lead.createdAt);
   
   if (dedupeResult.isDuplicate) {
@@ -105,10 +156,13 @@ export async function submitLead(
     });
   }
 
+  // Save lead
+  const savedLead = await saveLead(lead);
+
   // Save to all active sinks
   const sinks = getActiveSinks();
   const savePromises = sinks.map((sink) =>
-    sink.save(lead).catch((error) => {
+    sink.save(savedLead).catch((error) => {
       console.error(`[LeadService] Sink failed:`, error);
       // Don't throw - allow other sinks to succeed
     })
@@ -117,9 +171,9 @@ export async function submitLead(
   await Promise.allSettled(savePromises);
 
   return {
-    lead,
-    isDuplicate: dedupeResult.isDuplicate,
-    duplicateOf: dedupeResult.duplicateOf,
+    lead: savedLead,
+    isDuplicate: dedupeResult.isDuplicate || !!duplicateLead,
+    duplicateOf: dedupeResult.duplicateOf || duplicateLead?.id,
   };
 }
 

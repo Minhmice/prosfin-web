@@ -50,7 +50,7 @@ export interface ProcessPageContent {
 
 export const processPageContent: ProcessPageContent = {
   hero: {
-    eyebrow: "Quy trình",
+    eyebrow: "How we work",
     title: "Quy trình ProsFIN đồng hành cùng doanh nghiệp",
     subtitle:
       "Rõ ràng – không mơ hồ – không bất ngờ về phạm vi. Mọi bước đều được trao đổi trước và bạn có quyền quyết định.",

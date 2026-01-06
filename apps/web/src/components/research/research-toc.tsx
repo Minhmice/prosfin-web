@@ -10,7 +10,7 @@ interface TocItem {
 }
 
 interface ResearchTocProps {
-  contentRef?: React.RefObject<HTMLDivElement>;
+  contentRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 /**

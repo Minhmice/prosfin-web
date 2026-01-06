@@ -48,12 +48,16 @@ export function ResearchFilterBar({
   const updateFilter = (key: keyof ResearchFilters, value?: string) => {
     const newFilters: ResearchFilters = { ...currentFilters };
     if (value) {
-      newFilters[key] = value;
+      if (key === "sort" && (value === "latest" || value === "updated" || value === "popular")) {
+        newFilters[key] = value;
+      } else if (key !== "sort") {
+        newFilters[key] = value;
+      }
     } else {
       delete newFilters[key];
     }
     const params = buildSearchParams(newFilters);
-    router.replace(`/research${params.toString() ? `?${params.toString()}` : ""}`);
+    router.replace(`/insights${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
   const clearFilters = () => {

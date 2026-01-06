@@ -11,6 +11,7 @@ import type { ServicePreset } from "@/data/service-presets";
 import { SERVICE_PRESETS } from "@/data/service-presets";
 import { Card, CardContent } from "@/components/ui/card";
 import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvent } from "@/lib/analytics-events";
 import { cn } from "@/lib/utils";
 
 interface ServicesPresetsProps {
@@ -26,7 +27,7 @@ export function ServicesPresets({
   className,
 }: ServicesPresetsProps) {
   const handlePresetClick = (preset: ServicePreset) => {
-    trackEvent("services_preset_applied", {
+    trackEvent(AnalyticsEvent.SERVICES_PRESET_APPLIED, {
       preset_id: preset.id,
       preset_label: preset.label,
     });

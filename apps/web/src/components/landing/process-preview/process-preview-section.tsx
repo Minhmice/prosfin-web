@@ -2,7 +2,7 @@
  * ProcessPreviewSection - Preview quy trình 4 bước
  *
  * 4 steps, mỗi step có deliverables ngắn.
- * CTA → /process
+ * CTA → /how-we-work
  */
 
 "use client";
@@ -91,7 +91,7 @@ export function ProcessPreviewSection({ content }: ProcessPreviewSectionProps) {
 
           {content.cta && (
             <div className="flex justify-center">
-              <AppLink href={content.cta.href || "/process"} variant="primary">
+              <AppLink href={content.cta.href || "/how-we-work"} variant="primary">
                 {content.cta.label || "Xem quy trình chi tiết"} →
               </AppLink>
             </div>

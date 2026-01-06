@@ -42,7 +42,7 @@ export function FilterChip({
 
   return (
     <AppBadge
-      badgeVariant={active ? "primary" : variant}
+      badgeVariant={active ? "primary" : variant === "outline" ? "default" : variant === "secondary" ? "default" : "default"}
       className={cn(
         "cursor-pointer transition-all hover:scale-105",
         active && "ring-2 ring-primary ring-offset-2",

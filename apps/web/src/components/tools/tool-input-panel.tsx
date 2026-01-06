@@ -112,7 +112,7 @@ export function ToolInputPanel({
     onInputChange(values);
   }, [form.watch(), isHydrated, router, onInputChange]);
 
-  const handlePresetClick = (preset: ToolDefinition["inputs"]["presets"][0]) => {
+  const handlePresetClick = (preset: NonNullable<ToolDefinition["inputs"]["presets"]>[0]) => {
     form.reset(preset.values);
   };
 
@@ -198,6 +198,7 @@ export function ToolInputPanel({
                         {...formField}
                         type={field.type}
                         placeholder={field.placeholder}
+                        value={formField.value as string | number | readonly string[] | undefined}
                       />
                     )}
                   </FormControl>

@@ -21,6 +21,7 @@ import { useLeadSubmit } from "@/hooks/use-lead-submit";
 import { TurnstileField } from "@/components/shared/forms/turnstile-field";
 import { FormSubmitStatus } from "@/components/shared/forms/form-submit-status";
 import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvent } from "@/lib/analytics-events";
 import {
   clearDataFormSchema,
   type ClearDataFormValues,
@@ -71,7 +72,7 @@ export function ClearDataForm({
     attribution: attribution || undefined,
     onSuccess: (leadId) => {
       clearLeadDraft();
-      trackEvent("lead_checklist_submit", {
+      trackEvent(AnalyticsEvent.LEAD_CHECKLIST_SUBMIT, {
         hasPhone: !!form.getValues("phone"),
         hasEmail: !!form.getValues("email"),
         hasRevenueRange: !!form.getValues("revenueRange"),
@@ -83,7 +84,7 @@ export function ClearDataForm({
         description: error.message || "Có lỗi xảy ra. Vui lòng thử lại sau.",
         variant: "error",
       });
-      trackEvent("form_error", { error: String(error) });
+      trackEvent(AnalyticsEvent.FORM_ERROR, { error: String(error) });
     },
   });
 
@@ -131,7 +132,7 @@ export function ClearDataForm({
   };
 
   const handleBookCallClick = () => {
-    trackEvent("book_call_click");
+    trackEvent(AnalyticsEvent.BOOK_CALL_CLICK);
     if (onBookCallClick) {
       onBookCallClick();
     }

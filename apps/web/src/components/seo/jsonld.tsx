@@ -161,3 +161,30 @@ export function generateItemListSchema(
   };
 }
 
+/**
+ * Generate FAQPage schema
+ * 
+ * @param faqItems - Array of FAQ items { q: string, a: string }
+ * @param baseUrl - Base URL of the site
+ * @returns FAQPage schema object
+ */
+export function generateFaqPageSchema(
+  faqItems: Array<{ q: string; a: string }>,
+  baseUrl?: string
+): object {
+  const base = baseUrl || process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+}
+

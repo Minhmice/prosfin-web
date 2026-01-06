@@ -1,121 +1,118 @@
-import type { MetadataRoute } from "next";
-import {
-  getAllServices,
-  getAllPosts,
-} from "@/lib/content/services";
-import { getAllResearchPosts } from "@/lib/content/posts";
-import { getAllPresets } from "@/lib/content/presets";
+import { MetadataRoute } from "next";
+import { getCategories, getAllServicePaths } from "@/lib/services/getServiceCatalog";
+import { getInsightsStaticParams } from "@/lib/insights/getInsightsStaticParams";
+import { getAllRecruitmentPages } from "@/content/recruitment.catalog";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
 
 /**
- * Generate sitemap for SEO
+ * sitemap.ts - Dynamic sitemap.xml generation
  * 
- * Includes all static and dynamic routes:
- * - Static pages (/, /services, /about, etc.)
- * - Service detail pages (/services/[slug])
- * - Research pages (/research, /research/[slug])
+ * Generates sitemap with all public pages:
+ * - Services (hub, categories, detail)
+ * - Insights (hub, detail)
+ * - Recruitment (hub, pages)
+ * - Request proposal
  * 
- * Note: Old routes (/insights, /knowledge, /resources) are redirected,
- * so they are not included in sitemap
+ * Note: /request-proposal/thanks is excluded (noindex)
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
+  const now = new Date();
+  const entries: MetadataRoute.Sitemap = [];
 
-  // Static routes
-  const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
+  // Home page
+  entries.push({
+    url: BASE_URL,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 1.0,
+  });
+
+  // Services Hub
+  entries.push({
+    url: `${BASE_URL}/services`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 1.0,
+  });
+
+  // Service Categories
+  const categories = getCategories();
+  for (const category of categories) {
+    entries.push({
+      url: `${BASE_URL}/services/${category.slug}`,
+      lastModified: now,
       changeFrequency: "weekly",
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/services`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
       priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/case-studies`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/process`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/faq`,
-      lastModified: new Date(),
+    });
+  }
+
+  // Service Detail Pages
+  const servicePaths = getAllServicePaths();
+  for (const path of servicePaths) {
+    entries.push({
+      url: `${BASE_URL}/services/${path.category}/${path.service}`,
+      lastModified: now,
       changeFrequency: "monthly",
       priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/research`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-  ];
-
-  // Service detail pages
-  const services = getAllServices();
-  const serviceRoutes: MetadataRoute.Sitemap = services.map((service) => ({
-    url: `${baseUrl}/services/${service.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
-
-  // Preset pages (/services/presets/[preset])
-  const presets = getAllPresets();
-  const presetRoutes: MetadataRoute.Sitemap = presets.map((preset) => ({
-    url: `${baseUrl}/services/presets/${preset.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
-
-  // Research post pages (/research/[slug])
-  const posts = getAllResearchPosts();
-  const postRoutes: MetadataRoute.Sitemap = posts
-    .filter((post) => post.href || post.id) // Only include posts with valid identifier
-    .map((post) => {
-      // Extract slug from href or use id
-      const slug = post.href?.split("/").pop() || post.id;
-      const url = `${baseUrl}/research/${slug}`;
-
-      // Use publishedAt or updatedAt if available, otherwise fallback to date
-      const lastModified = post.updatedAt
-        ? new Date(post.updatedAt)
-        : post.publishedAt
-          ? new Date(post.publishedAt)
-          : post.date
-            ? new Date(post.date)
-            : new Date();
-
-      return {
-        url,
-        lastModified,
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-      };
     });
+  }
 
-  return [...staticRoutes, ...serviceRoutes, ...presetRoutes, ...postRoutes];
+  // Insights Hub
+  entries.push({
+    url: `${BASE_URL}/insights`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 1.0,
+  });
+
+  // Insight Detail Pages
+  const insightPaths = getInsightsStaticParams();
+  for (const path of insightPaths) {
+    entries.push({
+      url: `${BASE_URL}/insights/${path.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
+
+  // Recruitment Hub
+  entries.push({
+    url: `${BASE_URL}/recruitment`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  });
+
+  // Recruitment Pages
+  const recruitmentPages = getAllRecruitmentPages();
+  for (const page of recruitmentPages) {
+    entries.push({
+      url: `${BASE_URL}/recruitment/${page.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    });
+  }
+
+  // Talent Pool
+  entries.push({
+    url: `${BASE_URL}/recruitment/talent-pool`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  });
+
+  // Request Proposal
+  entries.push({
+    url: `${BASE_URL}/request-proposal`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  });
+
+  // Note: /request-proposal/thanks is excluded (noindex)
+
+  return entries;
 }
-

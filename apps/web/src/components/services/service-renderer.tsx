@@ -12,6 +12,8 @@ import { NarrativeLayout } from "./layouts/narrative-layout";
 import { FrameworkLayout } from "./layouts/framework-layout";
 import { SplitPanelLayout } from "./layouts/split-panel-layout";
 import { TimelineLayout } from "./layouts/timeline-layout";
+import { LedgerCockpitLayout } from "@/features/services/layouts/ledger-cockpit-layout";
+import { getServicePageConfig } from "@/content/services/registry";
 
 interface ServiceRendererProps {
   service: Service;
@@ -73,6 +75,21 @@ export function ServiceRenderer({ service, breadcrumbItems }: ServiceRendererPro
 
     case "timeline":
       return <TimelineLayout service={service} />;
+
+    case "ledger-cockpit-layout": {
+      // Phase 5: Integrate LedgerCockpitLayout with ServicePageConfig
+      const pageConfig = getServicePageConfig(service.slug);
+      if (pageConfig) {
+        return <LedgerCockpitLayout config={pageConfig} service={service} />;
+      }
+      // Fallback to default layout if config not found
+      return (
+        <div className="space-y-12">
+          <ServiceHero service={service} layoutVariant={layoutVariant} breadcrumbItems={breadcrumbItems} />
+          <ServiceSections sections={contentSections} />
+        </div>
+      );
+    }
 
     default:
       // Generic layout cho các variant còn lại

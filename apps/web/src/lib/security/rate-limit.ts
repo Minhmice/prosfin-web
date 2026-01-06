@@ -44,14 +44,41 @@ export interface RateLimitConfig {
 }
 
 /**
+ * Rate limit policy by source
+ */
+export type LeadSource = "oneledger" | "cleardata" | "contact" | "default";
+
+export const RATE_LIMIT_POLICIES: Record<LeadSource, RateLimitConfig> = {
+  oneledger: {
+    windowMs: 10 * 60 * 1000, // 10 minutes (sustained)
+    maxRequests: 10,
+    burstWindowMs: 30 * 1000, // 30 seconds (burst)
+    burstMaxRequests: 3,
+  },
+  cleardata: {
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    maxRequests: 10,
+    burstWindowMs: 30 * 1000, // 30 seconds
+    burstMaxRequests: 3,
+  },
+  contact: {
+    windowMs: 15 * 60 * 1000, // 15 minutes (more lenient for contact forms)
+    maxRequests: 15,
+    burstWindowMs: 60 * 1000, // 1 minute
+    burstMaxRequests: 5,
+  },
+  default: {
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    maxRequests: 10,
+    burstWindowMs: 30 * 1000, // 30 seconds
+    burstMaxRequests: 3,
+  },
+};
+
+/**
  * Default rate limit config for /api/leads
  */
-export const DEFAULT_LEAD_RATE_LIMIT: RateLimitConfig = {
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  maxRequests: 10,
-  burstWindowMs: 30 * 1000, // 30 seconds
-  burstMaxRequests: 3,
-};
+export const DEFAULT_LEAD_RATE_LIMIT: RateLimitConfig = RATE_LIMIT_POLICIES.default;
 
 /**
  * Check rate limit
@@ -112,14 +139,38 @@ export function checkRateLimit(
 }
 
 /**
+ * Get rate limit config by source
+ */
+export function getRateLimitConfigBySource(source?: string): RateLimitConfig {
+  if (!source) return RATE_LIMIT_POLICIES.default;
+
+  // Map source string to policy
+  if (source === "oneledger") return RATE_LIMIT_POLICIES.oneledger;
+  if (source === "cleardata") return RATE_LIMIT_POLICIES.cleardata;
+  if (source === "contact" || source === "contact_page" || source === "contact_lite") {
+    return RATE_LIMIT_POLICIES.contact;
+  }
+
+  return RATE_LIMIT_POLICIES.default;
+}
+
+/**
  * Check rate limit for request
  */
 export function checkRequestRateLimit(
   request: Request,
-  config?: RateLimitConfig
+  config?: RateLimitConfig,
+  source?: string
 ): { allowed: boolean; retryAfterSec?: number } {
   const ip = extractIp(request);
-  const key = `rate_limit:${ip}`;
-  return checkRateLimit(key, config);
+  
+  // Use source-specific config if provided
+  const effectiveConfig = config || getRateLimitConfigBySource(source);
+  
+  // Create key with IP and source for per-source rate limiting
+  const sourceKey = source || "default";
+  const key = `rate_limit:${sourceKey}:${ip}`;
+  
+  return checkRateLimit(key, effectiveConfig);
 }
 

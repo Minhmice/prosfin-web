@@ -256,10 +256,9 @@ export function ToolLeadMagnetCta({
                 <Button
                   type="submit"
                   className="flex-1"
-                  loading={isSubmitting}
                   disabled={isSubmitting || !turnstileToken}
                 >
-                  Tải báo cáo
+                  {isSubmitting ? "Đang tải..." : "Tải báo cáo"}
                 </Button>
               </div>
             </form>

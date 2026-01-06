@@ -8,7 +8,7 @@
 
 import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AppAlert, AppAlertDescription, AppAlertTitle } from "@/components/shared/alert";
 import { AlertCircle, CheckCircle2, Info, XCircle } from "lucide-react";
 import type { ToolDefinition, ToolResult } from "@/types/tools";
 import { ToolExportActions } from "./tool-export-actions";
@@ -138,7 +138,7 @@ export function ToolResultsPanel({ result, tool }: ToolResultsPanelProps) {
                     : Info;
             
             return (
-              <Alert
+              <AppAlert
                 key={index}
                 variant={
                   flag.type === "error"
@@ -149,7 +149,7 @@ export function ToolResultsPanel({ result, tool }: ToolResultsPanelProps) {
                 }
               >
                 <Icon className="h-4 w-4" />
-                <AlertTitle>
+                <AppAlertTitle>
                   {flag.type === "error"
                     ? "Cảnh báo"
                     : flag.type === "warning"
@@ -157,8 +157,8 @@ export function ToolResultsPanel({ result, tool }: ToolResultsPanelProps) {
                       : flag.type === "success"
                         ? "Thành công"
                         : "Thông tin"}
-                </AlertTitle>
-                <AlertDescription>
+                </AppAlertTitle>
+                <AppAlertDescription>
                   {flag.message}
                   {flag.action && (
                     <a
@@ -168,8 +168,8 @@ export function ToolResultsPanel({ result, tool }: ToolResultsPanelProps) {
                       {flag.action.label}
                     </a>
                   )}
-                </AlertDescription>
-              </Alert>
+                </AppAlertDescription>
+              </AppAlert>
             );
           })}
         </div>

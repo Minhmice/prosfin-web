@@ -5,6 +5,7 @@ import { Shield } from "lucide-react";
 import { ProsfinSectionWrapper, ProsfinSectionHeading, ProsfinPrimaryButton, ProsfinSecondaryButton, ProsfinBadge } from "@/components/shared";
 import { useInViewAnimation } from "@/hooks/use-in-view-animation";
 import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvent } from "@/lib/analytics-events";
 import { ClearDataForm } from "./cleardata-form";
 import type { FinalCtaContent } from "@/data/services/cleardata";
 
@@ -23,7 +24,7 @@ export function FinalCtaSection({
   const { ref, isInView } = useInViewAnimation({ delay: 100 });
 
   const handleBookCallClick = () => {
-    trackEvent("book_call_click");
+    trackEvent(AnalyticsEvent.BOOK_CALL_CLICK);
     if (onBookCallClick) onBookCallClick();
   };
 

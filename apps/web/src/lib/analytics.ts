@@ -7,6 +7,8 @@
  * TODO(Analytics): Replace dataLayer mock with real analytics provider (GA4, Mixpanel, etc.)
  */
 
+import { AnalyticsEvent } from "./analytics-events";
+
 const CONSENT_KEY = "prosfin-cookie-consent";
 
 /**
@@ -26,20 +28,8 @@ function hasConsent(): boolean {
   }
 }
 
-export type AnalyticsEvent =
-  | "lead_checklist_submit"
-  | "book_call_click"
-  | "form_error"
-  | "scroll_50"
-  | "scroll_90"
-  | "services_filter_changed"
-  | "services_preset_applied"
-  | "service_card_clicked"
-  | "compare_opened"
-  | "cta_modal_opened";
-
 export interface AnalyticsEventData {
-  event: AnalyticsEvent;
+  event: string;
   [key: string]: unknown;
 }
 

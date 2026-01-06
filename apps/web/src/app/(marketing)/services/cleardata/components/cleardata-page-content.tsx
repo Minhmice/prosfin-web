@@ -10,6 +10,7 @@
 import * as React from "react";
 import { clearDataContent } from "@/data/services/cleardata";
 import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvent } from "@/lib/analytics-events";
 import { HeroSection } from "./hero";
 import { ConsequencesSection } from "./consequences";
 import { SolutionSection } from "./solution";
@@ -39,12 +40,12 @@ export function ClearDataPageContent({ breadcrumbItems }: ClearDataPageContentPr
       const scrollPercent = (scrollTop / scrollHeight) * 100;
 
       if (scrollPercent >= 50 && !scrollTracked50) {
-        trackEvent("scroll_50");
+        trackEvent(AnalyticsEvent.SCROLL_50);
         setScrollTracked50(true);
       }
 
       if (scrollPercent >= 90 && !scrollTracked90) {
-        trackEvent("scroll_90");
+        trackEvent(AnalyticsEvent.SCROLL_90);
         setScrollTracked90(true);
       }
     };
@@ -54,7 +55,7 @@ export function ClearDataPageContent({ breadcrumbItems }: ClearDataPageContentPr
   }, [scrollTracked50, scrollTracked90]);
 
   const handleBookCallClick = () => {
-    trackEvent("book_call_click");
+    trackEvent(AnalyticsEvent.BOOK_CALL_CLICK);
     // TODO: Implement book call flow
   };
 

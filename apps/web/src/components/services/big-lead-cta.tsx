@@ -19,7 +19,7 @@ interface BigLeadCtaProps {
  * Component riêng cho CTA lớn ở cuối service pages:
  * - Large heading và subheading
  * - Primary button: "Đăng ký tư vấn" → `/contact` hoặc lead form
- * - Secondary button (optional): "Xem quy trình" → `/process`
+ * - Secondary button (optional): "Xem quy trình" → `/how-we-work`
  * - Design nổi bật với border/background highlight
  */
 export function BigLeadCta({
@@ -48,7 +48,7 @@ export function BigLeadCta({
           </ProsfinPrimaryButton>
           
           {showSecondaryButton && (
-            <ProsfinSecondaryButton href="/process" size="lg" variant="outline">
+            <ProsfinSecondaryButton href="/how-we-work" size="lg" variant="outline">
               Xem quy trình làm việc
             </ProsfinSecondaryButton>
           )}

@@ -1,20 +1,27 @@
-import type { MetadataRoute } from "next";
+import { MetadataRoute } from "next";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
 
 /**
- * Generate robots.txt for SEO
+ * robots.ts - Dynamic robots.txt generation
  * 
- * Allows all crawlers and points to sitemap
+ * Generates robots.txt with sitemap URL.
+ * Allows all public routes, disallows admin/private routes if any.
  */
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
-
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/api/", "/onboarding/"],
-    },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: [
+          "/api/", // API routes
+          "/admin/", // Admin dashboard (if exists)
+          "/_next/", // Next.js internal
+          "/request-proposal/thanks", // Thank-you page (noindex)
+        ],
+      },
+    ],
+    sitemap: `${BASE_URL}/sitemap.xml`,
   };
 }
-

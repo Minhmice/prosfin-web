@@ -38,9 +38,9 @@ export function useCtaController() {
     (config: CtaConfig) => {
       // Track analytics
       const eventMap: Record<CtaType, AnalyticsEvent> = {
-        primary: AnalyticsEvent.OPEN_LEAD_MODAL,
-        secondary: AnalyticsEvent.VIEW_SERVICES_LIST,
-        tertiary: AnalyticsEvent.OPEN_LEAD_MODAL,
+        primary: AnalyticsEvent.CTA_MODAL_OPENED,
+        secondary: AnalyticsEvent.SERVICES_FILTER_CHANGED,
+        tertiary: AnalyticsEvent.CTA_MODAL_OPENED,
       };
 
       trackEvent(eventMap[config.type], {

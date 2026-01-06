@@ -27,10 +27,16 @@ export const legalContent: LegalContent = {
     {
       title: "Điều hướng",
       links: [
-        { label: "Dịch vụ", href: "#services" },
-        { label: "Quy trình", href: "#process" },
-        { label: "Về ProsFIN", href: "#about" },
-        { label: "FAQ", href: "#faq" },
+        { label: "Dịch vụ", href: "/services" },
+        { label: "Industries", href: "/industries" },
+        { label: "Insights", href: "/insights" },
+        { label: "Tools & Templates", href: "/tools" },
+        { label: "Case Studies", href: "/case-studies" },
+        { label: "How we work", href: "/how-we-work" },
+        { label: "Về ProsFIN", href: "/about" },
+        { label: "People", href: "/people" },
+        { label: "FAQ", href: "/faq" },
+        { label: "Contact", href: "/contact" },
       ],
     },
     {
@@ -38,6 +44,8 @@ export const legalContent: LegalContent = {
       links: [
         { label: "Chính sách bảo mật", href: "/privacy" },
         { label: "Điều khoản sử dụng", href: "/terms" },
+        { label: "Chính sách Cookie", href: "/cookie" },
+        { label: "Tuyên bố miễn trừ", href: "/disclaimer" },
       ],
     },
   ],

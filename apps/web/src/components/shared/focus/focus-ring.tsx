@@ -34,12 +34,12 @@ export function FocusRing({
   className,
   ringColor = "default",
 }: FocusRingProps) {
-  return React.cloneElement(children, {
+  return React.cloneElement(children as React.ReactElement<any>, {
     className: cn(
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
       ringColorClasses[ringColor],
       className,
-      children.props.className
+      (children as React.ReactElement<any>).props.className
     ),
   });
 }

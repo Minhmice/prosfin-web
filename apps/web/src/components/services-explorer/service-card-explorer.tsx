@@ -26,6 +26,7 @@ import {
 } from "@/lib/services-explorer/compare-storage";
 import { recordServiceClick } from "@/lib/services-explorer/click-history";
 import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvent } from "@/lib/analytics-events";
 import { cn } from "@/lib/utils";
 
 interface ServiceCardExplorerProps {
@@ -65,7 +66,7 @@ export function ServiceCardExplorer({
 
   const handleCardClick = () => {
     recordServiceClick(service.slug);
-    trackEvent("service_card_clicked", {
+    trackEvent(AnalyticsEvent.SERVICE_CARD_CLICKED, {
       service_slug: service.slug,
       service_title: service.title,
     });
@@ -87,7 +88,6 @@ export function ServiceCardExplorer({
           coverImage={service.coverImage}
           cta={
             <ProsfinSecondaryButton
-              href={`/services/${service.slug}`}
               className="w-full"
               onClick={(e) => {
                 e.stopPropagation();

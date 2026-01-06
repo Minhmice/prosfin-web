@@ -71,12 +71,17 @@ export function PostCard({ post, className }: PostCardProps) {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <time dateTime={post.date}>{post.date}</time>
-              {post.readingTime && (
-                <>
-                  <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                  <span>{post.readingTime} phút đọc</span>
-                </>
-              )}
+                {post.readingTime && (
+                  <>
+                    <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+                    <span>
+                      {typeof post.readingTime === "number"
+                        ? post.readingTime
+                        : post.readingTime.minutes}{" "}
+                      phút đọc
+                    </span>
+                  </>
+                )}
             </div>
 
             <span className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md">

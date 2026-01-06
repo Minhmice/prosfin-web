@@ -2,15 +2,14 @@
 
 import * as React from "react";
 import { Menu } from "lucide-react";
+import Link from "next/link";
 import { SiteLogo } from "./site-logo";
-import { SiteNav } from "./site-nav";
+import { DesktopNav } from "./desktop-nav";
 import { MobileMenu } from "./mobile-menu";
-import { ProsfinPrimaryButton } from "@/components/shared";
 import { ProsfinContainer } from "@/components/layout/container";
 import { SkipLink } from "@/components/shared/a11y/skip-link";
-import { navigationItems, headerCtaLabel } from "@/data/navigation-content";
+import { getSiteNavigation } from "@/content/site.navigation";
 import { cn } from "@/lib/utils";
-import { useHeroModal } from "@/components/landing/hero/hero-modal-context";
 
 export interface SiteHeaderProps {
   /**
@@ -28,7 +27,7 @@ export interface SiteHeaderProps {
  */
 export function SiteHeader({ className }: SiteHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-  const { openModal } = useHeroModal();
+  const navigation = getSiteNavigation();
 
   const handleNavClick = (href: string) => {
     if (href.startsWith("#")) {
@@ -52,17 +51,9 @@ export function SiteHeader({ className }: SiteHeaderProps) {
         // Link to landing page anchor from other pages
         const anchor = href.replace("/#", "#");
         window.location.href = `/${anchor}`;
-      } else {
-        // Regular page navigation - let Next.js handle
-        window.location.href = href;
       }
+      // Regular page navigation - let Next.js Link handle
     }
-    setMobileMenuOpen(false);
-  };
-
-  const handleCtaClick = () => {
-    // Step 1: mở mini form modal (UI-only onboarding)
-    openModal();
     setMobileMenuOpen(false);
   };
 
@@ -81,12 +72,7 @@ export function SiteHeader({ className }: SiteHeaderProps) {
             <SiteLogo />
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex md:items-center md:gap-6 mr-6">
-              <SiteNav items={navigationItems} onNavClick={handleNavClick} />
-              <ProsfinPrimaryButton onClick={handleCtaClick} size="sm">
-                {headerCtaLabel}
-              </ProsfinPrimaryButton>
-            </div>
+            <DesktopNav />
 
             {/* Mobile Menu Button */}
             <button
@@ -103,11 +89,9 @@ export function SiteHeader({ className }: SiteHeaderProps) {
 
       {/* Mobile Menu */}
       <MobileMenu
-        items={navigationItems}
         open={mobileMenuOpen}
         onOpenChange={setMobileMenuOpen}
         onItemClick={handleNavClick}
-        onCtaClick={handleCtaClick}
       />
     </>
   );

@@ -16,6 +16,7 @@ export interface SearchInputProps
   onSearchChange?: (value: string) => void;
   debounceMs?: number;
   showIcon?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 /**
@@ -63,7 +64,7 @@ export function SearchInput({
 
   React.useEffect(() => {
     if (onSearchChange) {
-      onSearchChange(debouncedValue);
+      onSearchChange(String(debouncedValue));
     }
   }, [debouncedValue, onSearchChange]);
 

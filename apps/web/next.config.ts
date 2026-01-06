@@ -1,11 +1,9 @@
 import type { NextConfig } from "next";
+import { getNextJsRedirects } from "./src/content/redirects";
 
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
-  experimental: {
-    instrumentationHook: true,
-  },
   images: {
     remotePatterns: [
       {
@@ -19,6 +17,9 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
+  },
+  async redirects() {
+    return getNextJsRedirects();
   },
 };
 

@@ -7,7 +7,7 @@
 "use client";
 
 import * as React from "react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AppAlert, AppAlertDescription } from "@/components/shared/alert";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { getErrorMessage } from "@/lib/leads/error-codes";
@@ -45,21 +45,21 @@ export function FormSubmitStatus({
 
   if (status === "submitting") {
     return (
-      <Alert className={cn("border-muted", className)}>
+      <AppAlert className={cn("border-muted", className)}>
         <Loader2 className="h-4 w-4 animate-spin" />
-        <AlertDescription>Đang gửi...</AlertDescription>
-      </Alert>
+        <AppAlertDescription>Đang gửi...</AppAlertDescription>
+      </AppAlert>
     );
   }
 
   if (status === "success") {
     return (
-      <Alert className={cn("border-green-500 bg-green-50 dark:bg-green-950", className)}>
+      <AppAlert className={cn("border-green-500 bg-green-50 dark:bg-green-950", className)}>
         <CheckCircle2 className="h-4 w-4 text-green-600" />
-        <AlertDescription className="text-green-800 dark:text-green-200">
+        <AppAlertDescription className="text-green-800 dark:text-green-200">
           {successMessage}
-        </AlertDescription>
-      </Alert>
+        </AppAlertDescription>
+      </AppAlert>
     );
   }
 
@@ -69,9 +69,9 @@ export function FormSubmitStatus({
       (errorCode ? getErrorMessage(errorCode) : "Có lỗi xảy ra. Vui lòng thử lại.");
 
     return (
-      <Alert variant="destructive" className={className}>
+      <AppAlert variant="destructive" className={className}>
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{message}</AlertDescription>
+        <AppAlertDescription>{message}</AppAlertDescription>
         {onRetry && (
           <Button
             type="button"
@@ -83,7 +83,7 @@ export function FormSubmitStatus({
             Thử lại
           </Button>
         )}
-      </Alert>
+      </AppAlert>
     );
   }
 

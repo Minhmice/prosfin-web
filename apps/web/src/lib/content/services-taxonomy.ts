@@ -131,6 +131,6 @@ export function validateServiceTaxonomy(service: Service): boolean {
   const hasStages = mapped.stages && mapped.stages.length > 0;
   const hasFormats = mapped.formats && mapped.formats.length > 0;
 
-  return hasPersonas && hasOutcomes && hasStages && hasFormats;
+  return !!(hasPersonas && hasOutcomes && hasStages && hasFormats);
 }
 

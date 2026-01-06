@@ -18,6 +18,8 @@ import {
   logLeadRejected,
   logLeadDuplicated,
 } from "@/lib/observability/logger";
+import { generateRequestId, setTraceContext, clearTraceContext } from "@/lib/observability/tracing";
+import { recordLeadSubmitRate, recordErrorCode, recordLatency } from "@/lib/observability/metrics";
 
 /**
  * POST /api/leads
@@ -25,14 +27,29 @@ import {
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   const ip = extractIp(request);
+  const requestId = generateRequestId();
+
+  // Phase 7: Set trace context
+  setTraceContext({ requestId });
 
   try {
     // 1. Rate limiting
-    const rateLimitResult = checkRequestRateLimit(request);
+    // Extract source from body if available (will be parsed later)
+    let source: string | undefined;
+    try {
+      const bodyPreview = await request.clone().json().catch(() => ({}));
+      source = (bodyPreview as any)?.source;
+    } catch {
+      // Ignore parsing errors, will use default config
+    }
+    const rateLimitResult = checkRequestRateLimit(request, undefined, source);
     if (!rateLimitResult.allowed) {
+      const elapsedMs = Date.now() - startTime;
+      recordErrorCode("429", source);
+      recordLatency(elapsedMs, source);
       logLeadRejected(
         ERROR_CODES.RATE_LIMITED,
-        undefined,
+        source,
         ip
       );
       return NextResponse.json(
@@ -73,6 +90,9 @@ export async function POST(request: NextRequest) {
     if (process.env.TURNSTILE_SECRET_KEY) {
       const isValid = await verifyTurnstileToken(turnstileToken || "", ip);
       if (!isValid) {
+        const elapsedMs = Date.now() - startTime;
+        recordErrorCode("403", source);
+        recordLatency(elapsedMs, source);
         logLeadRejected(ERROR_CODES.BOT_SUSPECTED, source, ip);
         return NextResponse.json(
           {
@@ -97,11 +117,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 5. Submit lead
+    // 5. Extract experiments from request headers (set by middleware)
+    const experimentsHeader = request.headers.get("x-experiments");
+    const experiments: Record<string, string> = {};
+    if (experimentsHeader) {
+      experimentsHeader.split(",").forEach((pair) => {
+        const [key, variant] = pair.split(":");
+        if (key && variant) {
+          experiments[key.trim()] = variant.trim();
+        }
+      });
+    }
+
+    // Phase 8: Attach experiments to attribution
+    const enrichedAttribution = {
+      ...(attribution as any),
+      experiments: Object.keys(experiments).length > 0 ? experiments : undefined,
+    };
+
+    // Phase 7: Update trace context with source
+    setTraceContext({ requestId, source });
+
     const result = await submitLead(
       payload,
       source as LeadSource,
-      attribution as any,
+      enrichedAttribution,
       {
         ip,
         ipHash: undefined, // Will be hashed in logger
@@ -111,6 +151,13 @@ export async function POST(request: NextRequest) {
     );
 
     const elapsedMs = Date.now() - startTime;
+
+    // Phase 7: Update trace context with leadId
+    setTraceContext({ requestId, leadId: result.lead.id, source });
+
+    // Phase 7: Record metrics
+    recordLeadSubmitRate(source, true);
+    recordLatency(elapsedMs, source);
 
     // 6. Log result
     if (result.isDuplicate) {
@@ -148,6 +195,11 @@ export async function POST(request: NextRequest) {
     const errorMessage =
       error instanceof Error ? error.message : String(error);
 
+    // Phase 7: Record error metrics
+    recordErrorCode("500", undefined);
+    recordLatency(elapsedMs, undefined);
+    recordLeadSubmitRate(undefined || "unknown", false);
+
     logLeadRejected(ERROR_CODES.INTERNAL_ERROR, undefined, ip, errorMessage);
 
     return NextResponse.json(
@@ -158,6 +210,9 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 }
     );
+  } finally {
+    // Phase 7: Clear trace context
+    clearTraceContext();
   }
 }
 

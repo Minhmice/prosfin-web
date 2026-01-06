@@ -83,7 +83,12 @@ export function FeaturedCard({ post, className }: FeaturedCardProps) {
                 {post.readingTime && (
                   <>
                     <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                    <span>{post.readingTime} phút đọc</span>
+                    <span>
+                      {typeof post.readingTime === "number"
+                        ? post.readingTime
+                        : post.readingTime.minutes}{" "}
+                      phút đọc
+                    </span>
                   </>
                 )}
               </div>

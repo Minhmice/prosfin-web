@@ -16,6 +16,8 @@ export type {
   LeadNormalized,
 } from "./lead.schema";
 
+import type { LeadSource, Attribution } from "./lead.schema";
+
 /**
  * Raw form payload types (before normalization)
  */

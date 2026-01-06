@@ -25,6 +25,7 @@ import {
 import { filterServices } from "@/lib/services-explorer/filter";
 import { getExplorerFacets } from "@/lib/services-explorer/facets";
 import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvent } from "@/lib/analytics-events";
 import type { ServicePreset } from "@/data/service-presets";
 
 interface ServicesExplorerProps {
@@ -64,7 +65,7 @@ export function ServicesExplorer({
       const params = buildExplorerParams(newFilters);
       const newUrl = `/services?${params.toString()}`;
       router.replace(newUrl, { scroll: false });
-      trackEvent("services_filter_changed", {
+      trackEvent(AnalyticsEvent.SERVICES_FILTER_CHANGED, {
         filters: newFilters,
       });
     },

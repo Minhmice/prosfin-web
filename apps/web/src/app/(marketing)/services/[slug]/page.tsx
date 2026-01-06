@@ -22,9 +22,11 @@ import { ServiceTools } from "@/components/services/service-tools";
 import {
   generateServiceSchema,
   generateBreadcrumbListSchema,
+  generateFaqPageSchema,
 } from "@/components/seo/jsonld";
 import { canonicalForRoute } from "@/lib/seo/canonical";
 import { buildOg } from "@/lib/seo/open-graph";
+import { getServicePageConfig } from "@/content/services/registry";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -56,13 +58,26 @@ export async function generateMetadata({
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
-  const canonicalUrl = canonicalForRoute(`/services/${slug}`);
-  const title = `${service.title} | ProsFIN`;
-  const description = service.excerpt || service.shortDescription || "";
+  
+  // Phase 5: Check for ServicePageConfig (OneLedger)
+  const pageConfig = getServicePageConfig(slug);
+  const seoConfig = pageConfig?.seo;
+
+  // Priority: config.seo > Service type (backward compatibility)
+  const canonicalUrl = seoConfig?.canonical
+    ? canonicalForRoute(seoConfig.canonical)
+    : canonicalForRoute(`/services/${slug}`);
+  
+  const title = seoConfig?.metaTitle || `${service.title} | ProsFIN`;
+  const description = seoConfig?.metaDescription || service.excerpt || service.shortDescription || "";
   const keywords = service.tags?.join(", ") || "";
+  
+  const ogTitle = seoConfig?.ogTitle || title;
+  const ogDescription = seoConfig?.ogDescription || description;
+  
   const og = buildOg({
-    title,
-    description,
+    title: ogTitle,
+    description: ogDescription,
     url: canonicalUrl,
     image: service.coverImage,
     type: "website",
@@ -78,8 +93,8 @@ export async function generateMetadata({
     openGraph: og,
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: ogTitle,
+      description: ogDescription,
       images: service.coverImage
         ? [service.coverImage]
         : [`${baseUrl}/services/${slug}/opengraph-image`],
@@ -156,6 +171,11 @@ export default async function ServiceDetailPage({
     }))
   );
 
+  // Phase 5: Generate FAQPage schema if config has FAQ
+  const faqSchema = pageConfig?.faq && pageConfig.faq.length > 0
+    ? generateFaqPageSchema(pageConfig.faq, baseUrl)
+    : null;
+
   return (
     <>
       {/* JSON-LD Structured Data */}
@@ -169,6 +189,13 @@ export default async function ServiceDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {faqSchema && (
+        <Script
+          id="faq-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
 
       {/* Hero + Service Content */}
       <ProsfinSectionWrapper background="muted" padding="lg">

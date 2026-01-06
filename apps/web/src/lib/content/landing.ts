@@ -100,7 +100,7 @@ export function getLandingContent(): LandingContent {
       })),
       cta: {
         label: "Xem quy trình chi tiết",
-        href: "/process",
+        href: "/how-we-work",
         variant: "outline",
       },
     },

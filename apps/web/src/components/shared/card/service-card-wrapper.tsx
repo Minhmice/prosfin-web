@@ -47,6 +47,10 @@ export interface ProsfinServiceCardWrapperProps {
    * @default "default"
    */
   variant?: "default" | "bordered" | "elevated";
+  /**
+   * Children content (custom content)
+   */
+  children?: React.ReactNode;
 }
 
 /**
@@ -67,6 +71,7 @@ export function ProsfinServiceCardWrapper({
   cta,
   className,
   variant = "default",
+  children,
 }: ProsfinServiceCardWrapperProps) {
   const variantClasses = {
     default: "border-border shadow-sm",
@@ -123,6 +128,9 @@ export function ProsfinServiceCardWrapper({
             {idealClient}
           </div>
         )}
+
+        {/* Custom children content */}
+        {children}
       </CardContent>
 
       {/* CTA Footer */}

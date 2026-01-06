@@ -13,14 +13,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { SheetProps } from "@/components/ui/sheet";
 
-export interface AppDrawerProps extends SheetProps {
+export interface AppDrawerProps extends React.ComponentProps<typeof Sheet> {
   title?: string;
   description?: string;
   trigger?: React.ReactNode;
   side?: "top" | "right" | "bottom" | "left";
   size?: "sm" | "md" | "lg" | "xl" | "full";
+  children?: React.ReactNode;
 }
 
 const sizeClasses = {

@@ -14,7 +14,8 @@ export type LogEvent =
   | "lead_submitted"
   | "lead_rejected"
   | "lead_duplicated"
-  | "lead_sink_failed";
+  | "lead_sink_failed"
+  | "csp_violation";
 
 /**
  * Mask email for logging
@@ -151,5 +152,72 @@ export function logSinkFailed(
     sinkName: sinkName,
     error,
   });
+}
+
+/**
+ * Log CSP violation
+ */
+export function logCspViolation(violation: {
+  documentUri?: string;
+  violatedDirective?: string;
+  effectiveDirective?: string;
+  originalPolicy?: string;
+  blockedUri?: string;
+  sourceFile?: string;
+  lineNumber?: number;
+  columnNumber?: number;
+  statusCode?: number;
+  referrer?: string;
+  userAgent?: string;
+  timestamp?: string;
+}): void {
+  logEvent({
+    event: "csp_violation",
+    documentUri: violation.documentUri,
+    violatedDirective: violation.violatedDirective,
+    effectiveDirective: violation.effectiveDirective,
+    blockedUri: violation.blockedUri,
+    sourceFile: violation.sourceFile,
+    lineNumber: violation.lineNumber,
+    columnNumber: violation.columnNumber,
+    statusCode: violation.statusCode,
+    referrer: violation.referrer,
+    userAgent: violation.userAgent,
+  });
+}
+
+/**
+ * Hash string for logging (one-way hash)
+ */
+function hashString(value: string): string {
+  // Simple hash for privacy (not cryptographically secure, just for logging)
+  let hash = 0;
+  for (let i = 0; i < value.length; i++) {
+    const char = value.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return `hash_${Math.abs(hash).toString(16)}`;
+}
+
+/**
+ * Redact email: hash in production, mask in development
+ */
+export function redactEmail(email: string): string {
+  if (process.env.NODE_ENV === "production") {
+    return hashString(email);
+  }
+  return maskEmail(email);
+}
+
+/**
+ * Redact phone: hash in production, mask in development
+ */
+export function redactPhone(phone?: string): string {
+  if (!phone) return "***";
+  if (process.env.NODE_ENV === "production") {
+    return hashString(phone);
+  }
+  return maskPhone(phone);
 }
 

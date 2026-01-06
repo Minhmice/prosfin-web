@@ -4,6 +4,8 @@ import * as React from "react";
 import { ServicesResults } from "./discovery/services-results";
 import { ServiceFinderDialog } from "./discovery/service-finder-dialog";
 
+import type { Service } from "@/types/content";
+
 interface ServicesResultsWrapperProps {
   services: Service[];
   mode?: "recommended" | "all";

@@ -26,6 +26,7 @@ import { ServicesPreviewSection } from "@/components/landing/services-preview/se
 import { ProcessPreviewSection } from "@/components/landing/process-preview/process-preview-section";
 import { ProofSection } from "@/components/landing/proof/proof-section";
 import { ContentPreviewSection } from "@/components/landing/content-preview/content-preview-section";
+import { PeoplePreviewSection } from "@/components/landing/people-preview/people-preview-section";
 import { FaqSection } from "@/components/landing/faq/faq-section";
 import { FinalCtaSection } from "@/components/landing/final-cta/final-cta-section";
 
@@ -41,6 +42,7 @@ export default function Home() {
       <ProcessPreviewSection content={content.processPreview} />
       <ProofSection content={content.proof} />
       <ContentPreviewSection content={content.contentPreview} />
+      <PeoplePreviewSection />
       <FaqSection content={content.faq} />
       <FinalCtaSection content={content.finalCta} />
     </>

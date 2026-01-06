@@ -1,5 +1,6 @@
 import { draftMode } from "next/headers";
 import { redirect } from "next/navigation";
+import { NextRequest } from "next/server";
 
 /**
  * Draft Mode Route Handler
@@ -8,7 +9,7 @@ import { redirect } from "next/navigation";
  * Phase 2: Mock validation with hardcoded secret
  * Phase 3: Will implement proper auth/token validation
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
   const slug = searchParams.get("slug");

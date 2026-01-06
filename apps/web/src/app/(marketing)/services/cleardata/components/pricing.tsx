@@ -10,6 +10,7 @@ import {
 } from "@/components/shared";
 import { useInViewAnimation } from "@/hooks/use-in-view-animation";
 import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvent } from "@/lib/analytics-events";
 import type { PricingContent } from "@/data/services/cleardata";
 
 export interface PricingSectionProps {
@@ -27,7 +28,7 @@ export function PricingSection({
   const { ref, isInView } = useInViewAnimation({ delay: 100 });
 
   const handleFormClick = () => {
-    trackEvent("lead_checklist_submit");
+    trackEvent(AnalyticsEvent.LEAD_CHECKLIST_SUBMIT);
     const heroForm = document.querySelector("#hero-form");
     if (heroForm) {
       heroForm.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -35,7 +36,7 @@ export function PricingSection({
   };
 
   const handleBookCallClick = () => {
-    trackEvent("book_call_click");
+    trackEvent(AnalyticsEvent.BOOK_CALL_CLICK);
     if (onBookCallClick) onBookCallClick();
   };
 

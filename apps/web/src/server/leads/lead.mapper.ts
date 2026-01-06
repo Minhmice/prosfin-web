@@ -79,6 +79,28 @@ function mapIntent(payload: RawLeadPayload, source: LeadSource): Intent | undefi
       : [payload.goal || payload.goals].filter(Boolean) as string[];
   }
 
+  // Phase 3: Handle OneLedger leadSchema fields
+  if (payload.persona) {
+    const personaMsg = `Persona: ${payload.persona}`;
+    intent.message = intent.message ? `${intent.message}\n${personaMsg}` : personaMsg;
+  }
+  if (payload.triggerEvents && Array.isArray(payload.triggerEvents) && payload.triggerEvents.length > 0) {
+    intent.painPoints = [...(intent.painPoints || []), ...(payload.triggerEvents as string[])];
+  }
+  if (payload.priorities && Array.isArray(payload.priorities) && payload.priorities.length > 0) {
+    intent.goals = [...(intent.goals || []), ...(payload.priorities as string[])];
+  }
+  if (payload.scan) {
+    const scanData = payload.scan as {
+      score?: number;
+      riskLevel?: string;
+      topRisks?: string[];
+      recommendedModuleIds?: string[];
+    };
+    const scanMsg = `Scan: score=${scanData.score || "N/A"}, risk=${scanData.riskLevel || "N/A"}, modules=${(scanData.recommendedModuleIds || []).join(",")}`;
+    intent.message = intent.message ? `${intent.message}\n${scanMsg}` : scanMsg;
+  }
+
   // Tool lead magnet context
   if (source === "tool_lead_magnet" && payload.toolContext) {
     const toolContext = payload.toolContext as {
@@ -111,6 +133,9 @@ export function normalizeLead(
     marketing: (payload.marketingConsent as boolean) || false,
   };
 
+  // Phase 3: Handle notes field from leadSchema
+  const notes = (payload.notes as string) || undefined;
+
   return {
     id: randomUUID(),
     createdAt: now,
@@ -122,6 +147,7 @@ export function normalizeLead(
     meta: meta || undefined,
     consent,
     status: "new",
+    notes,
   };
 }
 

@@ -72,7 +72,7 @@ export function getRecommendedPosts(
       recommended.push({
         id: post.id,
         title: post.title,
-        href: `/research/${post.slug || post.id}`,
+        href: post.href || `/insights/${post.id}`,
       });
     });
   }
@@ -101,7 +101,7 @@ export function getRecommendedPosts(
         recommended.push({
           id: post.id,
           title: post.title,
-          href: `/research/${post.slug || post.id}`,
+          href: post.href || `/insights/${post.id}`,
         });
       }
     });

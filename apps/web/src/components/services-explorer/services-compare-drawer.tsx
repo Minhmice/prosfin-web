@@ -20,6 +20,7 @@ import { normalizeCompareData } from "@/lib/services-explorer/compare";
 import { buildExplorerParams } from "@/lib/services-explorer/params";
 import { getAllServices } from "@/lib/content/services";
 import { trackEvent } from "@/lib/analytics";
+import { AnalyticsEvent } from "@/lib/analytics-events";
 import { useProsfinToast } from "@/components/shared/toast/use-prosfin-toast";
 
 interface ServicesCompareDrawerProps {
@@ -40,7 +41,7 @@ export function ServicesCompareDrawer({
 
   React.useEffect(() => {
     if (open) {
-      trackEvent("compare_opened", {});
+      trackEvent(AnalyticsEvent.COMPARE_OPENED, {});
       const compareSlugs = getCompareAll();
       const allServices = getAllServices();
       const compareServices = allServices.filter((s) =>
@@ -63,7 +64,7 @@ export function ServicesCompareDrawer({
 
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
-      toast.success("Đã sao chép link so sánh!");
+      toast.toast({ description: "Đã sao chép link so sánh!", variant: "success" });
       setTimeout(() => setCopied(false), 2000);
     });
   };

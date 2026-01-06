@@ -77,7 +77,8 @@ export type ServiceLayoutVariant =
   | "framework"
   | "split-panel"
   | "timeline"
-  | "custom";
+  | "custom"
+  | "ledger-cockpit-layout";
 
 /**
  * Service content
@@ -92,6 +93,7 @@ export interface Service extends BaseContent {
   ctaType?: "link" | "scroll" | "modal";
   ctaTarget?: string;
   layoutVariant: ServiceLayoutVariant;
+  configSlug?: string;
   sections: ServiceSection[];
   breadcrumb?: Array<{ label: string; href?: string }>;
   relatedPostIds: string[]; // Backward compatibility - prefer relatedPostSlugs
