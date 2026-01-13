@@ -25,7 +25,7 @@ async function getLeadById(leadId: string): Promise<LeadNormalized | null> {
  * Generate Assessment Pack
  */
 function generateAssessmentPack(lead: LeadNormalized) {
-  const scan = (lead.extras as any)?.oneledgerScan || (lead.meta as any)?.extras?.oneledgerScan;
+  const scan = (lead.meta as any)?.extras?.oneledgerScan;
   const riskLevel = scan?.riskLevel as string | undefined;
   const topRisks = scan?.topRisks as string[] || [];
   const recommendedModuleIds = scan?.recommendedModuleIds as string[] || [];
@@ -81,7 +81,7 @@ function generateAssessmentPack(lead: LeadNormalized) {
     .map((gate) => ({
       id: gate.id,
       title: gate.title,
-      description: gate.description,
+      description: (gate as any).description || "",
       deliverables: gate.deliverables || [],
       successDefinition: gate.successDefinition || "Hoàn thành các deliverables",
     }));

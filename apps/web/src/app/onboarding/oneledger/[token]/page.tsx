@@ -64,7 +64,7 @@ export default async function ClientPortalPage({
     : [];
 
   // Get scan data
-  const scan = (lead.extras as any)?.oneledgerScan || (lead.meta as any)?.extras?.oneledgerScan;
+  const scan = (lead.meta as any)?.extras?.oneledgerScan;
   const recommendedModuleIds = scan?.recommendedModuleIds as string[] || [];
   const recommendedGateId = scan?.recommendedGateId as string | undefined;
 

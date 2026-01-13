@@ -43,7 +43,7 @@ export const EngagementSchema = z.object({
   
   // Metadata
   metadata: z.object({
-    experiments: z.record(z.string()).optional(), // Experiment variants
+    experiments: z.record(z.string(), z.string()).optional(), // Experiment variants
     persona: z.string().optional(),
     triggerEvents: z.array(z.string()).optional(),
   }).optional(),

@@ -30,8 +30,8 @@ export function LedgerScanCard({
 
   // Phase 6: Get scan variant and apply overrides
   const scanVariant = getVariant("oneledger_scan_design");
-  const scanConfigWithVariant = scanVariant
-    ? getScanVariantOverrides(scanVariant, scanConfig)
+  const scanConfigWithVariant: ScanConfig = scanVariant
+    ? { ...scanConfig, ...getScanVariantOverrides(scanVariant, scanConfig) }
     : scanConfig;
 
   // Phase 3: Use runLedgerScan (v2)

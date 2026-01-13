@@ -67,7 +67,7 @@ export function VerifyEmailPanel() {
 
       <div className="mt-3 text-xs text-muted-foreground">
         Hoặc{" "}
-        <Link href="/contact-lite" className="text-primary underline underline-offset-2">
+        <Link href="/contact" className="text-primary underline underline-offset-2">
           điền lại form nhanh
         </Link>
         .

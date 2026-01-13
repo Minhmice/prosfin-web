@@ -91,7 +91,7 @@ export async function submitLead(
   duplicateOf?: string;
 }> {
   // Phase 7: Check idempotency first
-  const clientRequestId = (rawPayload.extras as any)?.clientRequestId as string | undefined;
+  const clientRequestId = rawPayload.extras?.clientRequestId;
   if (clientRequestId) {
     const existingLead = await findLeadByIdempotencyKey(clientRequestId);
     if (existingLead) {
@@ -172,8 +172,8 @@ export async function submitLead(
 
   return {
     lead: savedLead,
-    isDuplicate: dedupeResult.isDuplicate || !!duplicateLead,
-    duplicateOf: dedupeResult.duplicateOf || duplicateLead?.id,
+    isDuplicate: dedupeResult.isDuplicate,
+    duplicateOf: dedupeResult.duplicateOf,
   };
 }
 

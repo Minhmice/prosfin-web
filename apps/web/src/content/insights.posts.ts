@@ -92,6 +92,13 @@ function buildInsightsPosts(): InsightPost[] {
     const topic = mapCategoryToTopic(post.category || "Tư vấn");
     const format = mapCategoryToFormat(post.category || "Tư vấn");
     
+    // Convert readingTime to number (minutes)
+    const readingTimeMinutes = typeof post.readingTime === 'number' 
+      ? post.readingTime 
+      : post.readingTime?.minutes 
+      ? post.readingTime.minutes 
+      : undefined;
+
     return {
       slug,
       title: post.title,
@@ -99,7 +106,7 @@ function buildInsightsPosts(): InsightPost[] {
       format,
       publishedAt: post.date, // ISO date string
       summary: post.excerpt,
-      readingTime: post.readingTime,
+      readingTime: readingTimeMinutes,
       relatedServiceIds: post.serviceSlugs ? mapServiceSlugsToIds(post.serviceSlugs) : undefined,
       coverImage: post.coverImage,
       // Placeholder content - will be populated later

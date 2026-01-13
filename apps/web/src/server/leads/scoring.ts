@@ -12,12 +12,28 @@ export type LeadPriority = "P0" | "P1" | "P2";
 /**
  * Calculate lead priority based on scan results, trigger events, and bundle
  */
+interface LeadExtras {
+  oneledgerScan?: {
+    riskLevel?: "low" | "medium" | "high" | "critical";
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
+interface LeadIntentWithExtras {
+  triggerEvents?: string[];
+  bundleId?: string;
+  [key: string]: unknown;
+}
+
 export function calculateLeadPriority(lead: LeadNormalized): LeadPriority {
   // Extract scan data from extras
-  const scan = (lead.meta as any)?.extras?.oneledgerScan || (lead as any).extras?.oneledgerScan;
-  const riskLevel = scan?.riskLevel as "low" | "medium" | "high" | "critical" | undefined;
-  const triggerEvents = (lead.intent as any)?.triggerEvents as string[] | undefined;
-  const bundleId = (lead.intent as any)?.bundleId as string | undefined;
+  const metaExtras = (lead.meta as { extras?: LeadExtras } | undefined)?.extras;
+  const scan = metaExtras?.oneledgerScan;
+  const riskLevel = scan?.riskLevel;
+  const intentWithExtras = lead.intent as LeadIntentWithExtras | undefined;
+  const triggerEvents = intentWithExtras?.triggerEvents;
+  const bundleId = intentWithExtras?.bundleId;
 
   // P0: Critical risk OR (M&A/fundraising) + high risk
   if (riskLevel === "critical") {

@@ -35,21 +35,21 @@ export async function POST(request: NextRequest) {
   try {
     // 1. Rate limiting
     // Extract source from body if available (will be parsed later)
-    let source: string | undefined;
+    let previewSource: string | undefined;
     try {
       const bodyPreview = await request.clone().json().catch(() => ({}));
-      source = (bodyPreview as any)?.source;
+      previewSource = (bodyPreview as any)?.source;
     } catch {
       // Ignore parsing errors, will use default config
     }
-    const rateLimitResult = checkRequestRateLimit(request, undefined, source);
+    const rateLimitResult = checkRequestRateLimit(request, undefined, previewSource);
     if (!rateLimitResult.allowed) {
       const elapsedMs = Date.now() - startTime;
-      recordErrorCode("429", source);
-      recordLatency(elapsedMs, source);
+      recordErrorCode("429", previewSource);
+      recordLatency(elapsedMs, previewSource);
       logLeadRejected(
         ERROR_CODES.RATE_LIMITED,
-        source,
+        previewSource,
         ip
       );
       return NextResponse.json(
@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
     // Phase 7: Record error metrics
     recordErrorCode("500", undefined);
     recordLatency(elapsedMs, undefined);
-    recordLeadSubmitRate(undefined || "unknown", false);
+    recordLeadSubmitRate("unknown", false);
 
     logLeadRejected(ERROR_CODES.INTERNAL_ERROR, undefined, ip, errorMessage);
 

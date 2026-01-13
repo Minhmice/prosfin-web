@@ -1,52 +1,68 @@
 
-> prosfin-admin@0.1.0 build C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin
+> prosfin-admin@0.1.0 build /Users/chuthanhhuong/Desktop/prosfin-web/apps/admin
 > next build
 
    ▲ Next.js 16.0.10 (Turbopack)
 
  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
    Creating an optimized production build ...
- ✓ Compiled successfully in 5.3s
+ ✓ Compiled successfully in 34.1s
    Running TypeScript ...
-   Collecting page data using 27 workers ...
-Error: ❌ Missing or invalid environment variables:
-DATABASE_URL: Invalid input: expected string, received undefined
-AUTH_SECRET: Invalid input: expected string, received undefined
-S3_ENDPOINT: Invalid input: expected string, received undefined
-S3_ACCESS_KEY: Invalid input: expected string, received undefined
-S3_SECRET_KEY: Invalid input: expected string, received undefined
-S3_BUCKET: Invalid input: expected string, received undefined
-    at <unknown> (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__1e1a0491._.js:10:11460)
-    at module evaluation (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__1e1a0491._.js:11:17)
-    at instantiateModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:715:9)
-    at getOrInstantiateModuleFromParent (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:738:12)
-    at Context.esmImport [as i] (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:228:20)
-    at module evaluation (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__861febc5._.js:1:6821)
-    at instantiateModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:715:9)
-    at instantiateRuntimeModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:743:12)
-    at getOrInstantiateRuntimeModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:756:12)
-    at Object.m (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:765:18)
-Error: ❌ Missing or invalid environment variables:
-DATABASE_URL: Invalid input: expected string, received undefined
-AUTH_SECRET: Invalid input: expected string, received undefined
-S3_ENDPOINT: Invalid input: expected string, received undefined
-S3_ACCESS_KEY: Invalid input: expected string, received undefined
-S3_SECRET_KEY: Invalid input: expected string, received undefined
-S3_BUCKET: Invalid input: expected string, received undefined
-    at <unknown> (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__1e1a0491._.js:10:11460)
-    at module evaluation (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__1e1a0491._.js:11:17)
-    at instantiateModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:715:9)
-    at getOrInstantiateModuleFromParent (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:738:12)
-    at Context.esmImport [as i] (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:228:20)
-    at module evaluation (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[root-of-the-server]__4b3aba38._.js:1:6821)
-    at instantiateModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:715:9)
-    at instantiateRuntimeModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:743:12)
-    at getOrInstantiateRuntimeModule (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:756:12)
-    at Object.m (C:\Users\minhmice\Documents\projects\prosfin-web\apps\admin\.next\server\chunks\[turbopack]_runtime.js:765:18)
+   Collecting page data using 7 workers ...
+   Generating static pages using 7 workers (0/31) ...
+   Generating static pages using 7 workers (7/31) 
+   Generating static pages using 7 workers (15/31) 
+   Generating static pages using 7 workers (23/31) 
+ ✓ Generating static pages using 7 workers (31/31) in 996.3ms
+   Finalizing page optimization ...
 
-> Build error occurred
-Error: Failed to collect page data for /api/content/media/presign
-    at ignore-listed frames {
-  type: 'Error'
-}
- ELIFECYCLE  Command failed with exit code 1.
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/admin/comments/status
+├ ƒ /api/auth/[...nextauth]
+├ ƒ /api/content/comments
+├ ƒ /api/content/media
+├ ƒ /api/content/media/[id]
+├ ƒ /api/content/media/finalize
+├ ƒ /api/content/media/presign
+├ ƒ /api/content/media/upload
+├ ƒ /api/content/posts
+├ ƒ /api/content/posts/[id]
+├ ƒ /api/content/posts/[id]/publish
+├ ƒ /api/content/posts/[id]/schedule
+├ ƒ /api/content/posts/[id]/unschedule
+├ ƒ /api/content/schedules/[id]
+├ ƒ /api/crm/clients
+├ ƒ /api/crm/clients/[id]
+├ ƒ /api/crm/leads
+├ ƒ /api/crm/leads/[id]
+├ ƒ /api/crm/leads/[id]/convert
+├ ƒ /api/cron/schedule-tick
+├ ƒ /api/public/comments
+├ ƒ /api/public/leads
+├ ○ /clients
+├ ○ /content
+├ ƒ /content/[slug]
+├ ○ /content/comments
+├ ○ /content/media
+├ ○ /content/posts
+├ ƒ /content/posts/[id]/edit
+├ ○ /content/posts/drafts
+├ ○ /content/posts/new
+├ ○ /content/posts/scheduled
+├ ○ /content/schedules
+├ ○ /crm/clients
+├ ○ /crm/leads
+├ ○ /dashboard/content
+├ ○ /dashboard/crm
+├ ○ /leads
+├ ○ /settings
+└ ○ /tables
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -62,7 +62,7 @@ export interface ToolResult {
 /**
  * Tool Input Schema - Zod schema cho validation
  */
-export type ToolInputSchema = z.ZodObject<any>;
+export type ToolInputSchema = z.ZodObject<z.ZodRawShape>;
 
 /**
  * Tool Input - Generic input type

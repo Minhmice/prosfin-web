@@ -142,10 +142,12 @@ export function MobileMenu({
           </Accordion>
 
           {/* CTA Button */}
-          <ProsfinPrimaryButton asChild className="w-full mt-4">
-            <Link href={navigation.cta.href} onClick={() => onOpenChange(false)}>
-              {navigation.cta.label}
-            </Link>
+          <ProsfinPrimaryButton 
+            href={navigation.cta.href} 
+            className="w-full mt-4"
+            onClick={() => onOpenChange(false)}
+          >
+            {navigation.cta.label}
           </ProsfinPrimaryButton>
         </div>
       </SheetContent>

@@ -33,7 +33,7 @@ function mapContact(payload: RawLeadPayload): Contact {
  * Map raw payload to Company
  */
 function mapCompany(payload: RawLeadPayload): Company | undefined {
-  const company: Company = {};
+  const company: Partial<Company> = {};
   
   if (payload.company || payload.companyName) {
     company.name = (payload.company || payload.companyName) as string;
@@ -51,14 +51,14 @@ function mapCompany(payload: RawLeadPayload): Company | undefined {
     company.yearsActive = payload.yearsActive as string;
   }
 
-  return Object.keys(company).length > 0 ? company : undefined;
+  return Object.keys(company).length > 0 ? (company as Company) : undefined;
 }
 
 /**
  * Map raw payload to Intent
  */
 function mapIntent(payload: RawLeadPayload, source: LeadSource): Intent | undefined {
-  const intent: Intent = {};
+  const intent: Partial<Intent> = {};
 
   if (payload.serviceSlugs || payload.serviceSlug) {
     intent.serviceSlugs = Array.isArray(payload.serviceSlugs)
@@ -113,7 +113,7 @@ function mapIntent(payload: RawLeadPayload, source: LeadSource): Intent | undefi
     }
   }
 
-  return Object.keys(intent).length > 0 ? intent : undefined;
+  return Object.keys(intent).length > 0 ? (intent as Intent) : undefined;
 }
 
 /**

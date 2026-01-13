@@ -40,7 +40,7 @@ export function ToggleGroup({
             onSelect: () => handleItemClick(itemProps.value),
             isFirst: index === 0,
             isLast: index === React.Children.count(children) - 1,
-          } as any);
+          } as ToggleGroupItemProps);
         }
         return child;
       })}
@@ -59,7 +59,6 @@ export interface ToggleGroupItemProps {
 }
 
 export function ToggleGroupItem({
-  value,
   selected,
   onSelect,
   isFirst,

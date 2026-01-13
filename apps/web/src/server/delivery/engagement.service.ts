@@ -31,7 +31,7 @@ export async function createEngagementFromLead(
   const selectedBundleId = (lead.intent as any)?.bundleId as string | undefined;
   const selectedModuleIds = (lead.intent as any)?.moduleIds as string[] || [];
   const recommendedGateId = (lead.intent as any)?.gateId as string | undefined;
-  const scan = (lead.extras as any)?.oneledgerScan || (lead.meta as any)?.extras?.oneledgerScan;
+  const scan = (lead as any).extras?.oneledgerScan || (lead.meta as any)?.extras?.oneledgerScan;
 
   // Create engagement
   const engagement: Engagement = {

@@ -115,8 +115,8 @@ export function DesktopNav() {
       </NavigationMenu>
 
       {/* CTA Button */}
-      <ProsfinPrimaryButton asChild size="sm">
-        <Link href={navigation.cta.href}>{navigation.cta.label}</Link>
+      <ProsfinPrimaryButton href={navigation.cta.href} size="sm">
+        {navigation.cta.label}
       </ProsfinPrimaryButton>
     </div>
   );

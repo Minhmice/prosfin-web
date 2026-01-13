@@ -160,8 +160,8 @@ export function CandidateCard({ candidate, className }: CandidateCardProps) {
       )}
 
       {/* CTA */}
-      <ProsfinPrimaryButton asChild size="sm" className="w-full">
-        <Link href={ctaHref}>Yêu cầu hồ sơ chi tiết</Link>
+      <ProsfinPrimaryButton href={ctaHref} size="sm" className="w-full">
+        Yêu cầu hồ sơ chi tiết
       </ProsfinPrimaryButton>
     </div>
   );

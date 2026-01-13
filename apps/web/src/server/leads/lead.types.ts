@@ -23,6 +23,14 @@ import type { LeadSource, Attribution } from "./lead.schema";
  */
 export interface RawLeadPayload {
   [key: string]: unknown;
+  extras?: {
+    clientRequestId?: string;
+    oneledgerScan?: {
+      riskLevel?: "low" | "medium" | "high" | "critical";
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
 }
 
 /**

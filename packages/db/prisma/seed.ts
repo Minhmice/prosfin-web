@@ -21,7 +21,7 @@ async function main() {
     },
   })
 
-  const crmManagerRole = await prisma.role.upsert({
+  await prisma.role.upsert({
     where: { name: "crm_manager" },
     update: {},
     create: {
@@ -30,7 +30,7 @@ async function main() {
     },
   })
 
-  const contentEditorRole = await prisma.role.upsert({
+  await prisma.role.upsert({
     where: { name: "content_editor" },
     update: {},
     create: {
@@ -39,7 +39,7 @@ async function main() {
     },
   })
 
-  const viewerRole = await prisma.role.upsert({
+  await prisma.role.upsert({
     where: { name: "viewer" },
     update: {},
     create: {

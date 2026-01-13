@@ -287,7 +287,16 @@ export interface Post {
   updatedAt?: string; // ISO date string
   cover?: { src: string; alt: string }; // Cover image with alt text
   seo?: { title?: string; description?: string; canonical?: string }; // SEO metadata
-  content?: any; // Lexical editor state or markdown
+  content?: {
+    root: {
+      children: Array<Record<string, unknown>>;
+      direction: "ltr" | "rtl" | null;
+      format: string;
+      indent: number;
+      type: "root";
+      version: number;
+    };
+  }; // Lexical editor state
   keyTakeaways?: string[]; // Key points extracted or manual
 }
 

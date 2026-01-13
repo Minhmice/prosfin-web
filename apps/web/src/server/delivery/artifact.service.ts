@@ -73,7 +73,7 @@ export async function generateAssessmentPack(
       .map((gate) => ({
         id: gate.id,
         title: gate.title,
-        description: gate.description,
+        description: (gate as any).description || "",
         deliverables: gate.deliverables || [],
         successDefinition: gate.successDefinition || [],
       })),

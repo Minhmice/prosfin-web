@@ -14,8 +14,8 @@
     "db:generate": "pnpm --filter @prosfin/db db:generate"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "turbo": "^2.3.3"
+    "turbo": "^2.3.3",
+    "typescript": "^5"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -24,7 +24,7 @@
     "postprocessing": "^6.38.1",
     "three": "^0.182.0"
   },
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=18"
   }

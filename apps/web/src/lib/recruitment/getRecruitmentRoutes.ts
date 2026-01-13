@@ -7,7 +7,7 @@
 import type { Metadata } from "next";
 import type { RecruitmentPage } from "@/content/recruitment.catalog";
 import { getAllRecruitmentPages } from "@/content/recruitment.catalog";
-import { SiteBreadcrumbItem } from "@/components/site/breadcrumbs";
+import type { BreadcrumbItemData } from "@/components/site/breadcrumbs";
 
 const SITE_NAME = "ProsFIN";
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://prosfin.vn";
@@ -54,7 +54,7 @@ export function getRecruitmentPageMetadata(page: RecruitmentPage): Metadata {
 /**
  * Build breadcrumb for recruitment hub
  */
-export function getRecruitmentHubBreadcrumb(): SiteBreadcrumbItem[] {
+export function getRecruitmentHubBreadcrumb(): BreadcrumbItemData[] {
   return [
     { label: "Trang chủ", href: "/" },
     { label: "Tuyển dụng", href: "/recruitment" },
@@ -66,7 +66,7 @@ export function getRecruitmentHubBreadcrumb(): SiteBreadcrumbItem[] {
  */
 export function getRecruitmentPageBreadcrumb(
   page: RecruitmentPage
-): SiteBreadcrumbItem[] {
+): BreadcrumbItemData[] {
   return [
     { label: "Trang chủ", href: "/" },
     { label: "Tuyển dụng", href: "/recruitment" },
@@ -77,7 +77,7 @@ export function getRecruitmentPageBreadcrumb(
 /**
  * Build breadcrumb for talent pool
  */
-export function getTalentPoolBreadcrumb(): SiteBreadcrumbItem[] {
+export function getTalentPoolBreadcrumb(): BreadcrumbItemData[] {
   return [
     { label: "Trang chủ", href: "/" },
     { label: "Tuyển dụng", href: "/recruitment" },
@@ -90,7 +90,7 @@ export function getTalentPoolBreadcrumb(): SiteBreadcrumbItem[] {
  */
 export function getCandidateDetailBreadcrumb(
   candidateCode: string
-): SiteBreadcrumbItem[] {
+): BreadcrumbItemData[] {
   return [
     { label: "Trang chủ", href: "/" },
     { label: "Tuyển dụng", href: "/recruitment" },

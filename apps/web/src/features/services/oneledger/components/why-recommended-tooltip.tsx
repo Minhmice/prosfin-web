@@ -10,7 +10,8 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Info } from "lucide-react";
 import { getWhyRecommendedReasons } from "../personalize/personalize";
-import type { ScanResult, ModuleConfig } from "../personalize/personalize";
+import type { ScanResult } from "../personalize/personalize";
+import type { ModuleConfig } from "@/content/services/types";
 
 interface WhyRecommendedTooltipProps {
   scan: ScanResult;

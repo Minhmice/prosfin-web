@@ -64,7 +64,7 @@ export const ArtifactSchema = z.object({
   status: ArtifactStatusSchema,
   
   // Content (JSON canonical format)
-  content: z.record(z.unknown()).optional(),
+  content: z.record(z.string(), z.unknown()).optional(),
   
   // Superseded by
   supersededById: z.string().uuid().optional(),

@@ -50,7 +50,7 @@ export const AuditEventSchema = z.object({
   
   action: AuditActionSchema,
   
-  payload: z.record(z.unknown()).optional(), // Diff, metadata, etc.
+  payload: z.record(z.string(), z.unknown()).optional(), // Diff, metadata, etc.
   
   ipAddress: z.string().optional(),
   userAgent: z.string().optional(),

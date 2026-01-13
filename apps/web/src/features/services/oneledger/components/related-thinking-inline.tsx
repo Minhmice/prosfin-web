@@ -20,11 +20,43 @@ interface RelatedThinkingInlineProps {
 }
 
 /**
+ * Extract text from Lexical editor state
+ */
+function extractTextFromLexical(content: {
+  root: {
+    children: Array<Record<string, unknown>>;
+    [key: string]: unknown;
+  };
+}): string {
+  const extractText = (node: Record<string, unknown>): string => {
+    if (typeof node === "string") return node;
+    if (node.text && typeof node.text === "string") return node.text;
+    if (Array.isArray(node.children)) {
+      return node.children.map(extractText).join(" ");
+    }
+    return "";
+  };
+  
+  return content.root.children.map(extractText).join(" ");
+}
+
+/**
  * Estimate reading time (words per minute = 200)
  */
-function estimateReadingTime(content: string): number {
-  const words = content.split(/\s+/).length;
-  return Math.ceil(words / 200);
+function estimateReadingTime(content: string | {
+  root: {
+    children: Array<Record<string, unknown>>;
+    [key: string]: unknown;
+  };
+} | undefined): number {
+  let text = "";
+  if (typeof content === "string") {
+    text = content;
+  } else if (content && typeof content === "object" && "root" in content) {
+    text = extractTextFromLexical(content);
+  }
+  const words = text.split(/\s+/).filter(w => w.length > 0).length;
+  return Math.ceil(words / 200) || 1;
 }
 
 export function RelatedThinkingInline({

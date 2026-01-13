@@ -46,8 +46,9 @@ export const rfpFormSchema = z.object({
   // Service selection (required)
   service: z
     .string({
-      required_error: "Vui lòng chọn dịch vụ",
+      message: "Vui lòng chọn dịch vụ",
     })
+    .min(1, "Vui lòng chọn dịch vụ")
     .refine(
       (val) => RFP_SERVICES.some((s) => s.value === val),
       "Dịch vụ không hợp lệ"

@@ -1,48 +1,100 @@
 
-> prosfin-web@0.1.0 build C:\Users\minhmice\Documents\projects\prosfin-web\apps\web
+> prosfin-web@0.1.0 build /Users/chuthanhhuong/Desktop/prosfin-web/apps/web
 > next build
 
    ▲ Next.js 16.0.10 (Turbopack)
 
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
    Creating an optimized production build ...
- ✓ Compiled successfully in 4.4s
+ ✓ Compiled successfully in 33.1s
    Running TypeScript ...
-   Collecting page data using 27 workers ...
-   Generating static pages using 27 workers (0/26) ...
-   Generating static pages using 27 workers (6/26) 
-   Generating static pages using 27 workers (12/26) 
-   Generating static pages using 27 workers (19/26) 
- ✓ Generating static pages using 27 workers (26/26) in 729.4ms
+   Collecting page data using 7 workers ...
+   Generating static pages using 7 workers (0/93) ...
+   Generating static pages using 7 workers (23/93) 
+   Generating static pages using 7 workers (46/93) 
+   Generating static pages using 7 workers (69/93) 
+ ✓ Generating static pages using 7 workers (93/93) in 1776.5ms
    Finalizing page optimization ...
 
 Route (app)
 ┌ ○ /
 ├ ○ /_not-found
 ├ ○ /about
+├ ƒ /api/artifacts/download
+├ ƒ /api/artifacts/render
+├ ƒ /api/csp-report
 ├ ƒ /api/draft
+├ ƒ /api/engagements/create
+├ ƒ /api/leads
+├ ƒ /api/packs/oneledger
+├ ƒ /api/rfp
+├ ƒ /api/uploads/complete
+├ ƒ /api/uploads/init
+├ ● /capabilities/[slug]
+│ ├ /capabilities/financial-data-bookkeeping
+│ ├ /capabilities/finance-function-reporting
+│ ├ /capabilities/cashflow-working-capital
+│ └ [+4 more paths]
 ├ ○ /case-studies
 ├ ƒ /case-studies/[slug]
 ├ ○ /contact
-├ ○ /contact-lite
+├ ○ /cookie
+├ ○ /disclaimer
 ├ ○ /faq
-├ ƒ /insights/[slug]
-├ ƒ /knowledge/[slug]
+├ ○ /how-we-work
+├ ○ /how-we-work/process
+├ ƒ /insights
+├ ● /insights/[slug]
+│ ├ /insights/5-dau-hieu-can-co-van-tai-chinh
+│ ├ /insights/quan-ly-dong-tien-hieu-qua
+│ ├ /insights/4-giai-doan-trien-khai
+│ └ [+6 more paths]
+├ ƒ /insights/research
+├ ƒ /insights/research/[slug]
 ├ ○ /onboarding/detail-information
+├ ƒ /onboarding/oneledger/[token]
 ├ ○ /onboarding/thanks
-├ ○ /process
+├ ○ /people
+├ ● /people/[slug]
+│ ├ /people/person-1
+│ ├ /people/person-2
+│ ├ /people/person-3
+│ └ [+7 more paths]
+├ ○ /privacy
+├ ○ /recruitment
+├ ○ /recruitment/brokerage
+├ ○ /recruitment/training
+├ ƒ /request-proposal
+├ ƒ /request-proposal/thanks
+├ ƒ /research
+├ ƒ /research/[slug]
 ├ ƒ /resources/[slug]
 ├ ○ /robots.txt
 ├ ○ /services
-├ ● /services/[slug]
-│ ├ /services/advisor
-│ ├ /services/execution-coaching
-│ ├ /services/consulting
+├ ● /services/[category]
+│ ├ /services/tu-van-thuc-chien
+│ ├ /services/ke-toan-thue
+│ ├ /services/kiem-soat-noi-bo
+│ └ [+2 more paths]
+├ ● /services/[category]/[service]
+│ ├ /services/tu-van-thuc-chien/co-van-tai-chinh-chien-luoc
+│ ├ /services/tu-van-thuc-chien/coaching-trien-khai-tai-chinh
+│ ├ /services/tu-van-thuc-chien/tu-van-tai-chinh-chuyen-sau
 │ └ [+6 more paths]
-├ ƒ /services/[slug]/opengraph-image-1m3o9y
 ├ ○ /services/cleardata
 ├ ○ /services/cleardata/thanks
-└ ○ /sitemap.xml
+├ ● /services/presets/[preset]
+│ ├ /services/presets/owner-cashflow
+│ ├ /services/presets/owner-compliance
+│ ├ /services/presets/cfo-profit
+│ └ [+3 more paths]
+├ ○ /sitemap.xml
+├ ○ /terms
+├ ○ /tools
+└ ƒ /tools/[slug]
 
+
+ƒ Proxy (Middleware)
 
 ○  (Static)   prerendered as static content
 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)

@@ -120,7 +120,7 @@ export const AttributionSchema = z.object({
   firstTouchAt: z.string().optional(),
   lastTouchAt: z.string().optional(),
   // Phase 6: Experiment variants
-  experiments: z.record(z.string()).optional(),
+  experiments: z.record(z.string(), z.string()).optional(),
 });
 
 /**
@@ -154,6 +154,11 @@ export const SLASchema = z.object({
 });
 
 /**
+ * Lead Priority Schema
+ */
+export const LeadPrioritySchema = z.enum(["P0", "P1", "P2"]);
+
+/**
  * Lead Normalized Schema
  * 
  * Single source of truth cho lead data contract.
@@ -177,7 +182,7 @@ export const LeadNormalizedSchema = z.object({
     .optional()
     .transform((val) => val ? sanitizeString(val) : undefined),
   // Phase 6: Lead priority (calculated, not from payload)
-  priority: z.enum(["P0", "P1", "P2"]).optional(),
+  priority: LeadPrioritySchema.optional(),
   // Phase 8: Pipeline fields
   ownerId: z.string().optional(), // Assigned advisor/owner ID
   sla: SLASchema.optional(),
@@ -194,5 +199,6 @@ export type Attribution = z.infer<typeof AttributionSchema>;
 export type Meta = z.infer<typeof MetaSchema>;
 export type Consent = z.infer<typeof ConsentSchema>;
 export type SLA = z.infer<typeof SLASchema>;
+export type LeadPriority = z.infer<typeof LeadPrioritySchema>;
 export type LeadNormalized = z.infer<typeof LeadNormalizedSchema>;
 

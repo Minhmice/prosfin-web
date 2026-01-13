@@ -10,11 +10,6 @@ import { Button } from "./button";
 import { Sheet, SheetContent } from "./sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
 import { Separator } from "./separator";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./collapsible";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -185,7 +180,6 @@ const Sidebar = React.forwardRef<
     }
 >(({ variant, side = "left", collapsible = "icon", className, ...props }, ref) => {
   const { isMobile, openMobile, setOpenMobile, state } = useSidebar();
-  const mobileRef = React.useRef<HTMLDivElement>(null);
   
   // Update wrapper with side attribute
   React.useEffect(() => {

@@ -26,8 +26,8 @@ export function InsightsCta({ className, serviceSlug }: InsightsCtaProps) {
         Liên hệ với ProsFIN để được tư vấn về các giải pháp phù hợp với doanh
         nghiệp của bạn.
       </p>
-      <ProsfinPrimaryButton asChild size="lg">
-        <Link href={href}>Gửi yêu cầu tư vấn</Link>
+      <ProsfinPrimaryButton href={href} size="lg">
+        Gửi yêu cầu tư vấn
       </ProsfinPrimaryButton>
     </div>
   );
